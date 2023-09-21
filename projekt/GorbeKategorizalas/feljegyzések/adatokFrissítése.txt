@@ -1,0 +1,32 @@
+adatokat le kell tudni tölteni
+	ChatGPT
+	paraméterezhetző parancsokkal megvalósítva kellene
+	
+	melyik részvényt, mikortól 
+		plusz kell az átfogó napi bontású
+		plusz kell a pénzügyi jelentés is
+
+"Frissít gomb"
+
+megnézi az összes meglévő részvényt és frissíti őket
+"összes meglévő" -> amilyen mappák vannak
+
+végignézi a részvényeket tároló mappában, hogy milyen részvények vannak
+	ebből képez egy string vektort és lefrissíti sorban őket
+	
+
+"frissíti őket" -> megnézi mikori az utolsó hónap, és letölti az és az azt követő hónapokat
+			plusz a teljes napi bontásút, és a pénzügyi jelentéseket tartalmazókat
+	
+
+Jó, de kezdetben egy mappa sincs.
+
+"mappák létrehozása"
+
+Kell egy "Új részvény hozzáadása" gomb
+Lehet kell ebből egy konzolos több részvényt egyszerre bekérő megoldás is.
+Az új stringek alapján létrehoz új mappákat és azok alapján már tud frissíteni a "frissítés" gomb.
+
+
+Mappákat közvetlenül a C:\stockData\... mappában lesznek.
+	Hogy az API kulcsom ne legyen publikus, azt is onnan olvassa be a C:\stockData\API_Key.txt fájlból.

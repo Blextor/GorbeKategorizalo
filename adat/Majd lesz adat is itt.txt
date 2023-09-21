@@ -1,0 +1,4 @@
+Itt lesz majd némi adat.
+Az összes adat 250+ GB helyet foglalna. (nem Git kompatibilis)
+Egy részvény minden adata kb. 100 MByte.
+Lesz belőle akár 3000 is, így azt nem fogom mind feltölteni.

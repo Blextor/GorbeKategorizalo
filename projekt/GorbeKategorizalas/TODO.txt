@@ -1,0 +1,27 @@
+kategorizálom a pénzügyi jelentések közötti árfolyam mozgásokat
+
+Ehhez kell látnom a kategorizálandó görbéket.
+Ezeket kell tudnom új kategóriába, meglévőbe, vagy ha be van sorolva, de nem teszik, akkor átsorolni más kategóriába.
+Vagy több kategóriába is tartozik.
+
+				Tényelg, új kategóra	Pedig kéne (máshova)		Helyesen be van sorolva
+Nem tartozik sehova 		Új kategória létre	Meglévő kat. módosít		???
+Egy helyhez tartozik		???			Meglévő módos / másik módos	Skip
+Több kategóriába tartozik	
+
+Egy részvény pontosan egy kategóriába tartozzon? Vagy a kategóriák legyenek címkék?
+
+Legyenek címkék.
+
+Címkék 3 hónapot jellemeznek (és az elő illetve az utó szelét)
+Mit tud egy címke:
+	- név, 
+	- lokális min és max-ok adott intervallumon adott környezetbe esik egy időponttól,
+	- elmozdulás mértéke százalékban a nyitás és a vég között,
+	- elmozdulás mértéke az előző pénzügyi negyedévhez képest és a következő merre mozdult
+		másnap rögvest és a következő X nap átlaga
+	- Az időszak legmagasabb és legalacsonyabb értéke közötti eltérés
+	- max és min adott intervalumon (egyenest akarok vele leírni)
+	- monotonitás... maximumokat / minimumokat "gyakran" dönti meg az idő előrehaladtával (pl. 50%-ban)
+		és global min/max az elején és a fordítva a végén
+		napok közötti növekedések különbségének módusza, mediánja

@@ -1,0 +1,72 @@
+# depslib dependency file v1.0
+1694453241 source:c:\users\bobo\documents\stockanal\gorbekategorizalas\main.cpp
+	"common.h"
+
+1695299025 c:\users\bobo\documents\stockanal\gorbekategorizalas\common.h
+	<vector>
+	<string>
+	<iostream>
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<SDL2/SDL2_gfxPrimitives.h>
+	<time.h>
+	<math.h>
+	<random>
+	<time.h>
+	<math.h>
+	<thread>
+	<WinSock2.h>
+	<WS2tcpip.h>
+	<system_error>
+	<windows.h>
+	<stdlib.h>
+
+1695301829 source:c:\users\bobo\documents\stockanal\gorbekategorizalas\main2.cpp
+	"common.h"
+	<list>
+	<utility>
+	<mutex>
+	<memory>
+	<random>
+	<algorithm>
+	<iostream>
+	<fstream>
+	<sstream>
+	<map>
+	<vector>
+	<iomanip>
+	<iostream>
+	<stdexcept>
+	<string>
+	<utility>
+	"cimke.h"
+	"Menu.h"
+
+1694630166 source:c:\users\bobo\documents\stockanal\gorbekategorizalas\idosor.cpp
+	"idosor.h"
+
+1695298511 source:c:\users\bobo\documents\stockanal\gorbekategorizalas\cimke.cpp
+	"cimke.h"
+
+1695196643 c:\users\bobo\documents\stockanal\gorbekategorizalas\cimke.h
+	"common.h"
+	"idosor.h"
+
+1694629802 c:\users\bobo\documents\stockanal\gorbekategorizalas\idosor.h
+	"common.h"
+
+1695299959 source:c:\users\bobo\documents\stockanal\gorbekategorizalas\menu.cpp
+	"Menu.h"
+
+1695301610 c:\users\bobo\documents\stockanal\gorbekategorizalas\menu.h
+	"common.h"
+
+1695301163 source:c:\users\bobo\documents\stockanal\gorbekategorizalas\fomenu.cpp
+	"Menu.h"
+
+1695301163 source:c:\users\bobo\documents\stockanal\gorbekategorizalas\frissitomenu.cpp
+	"Menu.h"
+
+1695301737 source:c:\users\bobo\documents\stockanal\gorbekategorizalas\menuk.cpp
+	"Menu.h"
+
