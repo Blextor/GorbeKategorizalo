@@ -1,7 +1,8 @@
 #include "Menu.h"
 
-void FoMenu::nextMenus(Menu *frissito){
+void FoMenu::nextMenus(Menu *frissito, Menu *csoport){
     frissitoMenu=frissito;
+    csoportEditormenu=csoport;
 }
 
 void FoMenu::draw() {
@@ -12,7 +13,7 @@ void FoMenu::draw() {
 }
 
 void FoMenu::inputHandle(){
-    if (SDL_PollEvent(ev)){
+    if (SDL_PollEvent(ev) || true){
         if (ev->type==SDL_MOUSEBUTTONDOWN){
         } else if (ev->type==SDL_MOUSEBUTTONUP){
         } else if (ev->type==SDL_MOUSEMOTION){
@@ -25,6 +26,10 @@ void FoMenu::inputHandle(){
             if (ev->key.keysym.sym==SDLK_d){
                 cout<<"change"<<endl;
                 *menu = frissitoMenu;
+            }
+            if (ev->key.keysym.sym==SDLK_f){
+                cout<<"change"<<endl;
+                *menu = csoportEditormenu;
             }
         }
         if (ev->type == SDL_QUIT)

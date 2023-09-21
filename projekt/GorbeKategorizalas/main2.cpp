@@ -49,17 +49,20 @@ void draw(SDL_Renderer &renderer){
     SDL_RenderPresent(&renderer);
 }
 
-void megjelenites(SDL_Renderer &renderer,/* vector<vector<Mezo>> &mezok,*/ SDL_Window &window){
+void megjelenites(Menu *actualMenu){
+
+    cout<<actualMenu<< " "<<&actualMenu <<endl;
     while (true){
         clock_t t1;
         clock_t delay=60;
         if (clock()>t1+CLOCKS_PER_SEC/delay){
             //cout<<"alma"<<clock()<<endl;
-            if (kirajzol){
-                draw(renderer);
-                cout<<"a";
+            //if (kirajzol){
+            actualMenu->draw();
+                //draw(renderer);
+                //cout<<"a";
                 //Draw_Mezok(renderer, mezok, window);
-            }
+            //}
             t1=clock();
         } else {
             Sleep(1);
@@ -67,55 +70,14 @@ void megjelenites(SDL_Renderer &renderer,/* vector<vector<Mezo>> &mezok,*/ SDL_W
     }
 }
 
-void esemenyKezel(thread &frame,SDL_Renderer &renderer, SDL_Window &window){
-    SDL_Event ev;
+void esemenyKezel(Menu *actualMenu){
+    Sleep(10);
+    cout<<actualMenu<< " "<<&actualMenu <<endl;
     while (true){
-        if (SDL_PollEvent(&ev)){
-            if (ev.window.event == SDL_WINDOWEVENT_RESIZED){
-                cout<<"resized"<<endl;
-                //thread frame2(megjelenites,ref(renderer),ref(window));
-                //frame = thread(megjelenites,ref(renderer),ref(window));
-            }
-            if (ev.type==SDL_MOUSEBUTTONDOWN){
-            } else if (ev.type==SDL_MOUSEBUTTONUP){
-            } else if (ev.type==SDL_MOUSEMOTION){
-                MX = ev.motion.x;
-                MY = ev.motion.y;
-            } else if (ev.type==SDL_KEYDOWN){
-                if (ev.key.keysym.sym==SDLK_r){
-                    cout<<"calma"<<endl;
-                }
-
-                if (ev.key.keysym.sym==SDLK_d){
-                    kirajzol=!kirajzol;
-                }
-
-                if (ev.key.keysym.sym==SDLK_b){
-                }
-                if (ev.key.keysym.sym==SDLK_n){
-                }
-
-                if (ev.key.keysym.sym==SDLK_j){
-                }
-
-                if (ev.key.keysym.sym==SDLK_k){
-                }
-
-                if (ev.key.keysym.sym==SDLK_s){
-                }
-
-                if (ev.key.keysym.sym==SDLK_p){
-                }
-
-                if (ev.key.keysym.sym==SDLK_m){
-                }
-
-                if (ev.key.keysym.sym==SDLK_l){
-                }
-            }
-            if (ev.type == SDL_QUIT)
-                exit(3);
-        }
+        SDL_Event ev;
+        SDL_PollEvent(&ev);
+        actualMenu->inputHandle();
+        Sleep(1);
     }
 }
 
@@ -166,11 +128,14 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     SDL_Pack sdlp(&window,&renderer,&ev);
     Menu *actualMenu;
     MenuK menuk(sdlp,&actualMenu);
+    cout<<actualMenu<< " "<<&actualMenu <<endl;
 
-    //thread frame(megjelenites,ref(renderer),ref(window));   /// megjelenítás
-    //thread esemeny(esemenyKezel,ref(frame),ref(renderer),ref(window));                           /// SDL input feldolgozás
+    /// megjelenítés még kicsit hibás, nem tudom külön szálon futtatni
+    //thread frame(megjelenites,ref(actualMenu));   /// megjelenítás
+    //thread esemeny(esemenyKezel,ref(actualMenu)); /// SDL input feldolgozás
     //thread konzol(konzolKezel);                             /// konzol input feldolgozás
     while(true){
+        //SDL_PollEvent(&ev);
         actualMenu->draw();
         actualMenu->inputHandle();
         //SDL_PollEvent(&ev);                                 /// Ez kell az input feldolgozáshoz külön szálon

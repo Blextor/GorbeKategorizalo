@@ -1,7 +1,8 @@
 #include "Menu.h"
 
-void FrissitoMenu::nextMenus(Menu *fo){
+void FrissitoMenu::nextMenus(Menu *fo, Menu *csoport){
     fomenu=fo;
+    csoportEditormenu=csoport;
 }
 
 void FrissitoMenu::draw() {

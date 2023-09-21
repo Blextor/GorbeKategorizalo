@@ -1,0 +1,51 @@
+Szeretném a részvények görbéit megtekinteni.
+Kellhet ezt napi és perc bontásban is végezni...
+Vegyesen is akár, 
+	pl. pénzügyi jelentések közötti időt napi bontásban, a következő napot perc bontásban.
+
+Gyertyák könnyen olvashatóak és könnyen meg is valósíthatóak.
+	Azok lesznek. (nem gondolok Strategy-ben, hogy más kirajzolás is lehetséges legyen)
+
+Fontos, hogy legyen fix lépcsők a görbék mögött, mint az egész értékek, vagy a időpont / dátum.
+	De legyen nem fix is.
+	Vannak 100, de akár 10 dollár alatti részvények, ahol kifejezetten sokat számítanak a centek is.
+		Ezért nem elegendőek az egész értékek.
+		Ezért kell a minimum és a maximum között felosztani a teret kb 4-10 részre.
+			Lehet ezt a kiinuláshoz, vagy előző záráshoz képest százalékosan is...
+
+Sok lehetőség van.
+Pl a százalékos megoldásnál miként lehet megadni a kezdő pontot, ami a 100% lesz?
+
+
+Egyébként lehessen több görbét is egyszerre vizsgálni.
+	Mivel ezek összefüggőek is lehetnek, ezért egymás alatt vannak a különböző, nem összefüggő görbék.
+Első sorban van pl az NVDA utolsó 2 negyedéve és az azt követő első nap.
+	Alatta szintén az NVDA van, de az egy évvel ezelőtti 2 negyedéve és utolsó napja van.
+	Alatta meg ott az AMD szintén két negyedév és utolsót követő nap.
+
+Ilyeneket lehet összehasonlítani pl.: emiatt kell egy "új sor", és egy "új oszlop" funkció.
+
+Új sor: "új" részvény megadása
+Új oszlop: nap vagy negyedév
+
+Minden sor részvénye külön megváltoztatható.
+Minden oszlop minden eleme soronként változtatható. (hogy pontosan melyik negyedévről/napról van szó)
+	Nem szükséges egymás utáni napokat/negyedéveket vizsgálni.
+
+Lehessen éveset is??? (minek?)
+
+Felületet nem tudom elképzelni, hogy miként választom ki a bizonyos negyedéveket, de majd kiderül.
+
+
+A grafikonok mellett legyen ott hogy melyik a kezdő időpont (és a nap) / kezdő dátum, és a vég.
+	Így egy adott negyedév után könnyű kiválasztani az azt követő napot.
+	Legyen ott a nyitó és a záró és a min és max érték is.
+
+Egy negyedév nem mindig ugyan olyan hosszú. (lehet 50, de akár 70 nap is)
+	Ezért a grafikonokat kissé zsugorítani, illetve nagyítani kell.
+
+Címkéket vagy sztatisztikai adatokat megjeleníteni kérdéses, hogy lehet-e (lesz-e ennyi hely) 
+
+Sorokat lehet törölni is. Oszlopokat szintén. 
+Grafikonokat egyenként is lehet nézni, és ekkor lehet címkét is készíteni.
+	Lehet a grafikonokat skálázni / nagyítani.

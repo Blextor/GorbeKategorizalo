@@ -42,6 +42,7 @@
 		<Unit filename="cimke.cpp" />
 		<Unit filename="cimke.h" />
 		<Unit filename="common.h" />
+		<Unit filename="csoportEditor.cpp" />
 		<Unit filename="fomenu.cpp" />
 		<Unit filename="frissitoMenu.cpp" />
 		<Unit filename="idosor.cpp" />

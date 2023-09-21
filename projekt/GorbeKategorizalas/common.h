@@ -2,6 +2,7 @@
 #define COMMON_H_INCLUDED
 
 #include <vector>
+#include <set>
 #include <string>
 #include <iostream>
 #include <SDL2/SDL.h>

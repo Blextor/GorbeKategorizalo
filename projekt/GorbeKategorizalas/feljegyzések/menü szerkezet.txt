@@ -1,0 +1,37 @@
+Főmenü:	
+	vissz: semmi
+	adatokFrissítése, 
+	részvények megtekintése, 
+	új részvények felvétele és kategóriák kialakítása
+	egyedi elemzés
+	kilépés
+
+Funkciója: semmi különös, a menük közötti navigálás. 5 gomb megléte.
+		hány szálra bontsa a program a párhuzamosítható folyamatokat
+
+####
+AdatokFrissítése:
+	vissza: főmenü
+	részvények és csoportok szerkesztése
+	
+
+Funkciók:
+	részvény / csoport -> frissítése / letöltése	
+	ehhez egy progress bar + részvény neve
+	visszalépés a főmenübe és a részvények/csoportok szerkesztése gomb
+
+
+####
+Részvények és csoportok szerkesztése:
+	vissza: főmenübe vagy adatok frissítésébe
+
+Funkciók:
+	új részvény / csoport (neve) megadása
+		(kétszer ne legyen ua. és stb hiba kezelése)
+	részvény és csoport törlése
+
+	részvények kilistázása és 
+		kategóriát kiválasztva a részvények tartalmazási viszonya megjelenítve
+			rájuk kattintva be lehet választani őket, illetve ki lehet törölni a csoportból
+		+ csak a kategória elemeit jeleníti meg
+	+ görgethető
