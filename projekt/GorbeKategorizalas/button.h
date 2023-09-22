@@ -64,8 +64,7 @@ struct Gorgetheto {
     int gridX=-1, gridY=-1; /// milyen formába legyenek rendezve
 
     Gorgetheto(){}
-    Gorgetheto(vector<string> e,int vx, int vy, int vw, int vh, int vgx=-1, int vgy=-1)
-    {
+    Gorgetheto(vector<string> e,int vx, int vy, int vw, int vh, int vgx=-1, int vgy=-1){
         elemek=e; x=vx; y=vy; h=vh; w=vw; gridX=vgx; gridY=vgy;
         for (int i=0; i<elemek.size(); i++){
             Button temp(elemek[i],0,0,w-25,13,false,false);
@@ -157,6 +156,41 @@ struct Gorgetheto {
 
     void speedUpRoll(){rollSpeed*=2; if (rollSpeed>5*16) rollSpeed=5*16;}
     void speedDownRoll(){rollSpeed/=2; if (rollSpeed<5) rollSpeed=5;}
+};
+
+struct ProgressBar{
+    int x, y;
+    int w, h;
+    bool wx, wy;
+
+    int X,Y;
+
+    bool stopped = false;
+    bool cancelled = false;
+
+    int eta_hour, eta_min, eta_sec;
+    int feldolgozottElemek, osszesElem;
+    float keszsegSzazalek;
+
+    string holAllEpp;
+
+    mutex rajzolasi;
+
+    ProgressBar(){}
+    ProgressBar(int vx, int vy, int vw, int vh, bool vwx, bool vwy){
+        x=vx; y=vy; w=vw; h=vh; wx=vwx; wy=vwy;
+    }
+
+    void draw (SDL_Renderer *renderer, int wa, int wb){
+        if (wx) X = wa - x;
+        else X = x;
+        if (wy) Y = wb - y;
+        else Y = y;
+
+        //stringRGBA(renderer,X+5,Y+5,str.c_str(),0,0,0,255);
+        //rectangleRGBA(renderer,X,Y,X+w+5,Y+h+5,0,0,0,255);
+    }
+
 };
 
 #endif // BUTTON_H_INCLUDED

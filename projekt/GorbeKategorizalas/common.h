@@ -13,8 +13,6 @@
 #include <math.h>
 #include <random>
 
-#include <time.h>
-#include <math.h>
 #include <thread>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
@@ -25,6 +23,10 @@
 #include <cctype> // is_alpha
 #include <algorithm>
 
+#include <list>
+#include <utility>
+#include <mutex>
+#include <memory>
 
 #include <stdlib.h>
 

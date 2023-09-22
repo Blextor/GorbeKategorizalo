@@ -1,0 +1,4 @@
+0 - semmi
+1 - részvény megadása
+2 - csoport megadása
+3 - folyamat futása

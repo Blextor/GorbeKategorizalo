@@ -339,6 +339,7 @@ void CsoportEditorMenu::inputHandle() {
             else OsszResz.speedDownRoll();
         }
     }
+
     if (mouseWheel){ /// vagy épp görgetnénk?
         /// görgetőknek átadjuk az irányt, többi az ő bajuk
         if (state==3)ReszMinG.rollIt(-ev->wheel.y);
@@ -346,6 +347,7 @@ void CsoportEditorMenu::inputHandle() {
         else if (state==5)OsszCsop.rollIt(-ev->wheel.y);
         else OsszResz.rollIt(-ev->wheel.y);
     }
+
 }
 
 void CsoportEditorMenu::process(){

@@ -61,6 +61,19 @@ struct FrissitoMenu : public Menu {
     Menu *fomenu;
     Menu *csoportEditormenu;
 
+    Text FoCim, kisLeiras; /// menü neve + a letöltés és a frissítés közötti különbség
+
+    Button FMB, RCSMB; /// főmenübe és részvény/csoport szerkesztő menübe gomb
+    Button ReszBevB; /// részvény beviteli mezője
+    Gorgetheto ReszBevG; /// részvények listája
+    Button ReszLetB, ReszFrissB; /// részvény letöltésének és frissítésének gombja
+
+    Button CsopBevB; /// csoport beviteli mezője
+    Gorgetheto CsopBevG; /// csoport listája
+    Button CsopLetB, CsopFrissB; /// csoport letöltésének és frissítésének gombja
+
+    void gombokKialakitasa();
+
     FrissitoMenu(){}
     FrissitoMenu(SDL_Pack sdlp,Menu **act) : Menu(sdlp,act){}
 
