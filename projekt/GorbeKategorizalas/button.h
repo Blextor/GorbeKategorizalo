@@ -174,7 +174,7 @@ struct ProgressBar{
 
     string holAllEpp;
 
-    mutex rajzolasi;
+    //mutex rajzolasi;
 
     ProgressBar(){}
     ProgressBar(int vx, int vy, int vw, int vh, bool vwx, bool vwy){

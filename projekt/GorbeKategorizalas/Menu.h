@@ -64,13 +64,23 @@ struct FrissitoMenu : public Menu {
     Text FoCim, kisLeiras; /// menü neve + a letöltés és a frissítés közötti különbség
 
     Button FMB, RCSMB; /// főmenübe és részvény/csoport szerkesztő menübe gomb
+
     Button ReszBevB; /// részvény beviteli mezője
     Gorgetheto ReszBevG; /// részvények listája
     Button ReszLetB, ReszFrissB; /// részvény letöltésének és frissítésének gombja
+    Text ReszTxt, ReszVissz; /// részvény felirat és visszajelzés
 
     Button CsopBevB; /// csoport beviteli mezője
     Gorgetheto CsopBevG; /// csoport listája
     Button CsopLetB, CsopFrissB; /// csoport letöltésének és frissítésének gombja
+    Text CsopTxt, CsopVissz; /// csoport felirat és visszajelzés
+
+    ProgressBar progBar; /// töltőcsík
+    Button PSSB, PCB; /// progressBar start/stop gomb és cancel gomb
+
+
+    vector<string> meglevoReszvenyek;
+    vector<string> meglevoCsoportok;
 
     void gombokKialakitasa();
 

@@ -9,6 +9,25 @@ void FrissitoMenu::gombokKialakitasa(){
     FMB = Button("FoMenu",15,35,52,13,false,true);
     RCSMB = Button("Csoportosito",90,35,100,13,false,true);
 
+    /// Részvény letöltése
+    ReszBevB = Button("reszveny neve V",20,70,124,13,false,false);
+    ReszBevG = Gorgetheto(meglevoReszvenyek,20,85,124,102,false,false);
+    ReszLetB = Button("letoltes",160,70,76,13,false,false);
+    ReszFrissB = Button("frissites",160,100,76,13,false,false);
+    ReszTxt = Text("reszveny",162,55);
+    ReszVissz = Text("teszt",248,89);
+
+    /// Részvény letöltése
+    CsopBevB = Button("csoport neve  V",340,70,124,13,false,false);
+    CsopBevG = Gorgetheto(meglevoReszvenyek,340,85,124,102,false,false);
+    CsopLetB = Button("letoltes",480,70,76,13,false,false);
+    CsopFrissB = Button("frissites",480,100,76,13,false,false);
+    CsopTxt = Text("csoport",482,55);
+    CsopVissz = Text("teszt",568,89);
+
+    /// ProgressBar
+    progBar = ProgressBar(20,300,600,30,false,false);
+
 }
 
 void FrissitoMenu::nextMenus(Menu *fo, Menu *csoport){
@@ -31,6 +50,25 @@ void FrissitoMenu::draw() {
     /// menü gombok
     FMB.draw(renderer,x,y);
     RCSMB.draw(renderer,x,y);
+
+    /// részvény letöltése
+    ReszBevG.draw(renderer,x,y);
+    ReszBevB.draw(renderer,x,y);
+    ReszLetB.draw(renderer,x,y);
+    ReszFrissB.draw(renderer,x,y);
+    ReszTxt.draw(renderer,x,y);
+    ReszVissz.draw(renderer,x,y);
+
+    /// csoport letöltése
+    CsopBevG.draw(renderer,x,y);
+    CsopBevB.draw(renderer,x,y);
+    CsopLetB.draw(renderer,x,y);
+    CsopFrissB.draw(renderer,x,y);
+    CsopTxt.draw(renderer,x,y);
+    CsopVissz.draw(renderer,x,y);
+
+    /// szeparátor
+    lineRGBA(renderer,320,55,320,200,0,0,0,255);
 
     SDL_RenderPresent(renderer);
 }
