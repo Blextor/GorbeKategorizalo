@@ -90,11 +90,14 @@ struct CsoportEditorMenu : public Menu {
     Text ReszMinTxt, CsoportMinTxt; /// visszajelzés
 
     bool firstInitOszzLista = true; /// a részvényeket először kirajzolja
-    Text CsopValTxt;    ///
-    Gorgetheto OsszResz;
-    Button AktCsop, AktCsopOk;
-    string aktCsopStr = "";
-    Gorgetheto OsszCsop;
+    Text CsopValTxt;    /// Csoport választás feletti szöveg
+    Gorgetheto OsszResz;    /// összes részvény helye
+    Button AktCsop, AktCsopOk; /// A csoport választás mezője és a jóváhagyó gombja
+    string aktCsopStr = ""; /// az elmentett csoport neve
+    Gorgetheto OsszCsop; /// a görgethető csoport választó
+    Button CsopMent; /// Elmenti a csoport elemeinek változtatását
+    Button CsopCsak; /// Csak a csoport (még) elemei láthatóak (törléshez hasznosabb)
+    Text CsopMentTxt; /// visszajelzés a mentésről
 
     vector<string> meglevoReszvenyek;
     vector<string> meglevoCsoportok;

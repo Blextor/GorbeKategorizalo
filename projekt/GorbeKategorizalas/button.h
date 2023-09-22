@@ -52,7 +52,9 @@ struct Button {
 struct Gorgetheto {
     vector<string> elemek;
     vector<string> megfeleloElemek;
+    vector<string> megfeleloElemekSzelekt;
     bool megElem = false;
+    bool elemSzelekt = false;
     vector<Button> gombok;
     vector<Button> megjelnoGombok;
     int roll = 0; /// mennyi van görgetve
@@ -72,13 +74,14 @@ struct Gorgetheto {
     }
 
     void elemekFrissitese(vector<string> e, string str=""){
+        megfeleloElemekSzelekt=megfeleloElemek;
         elemek=e;
         roll=0;
         gombok.clear();
         for (int i=0; i<elemek.size(); i++){
             if (benneVanAzStr(elemek[i],str) || str.size()==0){
                 if (!megElem || elemeAzStr(megfeleloElemek,elemek[i])){
-                    Button temp(elemek[i],0,0,(w-25)/max(1,gridX),13,true,true);
+                    Button temp(elemek[i],0,0,(w-25-(gridX-1)*00)/max(1,gridX)-8,13,true,true);
                     gombok.push_back(temp);
                 }
             }
@@ -88,12 +91,12 @@ struct Gorgetheto {
     void draw(SDL_Renderer *renderer, int wa, int wb){
         int radius = 25;
         int gorgStart = y+13, gorgH = 10, gorgAlsoEnd = y+h-8; // y+h-8
-        int listLength = gombok.size();
+        int gridx = max(1,gridX), gridy = max(1,gridY);
+        int listLength = (gombok.size()+3)/gridx;
         listLength = max(0,14*listLength+6*(listLength));
         maxRoll = max(0,listLength-h+2);
         gorgH = gorgH; /// TODO! (jó lesz ez így)
         int gorgPos=0;
-        int gridx = max(1,gridX), gridy = max(1,gridY);
         if (maxRoll>0)
             gorgPos = gorgStart+(gorgAlsoEnd-gorgStart-gorgH)*roll/maxRoll;
         /// gombok
@@ -101,7 +104,15 @@ struct Gorgetheto {
             int by = y+6+(i/gridx)*20 - roll;
             if (by+13>=y && by-1<=y+h+5){
                 gombok[i].afk=false;
-                gombok[i].draw(renderer,x+3+(i%gridx)*(w/gridx)+max(0,(i%gridx))*10,by);
+                int tempX = x+3+(i%gridx)*((w-25)/(gridx)+3);
+                gombok[i].draw(renderer,tempX,by);
+                if (elemSzelekt){
+                    if (!elemeAzStr(megfeleloElemekSzelekt,gombok[i].str))
+                        filledCircleRGBA(renderer,tempX+gombok[i].w-5,by+8,5,80,80,80,255);
+                    else
+                        filledCircleRGBA(renderer,tempX+gombok[i].w-5,by+8,5,80,200,80,255);
+                    circleRGBA(renderer,tempX+gombok[i].w-5,by+8,5,0,0,0,255);
+                }
             }
             else gombok[i].afk=true;
         }

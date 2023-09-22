@@ -117,18 +117,18 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     //animals.push_back(std::make_unique<Cat>());
     animals.push_back(&c);
 
-    for (const auto& animal : animals) {
-        cout<<animal->azIdosorIlyen(ids);
-    }
+    //for (const auto& animal : animals) {
+      //  cout<<animal->azIdosorIlyen(ids);
+    //}
 
 
-    cout<<m.type<<c.type<<endl;
+    //cout<<m.type<<c.type<<endl;
 
 
     SDL_Pack sdlp(&window,&renderer,&ev);
     Menu *actualMenu;
     MenuK menuk(sdlp,&actualMenu);
-    cout<<actualMenu<< " "<<&actualMenu <<endl;
+    //cout<<actualMenu<< " "<<&actualMenu <<endl;
 
     /// megjelenítés még kicsit hibás, nem tudom külön szálon futtatni
     //thread frame(megjelenites,ref(actualMenu));   /// megjelenítás
@@ -149,10 +149,10 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
         //ev.window.event
         //cout<<ev.window.event<<endl;
         if (ev.window.event == SDL_WINDOWEVENT_RESIZED){
-            cout<<"resized"<<endl;
+            //cout<<"resized"<<endl;
             int x, y;
             SDL_GetWindowSize(&window,&x,&y);
-            cout<<x<<" "<<y<<endl;
+            //cout<<x<<" "<<y<<endl;
             //frame = thread(megjelenites,ref(renderer),ref(window));
         }
     }

@@ -6,7 +6,7 @@ void CsoportEditorMenu::gombokKialakitasa(){
     FMB = Button("FoMenube",15,40,70,13,false,true);
     AFMB = Button("Adatok frissitese",110,40,141,13,false,true);
     /// Új elem megadása
-    MegCimTxt = Text("Uj reszveny vagy csoport letrehozasa", 20,35);
+    MegCimTxt = Text("Uj reszveny vagy csoport letrehozasa", 20,42);
     ReszMegB = Button("uj reszveny",40,60,124,13,false,false);
     CsoportMegB = Button("uj csoport neve",40,90,124,13,false,false);
     ReszMegPluszB = Button("+",175,60,13,13,false,false);
@@ -14,7 +14,7 @@ void CsoportEditorMenu::gombokKialakitasa(){
     ReszMegTxt = Text("", 200,65);
     CsoportMegTxt = Text("", 200,95);
     /// Meglévõ elem törlése
-    MinCimTxt = Text("Meglevo reszveny vagy csoport torlese", 330,35);
+    MinCimTxt = Text("Meglevo reszveny vagy csoport torlese", 330,42);
     ReszMinB = Button("reszveny neve V",350,60,124,13,false,false);
     CsoportMinB = Button("csoport neve  V",350,90,124,13,false,false);
     ReszMinG = Gorgetheto(meglevoReszvenyek,350,75,124,102);
@@ -24,11 +24,15 @@ void CsoportEditorMenu::gombokKialakitasa(){
     ReszMinTxt = Text("", 510,65);
     CsoportMinTxt = Text("", 510,95);
     /// Kategória kiválasztása és szerkesztése
-    OsszResz = Gorgetheto(meglevoReszvenyek,5,240,400,200,5);
+    OsszResz = Gorgetheto(meglevoReszvenyek,5,240,400,202,4); OsszResz.elemSzelekt=true;
     AktCsop = Button("",460,240,124,13,false,false);
     AktCsopOk = Button("OK",600,240,20,13,false,false);
     OsszCsop = Gorgetheto(meglevoCsoportok,460,260,124,102);
     CsopValTxt = Text("Valaszott csoport:",456,225);
+    CsopMent = Button("Mentes",415,420,60,13,false,false);
+    CsopCsak = Button("Az osszes reszveny",450,370,147,13,false,false);
+    CsopMentTxt = Text("",488,425);
+                      //Csoport részvényei
 }
 
 void CsoportEditorMenu::nextMenus(Menu *fo, Menu *friss){
@@ -46,7 +50,7 @@ void CsoportEditorMenu::draw() {
     SDL_RenderClear(renderer);
 
     stringRGBA(renderer,10,10,"Reszvenyek es csoportok fejlesztese",0,0,0,255);
-    lineRGBA(renderer,320,20,320,110,0,0,0,255);
+    lineRGBA(renderer,320,35,320,110,0,0,0,255);
     //rectangleRGBA(renderer,5,145,120,161,0,0,0,255);
 
     /// visszalépés gombok
@@ -85,7 +89,10 @@ void CsoportEditorMenu::draw() {
     AktCsop.draw(renderer,x,y);
     AktCsopOk.draw(renderer,x,y);
     CsopValTxt.draw(renderer,x,y);
-    stringRGBA(renderer,10,220,"Reszvenyek:",0,0,0,255);
+    stringRGBA(renderer,10,230,"Reszvenyek:",0,0,0,255);
+    CsopCsak.draw(renderer,x,y);
+    CsopMent.draw(renderer,x,y);
+    CsopMentTxt.draw(renderer,x,y);
     }
 
 
@@ -102,7 +109,7 @@ void CsoportEditorMenu::inputHandle() {
             MX=ev->button.x;
             MY=ev->button.y;
             leftButton=ev->button.button==SDL_BUTTON_LEFT;
-            cout<<MX<<" "<<MY<<" "<<leftButton<<endl;
+            ///cout<<MX<<" "<<MY<<" "<<leftButton<<endl;
         } else if (ev->type==SDL_MOUSEBUTTONUP){
         } else if (ev->type==SDL_MOUSEMOTION){
             //MX = ev->motion.x;
@@ -114,7 +121,7 @@ void CsoportEditorMenu::inputHandle() {
         if (ev->type==SDL_KEYDOWN){
             keyDown=true;
             if (ev->key.keysym.sym==SDLK_r){
-                cout<<"CsoportEditorMenu"<<endl;
+                ///cout<<"CsoportEditorMenu"<<endl;
             }
         }
         if (ev->type == SDL_QUIT)
@@ -201,7 +208,8 @@ void CsoportEditorMenu::inputHandle() {
             if (state!=5)
                 OsszCsop.elemekFrissitese(meglevoCsoportok,"");
             state = 5;
-        } else if (state == 5 && OsszCsop.inClick(MX,MY)){
+        }
+        else if (state == 5 && OsszCsop.inClick(MX,MY)){
             string btStr = OsszCsop.whichButton(MX,MY);
             if (btStr!=""){
                 AktCsop.str=btStr;
@@ -209,25 +217,54 @@ void CsoportEditorMenu::inputHandle() {
             } else {
 
             }
-        } else if (state == 5 && AktCsopOk.inClick(MX,MY)){
+        }
+        else if (state == 5 && AktCsopOk.inClick(MX,MY)){
+            CsopMentTxt.str="";
             if (elemeAzStr(meglevoCsoportok,AktCsop.str)){
                 aktCsopStr=AktCsop.str;
                 aktualisCsoportListaja=csoportReszvenyei(aktCsopStr);
                 OsszResz.megfeleloElemek=aktualisCsoportListaja;
-                OsszResz.megElem=true;
+                //OsszResz.megElem=true;
             } else {
                 aktCsopStr="";
                 OsszResz.megfeleloElemek.clear();
                 aktualisCsoportListaja.clear();
-                OsszResz.megElem=false;
+                //OsszResz.megElem=false;
             }
             OsszResz.elemekFrissitese(meglevoReszvenyek);
             state = 0;
         }
+        else if (CsopCsak.inClick(MX,MY)){
+            OsszResz.megElem = !OsszResz.megElem;
+            if (!OsszResz.megElem) CsopCsak.str="Az osszes reszveny";
+            else CsopCsak.str="Csoport reszvenyei";
+            OsszResz.elemekFrissitese(meglevoReszvenyek);
+        }
+        else if (OsszResz.inClick(MX,MY)){
+            CsopMentTxt.str="";
+            string temp = OsszResz.whichButton(MX,MY);
+            if (temp!=""){
+                vector<string>::iterator it = find(OsszResz.megfeleloElemekSzelekt.begin(),OsszResz.megfeleloElemekSzelekt.end(),temp);
+                if (it != OsszResz.megfeleloElemekSzelekt.end()) {
+                    OsszResz.megfeleloElemekSzelekt.erase(it);
+                } else {
+                    OsszResz.megfeleloElemekSzelekt.push_back(temp);
+                }
+            }
+        }
+        else if (CsopMent.inClick(MX,MY)){
+            CsopMentTxt.str=csoportFrissites(OsszResz.megfeleloElemekSzelekt,aktCsopStr);
+
+            if (CsopMentTxt.str=="Siker!") {
+                aktCsopStr=AktCsop.str;
+                aktualisCsoportListaja=csoportReszvenyei(aktCsopStr);
+                OsszResz.megfeleloElemek=aktualisCsoportListaja;
+            }
+        }
         else {
             state=0;
         }
-        cout<<"state "<<state<<endl;
+        ///cout<<"state "<<state<<endl;
     }
     if (ev->type == SDL_TEXTINPUT && ev->text.timestamp!=timestampText){
         timestampText=ev->text.timestamp;
@@ -284,25 +321,31 @@ void CsoportEditorMenu::inputHandle() {
         }
         if (ev->key.keysym.sym==SDLK_UP){
             if (state==3) {ReszMinG.speedUpRoll();}
-            if (state==4) {CsoportMinG.speedUpRoll();}
-            if (state==5) {OsszCsop.speedUpRoll();}
+            else if (state==4) {CsoportMinG.speedUpRoll();}
+            else if (state==5) {OsszCsop.speedUpRoll();}
+            else OsszResz.speedUpRoll();
         }
         if (ev->key.keysym.sym==SDLK_DOWN){
             if (state==3) {ReszMinG.speedDownRoll();}
-            if (state==4) {CsoportMinG.speedDownRoll();}
-            if (state==5) {OsszCsop.speedDownRoll();}
+            else if (state==4) {CsoportMinG.speedDownRoll();}
+            else if (state==5) {OsszCsop.speedDownRoll();}
+            else OsszResz.speedDownRoll();
         }
     }
     if (mouseWheel){
         if (state==3)ReszMinG.rollIt(-ev->wheel.y);
-        if (state==4)CsoportMinG.rollIt(-ev->wheel.y);
-        if (state==5)OsszCsop.rollIt(-ev->wheel.y);
+        else if (state==4)CsoportMinG.rollIt(-ev->wheel.y);
+        else if (state==5)OsszCsop.rollIt(-ev->wheel.y);
+        else OsszResz.rollIt(-ev->wheel.y);
     }
 }
 
 void CsoportEditorMenu::process(){
+    int meglevoReszvenyekSize = meglevoReszvenyek.size();
     meglevoReszvenyek = osszesReszveny();
     meglevoCsoportok = osszesCsoport();
+    if (meglevoReszvenyek.size()!=meglevoReszvenyekSize)
+        OsszResz.elemekFrissitese(meglevoReszvenyek);
     if (firstInitOszzLista){
         firstInitOszzLista=false;
         OsszResz.elemekFrissitese(meglevoReszvenyek);

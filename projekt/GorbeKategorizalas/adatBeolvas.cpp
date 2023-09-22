@@ -181,4 +181,14 @@ vector<string> csoportReszvenyei(string str){
     return lista;
 }
 
-
+string csoportFrissites(vector<string> vec, string csop){
+    if (csop.size()==0) return "Ures!";
+    string path = gyoker+"\\groups\\"+csop;
+    ofstream file(path);
+    if (!file.is_open()){return "Hiba!";}
+    for (int i=0; i<vec.size(); i++){
+        file<<vec[i]<<" ";
+        if (i%5==4) file<<endl;
+    }
+    return "Siker!";
+}

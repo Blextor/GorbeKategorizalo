@@ -39,6 +39,9 @@
 		</Linker>
 		<Unit filename="Menu.h" />
 		<Unit filename="MenuK.cpp" />
+		<Unit filename="adatBeolvas.cpp" />
+		<Unit filename="adatBeolvas.h" />
+		<Unit filename="button.h" />
 		<Unit filename="cimke.cpp" />
 		<Unit filename="cimke.h" />
 		<Unit filename="common.h" />
