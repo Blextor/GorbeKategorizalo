@@ -78,6 +78,8 @@ struct CsoportEditorMenu : public Menu {
 
     Button FMB, AFMB; /// fomenu, adat frissito menu
 
+    Text FoCim; /// Menü címe
+
     Text MegCimTxt; /// Magyarázó cím
     Button ReszMegB, CsoportMegB;   /// uj dolog beviteli mezője
     Button ReszMegPluszB, CsoportMegPluszB; /// mentés gomb
@@ -98,6 +100,7 @@ struct CsoportEditorMenu : public Menu {
     Button CsopMent; /// Elmenti a csoport elemeinek változtatását
     Button CsopCsak; /// Csak a csoport (még) elemei láthatóak (törléshez hasznosabb)
     Text CsopMentTxt; /// visszajelzés a mentésről
+    Text OsszReszTxt; /// részvények címe
 
     vector<string> meglevoReszvenyek;
     vector<string> meglevoCsoportok;

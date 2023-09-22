@@ -2,10 +2,10 @@
 
 
 void CsoportEditorMenu::gombokKialakitasa(){
-    /// Men� gombok
+    /// Menü gombok
     FMB = Button("FoMenube",15,40,70,13,false,true);
     AFMB = Button("Adatok frissitese",110,40,141,13,false,true);
-    /// �j elem megad�sa
+    /// Új elem megadása
     MegCimTxt = Text("Uj reszveny vagy csoport letrehozasa", 20,42);
     ReszMegB = Button("uj reszveny",40,60,124,13,false,false);
     CsoportMegB = Button("uj csoport neve",40,90,124,13,false,false);
@@ -13,7 +13,7 @@ void CsoportEditorMenu::gombokKialakitasa(){
     CsoportMegPluszB = Button("+",175,90,13,13,false,false);
     ReszMegTxt = Text("", 200,65);
     CsoportMegTxt = Text("", 200,95);
-    /// Megl�v� elem t�rl�se
+    /// Meglévõ elem törlése
     MinCimTxt = Text("Meglevo reszveny vagy csoport torlese", 330,42);
     ReszMinB = Button("reszveny neve V",350,60,124,13,false,false);
     CsoportMinB = Button("csoport neve  V",350,90,124,13,false,false);
@@ -23,7 +23,7 @@ void CsoportEditorMenu::gombokKialakitasa(){
     CsoportMinMinB = Button("-",485,90,13,13,false,false);
     ReszMinTxt = Text("", 510,65);
     CsoportMinTxt = Text("", 510,95);
-    /// Kateg�ria kiv�laszt�sa �s szerkeszt�se
+    /// Kategória kiválasztása és szerkesztése
     OsszResz = Gorgetheto(meglevoReszvenyek,5,240,400,202,4); OsszResz.elemSzelekt=true;
     AktCsop = Button("",460,240,124,13,false,false);
     AktCsopOk = Button("OK",600,240,20,13,false,false);
@@ -32,123 +32,127 @@ void CsoportEditorMenu::gombokKialakitasa(){
     CsopMent = Button("Mentes",415,420,60,13,false,false);
     CsopCsak = Button("Az osszes reszveny",450,370,147,13,false,false);
     CsopMentTxt = Text("",488,425);
-                      //Csoport r�szv�nyei
+    OsszReszTxt = Text("Reszvenyek:",10,230);
+    /// Menü címe
+    FoCim = Text("Reszvenyek es csoportok fejlesztese",10,10);
 }
 
 void CsoportEditorMenu::nextMenus(Menu *fo, Menu *friss){
     fomenu=fo;
     frissitomenu=friss;
 
-    gombokKialakitasa();
+    gombokKialakitasa(); /// Létrehozza a UI elemeket
 }
 
 void CsoportEditorMenu::draw() {
 
-    int x, y;
-    SDL_GetWindowSize(window,&x,&y);
-    SDL_SetRenderDrawColor(renderer,100,100,100,255);
+    int x, y; /// ablak méretei
+    SDL_GetWindowSize(window,&x,&y); /// méretek lekérdezése
+    SDL_SetRenderDrawColor(renderer,100,100,100,255); /// alap szürke
     SDL_RenderClear(renderer);
 
-    stringRGBA(renderer,10,10,"Reszvenyek es csoportok fejlesztese",0,0,0,255);
-    lineRGBA(renderer,320,35,320,110,0,0,0,255);
-    //rectangleRGBA(renderer,5,145,120,161,0,0,0,255);
+    FoCim.draw(renderer,x,y);   /// a Menü címe
+    lineRGBA(renderer,320,35,320,110,0,0,0,255); /// létrehozás és törlés közti vonal
 
-    /// visszal�p�s gombok
+    /// visszalépés gombok
     if (true){
     FMB.draw(renderer,x,y);
     AFMB.draw(renderer,x,y);
     }
 
-    /// �j dolog megad�sa
+    /// új dolog megadása
     if (true){
     MegCimTxt.draw(renderer,x,y);
     ReszMegB.draw(renderer,x,y); /// bemenetek
     CsoportMegB.draw(renderer,x,y);
     ReszMegPluszB.draw(renderer,x,y);   /// inputok
     CsoportMegPluszB.draw(renderer,x,y);
-    ReszMegTxt.draw(renderer,x,y);      /// visszajelz�sek
+    ReszMegTxt.draw(renderer,x,y);      /// visszajelzések
     CsoportMegTxt.draw(renderer,x,y);
     }
 
-    /// megl�v� dolog t�rl�se
+    /// meglévõ dolog törlése
     if (true){
     MinCimTxt.draw(renderer,x,y);
-    if (state==3) ReszMinG.draw(renderer,x,y); /// g�rgethet�k
+    if (state==3) ReszMinG.draw(renderer,x,y); /// görgethetõk
     if (state==4) CsoportMinG.draw(renderer,x,y);
     ReszMinB.draw(renderer,x,y); /// bemenetek
     if (state!=3) CsoportMinB.draw(renderer,x,y);
     ReszMinMinB.draw(renderer,x,y);   /// inputok
     CsoportMinMinB.draw(renderer,x,y);
-    ReszMinTxt.draw(renderer,x,y);      /// visszajelz�sek
+    ReszMinTxt.draw(renderer,x,y);      /// visszajelzések
     CsoportMinTxt.draw(renderer,x,y);
     }
 
-    if (true){
+    if (true){  /// Összes részvéby és a csoport kiválasztása + gombok
     OsszResz.draw(renderer,x,y);
     OsszCsop.draw(renderer,x,y);
     AktCsop.draw(renderer,x,y);
     AktCsopOk.draw(renderer,x,y);
     CsopValTxt.draw(renderer,x,y);
-    stringRGBA(renderer,10,230,"Reszvenyek:",0,0,0,255);
+    OsszReszTxt.draw(renderer,x,y);
     CsopCsak.draw(renderer,x,y);
     CsopMent.draw(renderer,x,y);
     CsopMentTxt.draw(renderer,x,y);
     }
 
 
-    SDL_RenderPresent(renderer);
+    SDL_RenderPresent(renderer); /// Kirajzolás ténylegesen
 }
 
 void CsoportEditorMenu::inputHandle() {
-    int MX=-1, MY=-1;
-    bool leftButton = true;
-    bool keyDown = false;
-    bool mouseWheel = false;
-    if (SDL_PollEvent(ev)){
-        if (ev->type==SDL_MOUSEBUTTONDOWN){
+    int MX=-1, MY=-1; /// kurzor pozíciója, ha -1 marad, nem történt változás
+    bool leftButton = true; /// külön kígyűjtöm, hogy lenyomták-e a bal egérgombot
+    bool keyDown = false; /// vagy bármelyt a billentyűzeten
+    bool mouseWheel = false; /// vagy görgettek-e
+
+    if (SDL_PollEvent(ev)){ /// lekérem az eseményt és kigyűjtöm, hogy mi történt
+        if (ev->type==SDL_MOUSEBUTTONDOWN){ /// csak kattintáskor kérem le az egér pozíciót
             MX=ev->button.x;
             MY=ev->button.y;
-            leftButton=ev->button.button==SDL_BUTTON_LEFT;
-            ///cout<<MX<<" "<<MY<<" "<<leftButton<<endl;
+            leftButton=ev->button.button==SDL_BUTTON_LEFT; /// bal gomb
         } else if (ev->type==SDL_MOUSEBUTTONUP){
         } else if (ev->type==SDL_MOUSEMOTION){
             //MX = ev->motion.x;
             //MY = ev->motion.y;
         }
-        if (ev->type==SDL_MOUSEWHEEL){
+        if (ev->type==SDL_MOUSEWHEEL){ /// görgtés
             mouseWheel=true;
         }
-        if (ev->type==SDL_KEYDOWN){
+        if (ev->type==SDL_KEYDOWN){ /// billentyű
             keyDown=true;
-            if (ev->key.keysym.sym==SDLK_r){
-                ///cout<<"CsoportEditorMenu"<<endl;
-            }
+            //if (ev->key.keysym.sym==SDLK_r)
         }
-        if (ev->type == SDL_QUIT)
+        if (ev->type == SDL_QUIT) /// beégetett kilépés engedélyezése
             exit(3);
     }
-    if (MX!=-1){
-        if (FMB.inClick(MX,MY)) *menu = fomenu;
-        else if (AFMB.inClick(MX,MY)) *menu = frissitomenu;
-        else if (ReszMegB.inClick(MX,MY)) {
-            ReszMegB.str="";
-            ReszMegTxt.str="";
-            state = 1;
+
+    if (MX!=-1){ /// azaz az egérrel kattintottunk
+        /// kérdés, hogy eltaláltunk-e valami kattinthatót
+        if (FMB.inClick(MX,MY)) *menu = fomenu; /// főmenübe írányító gombot
+        else if (AFMB.inClick(MX,MY)) *menu = frissitomenu; /// adatokat frissítő menü gombot
+        else if (ReszMegB.inClick(MX,MY)) { /// új részvény beviteli mező gomját
+            ReszMegB.str="";    /// törlöm a tartalmát
+            ReszMegTxt.str="";  /// és törlöm a visszajelzést is
+            state = 1;          /// ennek az állapota 1
         }
-        else if (CsoportMegB.inClick(MX,MY)) {
-            CsoportMegB.str="";
+        else if (CsoportMegB.inClick(MX,MY)) { /// új csoport -||-
+            CsoportMegB.str=""; /// ua. előző
             CsoportMegTxt.str="";
-            state = 2;
+            state = 2;          /// ennek 2-es
         }
-        else if (ReszMegPluszB.inClick(MX,MY)) {
-            if (state==1){
+        else if (ReszMegPluszB.inClick(MX,MY)) { /// új részvény OK gombját
+            if (state==1){  /// csak ha előtte legalább belekattintottunk a beviteli mezőbe
+                /// lefolyás és visszajelzés
                 if (ReszMegB.str.size()==0) ReszMegTxt.str = "Ures!";
                 else ReszMegTxt.str = createNewReszveny(ReszMegB.str);
             }
+            /// reset eredetibe
             ReszMegB.str="uj reszveny";
             state = 0;
         }
-        else if (CsoportMegPluszB.inClick(MX,MY)) {
+        else if (CsoportMegPluszB.inClick(MX,MY)) { /// új csoport OK gombját
+            /// ua. mint az előző
             if (state==2){
                 if (CsoportMegB.str.size()==0) CsoportMegTxt.str = "Ures!";
                 else CsoportMegTxt.str = createNewCsoport(CsoportMegB.str);
@@ -156,31 +160,32 @@ void CsoportEditorMenu::inputHandle() {
             CsoportMegB.str="uj csoport neve";
             state = 0;
         }
-        else if (ReszMinB.inClick(MX,MY)){
-            ReszMinTxt.str="";
-            if (state!=3){
-                ReszMinB.str="";
-                ReszMinG.elemekFrissitese(meglevoReszvenyek);
+        else if (ReszMinB.inClick(MX,MY)){  /// részvény törlés bevitel
+            ReszMinTxt.str="";  /// visszajelzés törlése
+            if (state!=3){ /// ha nem nyomtunk még bele
+                ReszMinB.str="";    /// törli a szöveget
+                ReszMinG.elemekFrissitese(meglevoReszvenyek); /// és lekérdezi a részvényeket
             }
-            state=3;
+            state=3;    /// ennek az állapota 3-as
         }
-        else if (state == 3 && ReszMinG.inClick(MX,MY)){
+        else if (state == 3 && ReszMinG.inClick(MX,MY)){ /// részvény lista
+            /// görgető-be kattintva kérdéses még, hogy hova is érkezett a kattintás
             string btStr = ReszMinG.whichButton(MX,MY);
-            if (btStr!=""){
+            if (btStr!=""){ /// ha siker, akkor szövegét használjuk
                 ReszMinB.str=btStr;
                 ReszMinG.elemekFrissitese(meglevoReszvenyek,btStr);
-            } else {
+            } else {/// csúszka használatra fenntartva
 
             }
         }
-        else if (state == 3 && ReszMinMinB.inClick(MX,MY)){
-            state=0;
+        else if (state == 3 && ReszMinMinB.inClick(MX,MY)){ /// részvény törlés gomb
+            state=0;    /// visszajelzés és lefolyás
             if (ReszMinB.str.size()==0){
                 ReszMinTxt.str="Ures!";
             } else
                 ReszMinTxt.str=deleteReszveny(ReszMinB.str);
         }
-        else if (CsoportMinB.inClick(MX,MY)){
+        else if (CsoportMinB.inClick(MX,MY)){ /// ua. előző (csoportokra)
             CsoportMinTxt.str="";
             if (state!=4){
                 CsoportMinB.str="";
@@ -188,7 +193,7 @@ void CsoportEditorMenu::inputHandle() {
             }
             state=4;
         }
-        else if (state == 4 && CsoportMinG.inClick(MX,MY)){
+        else if (state == 4 && CsoportMinG.inClick(MX,MY)){ /// ua. előző
             string btStr = CsoportMinG.whichButton(MX,MY);
             if (btStr!=""){
                 CsoportMinB.str=btStr;
@@ -197,107 +202,109 @@ void CsoportEditorMenu::inputHandle() {
 
             }
         }
-        else if (state == 4 && CsoportMinMinB.inClick(MX,MY)){
+        else if (state == 4 && CsoportMinMinB.inClick(MX,MY)){ /// ua. előző
             state=0;
             if (CsoportMinB.str.size()==0){
                 CsoportMinTxt.str="Ures!";
             } else
                 CsoportMinTxt.str=deleteCsoport(CsoportMinB.str);
         }
-        else if (AktCsop.inClick(MX,MY)){
-            if (state!=5)
+        else if (AktCsop.inClick(MX,MY)){ /// csoport kiválasztásának beviteli mezője
+            if (state!=5)   /// elég egyszer brefissíteni a csoportokat
                 OsszCsop.elemekFrissitese(meglevoCsoportok,"");
             state = 5;
         }
-        else if (state == 5 && OsszCsop.inClick(MX,MY)){
+        else if (state == 5 && OsszCsop.inClick(MX,MY)){ /// csoport választó görgő
             string btStr = OsszCsop.whichButton(MX,MY);
-            if (btStr!=""){
+            if (btStr!=""){ /// melyik, gomb, ha siker, akkor lefolyás és visszajelzés
                 AktCsop.str=btStr;
                 OsszCsop.elemekFrissitese(meglevoCsoportok,btStr);
-            } else {
+            } else { /// csúszka használatra fenntartva
 
             }
         }
-        else if (state == 5 && AktCsopOk.inClick(MX,MY)){
-            CsopMentTxt.str="";
-            if (elemeAzStr(meglevoCsoportok,AktCsop.str)){
-                aktCsopStr=AktCsop.str;
-                aktualisCsoportListaja=csoportReszvenyei(aktCsopStr);
-                OsszResz.megfeleloElemek=aktualisCsoportListaja;
-                //OsszResz.megElem=true;
-            } else {
+        else if (state == 5 && AktCsopOk.inClick(MX,MY)){ /// csoport választás jóváhagyás
+            CsopMentTxt.str=""; /// előző csoport szerkesztés visszajelzésének törlése
+            if (elemeAzStr(meglevoCsoportok,AktCsop.str)){ /// ha valid a csoportnév
+                aktCsopStr=AktCsop.str; /// akkor elmenti külön is
+                aktualisCsoportListaja=csoportReszvenyei(aktCsopStr); /// befrissíti a csoport részvényeit
+                OsszResz.megfeleloElemek=aktualisCsoportListaja; /// és el is tárolja azokat külön
+            } else { /// akkor biztos törölni kívántuk
                 aktCsopStr="";
                 OsszResz.megfeleloElemek.clear();
                 aktualisCsoportListaja.clear();
-                //OsszResz.megElem=false;
             }
+            /// részvénykeet nem árt befrissíteni
             OsszResz.elemekFrissitese(meglevoReszvenyek);
             state = 0;
         }
-        else if (CsopCsak.inClick(MX,MY)){
-            OsszResz.megElem = !OsszResz.megElem;
+        else if (CsopCsak.inClick(MX,MY)){ /// a csoport szévényei / összes részvény gomb
+            OsszResz.megElem = !OsszResz.megElem; /// negálja és eszerint szövegét megváltoztatja
             if (!OsszResz.megElem) CsopCsak.str="Az osszes reszveny";
             else CsopCsak.str="Csoport reszvenyei";
-            OsszResz.elemekFrissitese(meglevoReszvenyek);
+            OsszResz.elemekFrissitese(meglevoReszvenyek); /// elemeket a változás miatt frissíti
         }
-        else if (OsszResz.inClick(MX,MY)){
-            CsopMentTxt.str="";
+        else if (OsszResz.inClick(MX,MY)){ /// összes részvény görgő
+            CsopMentTxt.str=""; /// ha ide kattintunk, nem kell az előző mentés visszajelzés
             string temp = OsszResz.whichButton(MX,MY);
-            if (temp!=""){
+            if (temp!=""){ /// ha valamelyik részvényre kattintottunk
+                /// akkor megkeressük a szelektálós listában és vector elem negálás
                 vector<string>::iterator it = find(OsszResz.megfeleloElemekSzelekt.begin(),OsszResz.megfeleloElemekSzelekt.end(),temp);
-                if (it != OsszResz.megfeleloElemekSzelekt.end()) {
-                    OsszResz.megfeleloElemekSzelekt.erase(it);
-                } else {
-                    OsszResz.megfeleloElemekSzelekt.push_back(temp);
+                if (it != OsszResz.megfeleloElemekSzelekt.end()) { /// ha benne van
+                    OsszResz.megfeleloElemekSzelekt.erase(it); /// kivesszük
+                } else { /// ha meg nincs benne
+                    OsszResz.megfeleloElemekSzelekt.push_back(temp); /// beteszzük
                 }
             }
         }
-        else if (CsopMent.inClick(MX,MY)){
+        else if (CsopMent.inClick(MX,MY)){ /// részvények listájának kimentése gomb
+            /// a folyamat hibakezelése ki van szervezve
             CsopMentTxt.str=csoportFrissites(OsszResz.megfeleloElemekSzelekt,aktCsopStr);
-
-            if (CsopMentTxt.str=="Siker!") {
-                aktCsopStr=AktCsop.str;
-                aktualisCsoportListaja=csoportReszvenyei(aktCsopStr);
-                OsszResz.megfeleloElemek=aktualisCsoportListaja;
+            if (CsopMentTxt.str=="Siker!") { /// hi minden rendben ment
+                aktCsopStr=AktCsop.str; /// akkor eltárolja az aktuális részvényt külön (?)
+                aktualisCsoportListaja=csoportReszvenyei(aktCsopStr); /// és befrissíti
+                OsszResz.megfeleloElemek=aktualisCsoportListaja;/// a jelenlegi részvényt a fő konténerekbe
             }
         }
-        else {
-            state=0;
+        else { /// ha kikattintunk a semmibe
+            state=0; /// akkor térjünk vissza a kezdő állapotba
         }
-        ///cout<<"state "<<state<<endl;
+
     }
-    if (ev->type == SDL_TEXTINPUT && ev->text.timestamp!=timestampText){
-        timestampText=ev->text.timestamp;
-        if (state==1){
-            if (isalpha(ev->text.text[0]))
+
+    if (ev->type == SDL_TEXTINPUT && ev->text.timestamp!=timestampText){ /// bevitel
+        timestampText=ev->text.timestamp; /// szövegbevitel esemény végtelen, de időbélyege nem
+        if (state==1){ /// új részvény
+            if (isalpha(ev->text.text[0])) /// csak karakterek lehetnek
                 ReszMegB.str+=ev->text.text[0];
         }
-        if (state==2){
-            if (isalpha(ev->text.text[0]))
+        if (state==2){ /// új csoport
+            if (isalpha(ev->text.text[0])) /// csak karakterek lehetnek
                 CsoportMegB.str+=ev->text.text[0];
         }
-        if (state==3){
-            if (isalpha(ev->text.text[0])){
+        if (state==3){ /// részvény törlése
+            if (isalpha(ev->text.text[0])){ /// csak karakterek lehetnek
                 ReszMinB.str+=ev->text.text[0];
                 ReszMinG.elemekFrissitese(meglevoReszvenyek,ReszMinB.str);
             }
         }
-        if (state==4){
-            if (isalpha(ev->text.text[0])){
+        if (state==4){ /// csoport törlése
+            if (isalpha(ev->text.text[0])){ /// csak karakterek lehetnek
                 CsoportMinB.str+=ev->text.text[0];
                 CsoportMinG.elemekFrissitese(meglevoCsoportok,CsoportMinB.str);
             }
         }
-        if (state==5){
-            if (isalpha(ev->text.text[0])){
+        if (state==5){ /// csoport kiválasztása
+            if (isalpha(ev->text.text[0])){ /// csak karakterek lehetnek
                 AktCsop.str+=ev->text.text[0];
                 OsszCsop.elemekFrissitese(meglevoCsoportok,AktCsop.str);
             }
         }
-        //cout<<ev->text.text[0] << " "<<ev->text.timestamp<<endl;
     }
-    if (keyDown){
-        if (ev->key.keysym.sym==SDLK_BACKSPACE){
+
+    if (keyDown){ /// ha billentyűzetet nem gépelés miatt ütöttük le
+        if (ev->key.keysym.sym==SDLK_BACKSPACE){ /// pl. törlés miatt
+            /// előző beviteli mezők tartalmának redukálása és szűrések frissítése
             if (state==1){if (ReszMegB.str.size()>0) ReszMegB.str.pop_back();}
             if (state==2){if (CsoportMegB.str.size()>0) CsoportMegB.str.pop_back();}
             if (state==3){
@@ -319,20 +326,21 @@ void CsoportEditorMenu::inputHandle() {
                 }
             }
         }
-        if (ev->key.keysym.sym==SDLK_UP){
+        if (ev->key.keysym.sym==SDLK_UP){ /// pl. görgetés gyorsítása
             if (state==3) {ReszMinG.speedUpRoll();}
             else if (state==4) {CsoportMinG.speedUpRoll();}
             else if (state==5) {OsszCsop.speedUpRoll();}
             else OsszResz.speedUpRoll();
         }
-        if (ev->key.keysym.sym==SDLK_DOWN){
+        if (ev->key.keysym.sym==SDLK_DOWN){ /// lassítása
             if (state==3) {ReszMinG.speedDownRoll();}
             else if (state==4) {CsoportMinG.speedDownRoll();}
             else if (state==5) {OsszCsop.speedDownRoll();}
             else OsszResz.speedDownRoll();
         }
     }
-    if (mouseWheel){
+    if (mouseWheel){ /// vagy épp görgetnénk?
+        /// görgetőknek átadjuk az irányt, többi az ő bajuk
         if (state==3)ReszMinG.rollIt(-ev->wheel.y);
         else if (state==4)CsoportMinG.rollIt(-ev->wheel.y);
         else if (state==5)OsszCsop.rollIt(-ev->wheel.y);
@@ -341,19 +349,20 @@ void CsoportEditorMenu::inputHandle() {
 }
 
 void CsoportEditorMenu::process(){
+    /// adatok befrissítése (lehet túl sokszor is)
     int meglevoReszvenyekSize = meglevoReszvenyek.size();
     meglevoReszvenyek = osszesReszveny();
     meglevoCsoportok = osszesCsoport();
-    if (meglevoReszvenyek.size()!=meglevoReszvenyekSize)
-        OsszResz.elemekFrissitese(meglevoReszvenyek);
-    if (firstInitOszzLista){
-        firstInitOszzLista=false;
-        OsszResz.elemekFrissitese(meglevoReszvenyek);
+    if (meglevoReszvenyek.size()!=meglevoReszvenyekSize) /// ha új részvény van
+        OsszResz.elemekFrissitese(meglevoReszvenyek); /// a teljes listát befrissíti
+    if (firstInitOszzLista){ /// először is egyszer be kell
+        firstInitOszzLista=false; /// csak egyszer
+        OsszResz.elemekFrissitese(meglevoReszvenyek); /// és frissíteni
     }
 
-    if (oldState!=state){
+    if (oldState!=state){ /// amikor állapotváltozás van
         oldState=state;
-        if (state!=1){
+        if (state!=1){ /// resetelem a mezők nagyját
             ReszMegB.str="uj reszveny";
         }
         if (state!=2){
@@ -361,7 +370,7 @@ void CsoportEditorMenu::process(){
         }
         if (state!=3){
             ReszMinB.str="reszveny neve V";
-            ReszMinG.roll=0;
+            ReszMinG.roll=0; /// és a görgetők tekertségét
         }
         if (state!=4){
             CsoportMinB.str="csoport neve  V";
@@ -370,11 +379,12 @@ void CsoportEditorMenu::process(){
         if (state!=5){
             AktCsop.str=aktCsopStr;
             OsszCsop.roll=0;
-            OsszCsop.elemekFrissitese(meglevoCsoportok,"-1");
+            OsszCsop.elemekFrissitese(meglevoCsoportok,"-1"); /// és szűrök a helytelenre
         }
     }
 
-    if (!kiszamoltState){
+    if (!kiszamoltState){ /// régi verzió, hogy állapotváltozás közben számolok csak újra
+        /// sok adatnál lehet, hogy kelleni fog...
         if (state==0){
 
         }
