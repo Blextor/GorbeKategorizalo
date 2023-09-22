@@ -2,6 +2,8 @@
 #define MENU_H_INCLUDED
 
 #include "common.h"
+#include "button.h"
+#include "adatBeolvas.h"
 
 using namespace std;
 
@@ -16,13 +18,18 @@ struct SDL_Pack{
 };
 
 struct Menu {
-    SDL_Pack SDLPack; /// egyszer�s�g kedv��rt, kicsomagolja egyb�l
+    SDL_Pack SDLPack; /// egyszerûség kedvéért, kicsomagolja egybõl
     SDL_Window *window;
     SDL_Renderer *renderer;
     SDL_Event *ev;
 
-    int valtozasiIdx = 0; /// ez indik�lja, ha valamelyik men� lemarad�sban van
-                        /// ha k�l�nbs�g l�p fel, akkor dolgoznia kell
+    int valtozasiIdx = 0; /// ez indikálja, ha valamelyik menü lemaradásban van
+                        /// ha különbség lép fel, akkor dolgoznia kell
+    int state = 0;
+    int oldState = 0;
+    bool kiszamoltState = false;
+
+    Uint32 timestampText = 0;
 
     Menu **menu;
 
@@ -31,6 +38,7 @@ struct Menu {
 
     virtual void draw();
     virtual void inputHandle();
+    virtual void process();
 };
 
 struct FoMenu : public Menu {
@@ -45,6 +53,7 @@ struct FoMenu : public Menu {
 
     void draw() override;
     void inputHandle() override;
+    void process() override;
 };
 
 struct FrissitoMenu : public Menu {
@@ -59,6 +68,7 @@ struct FrissitoMenu : public Menu {
 
     void draw() override;
     void inputHandle() override;
+    void process() override;
 };
 
 struct CsoportEditorMenu : public Menu {
@@ -66,12 +76,35 @@ struct CsoportEditorMenu : public Menu {
     Menu *fomenu;
     Menu *frissitomenu;
 
+    Button FMB, AFMB; /// fomenu, adat frissito menu
+
+    Text MegCimTxt; /// Magyarázó cím
+    Button ReszMegB, CsoportMegB;   /// uj dolog beviteli mezője
+    Button ReszMegPluszB, CsoportMegPluszB; /// mentés gomb
+    Text ReszMegTxt, CsoportMegTxt; /// visszajelzés
+
+    Text MinCimTxt; /// Magyarázó cím
+    Button ReszMinB, CsoportMinB;   /// törölni kívánt dolog beviteli mezője
+    Gorgetheto ReszMinG, CsoportMinG;   /// törölni kívánt dologok listája
+    Button ReszMinMinB, CsoportMinMinB; /// törlés gomb
+    Text ReszMinTxt, CsoportMinTxt; /// visszajelzés
+
+    bool firstInitOszzLista = true; /// a részvényeket először kirajzolja
+    Text CsopValTxt;    ///
+    Gorgetheto OsszResz;
+    Button AktCsop, AktCsopOk;
+    string aktCsopStr = "";
+    Gorgetheto OsszCsop;
+
     vector<string> meglevoReszvenyek;
-    vector<string> meglevoKategoriak;
-    vector<set<string>> kategoriakListaja;
+    vector<string> meglevoCsoportok;
+    vector<set<string>> csoportokListaja;
 
-    vector<string> aktualisKategoriaListaja;
+    vector<string> aktualisCsoportListaja;
 
+
+
+    void gombokKialakitasa();
 
     CsoportEditorMenu(){}
     CsoportEditorMenu(SDL_Pack sdlp,Menu **act) : Menu(sdlp,act){}
@@ -80,6 +113,7 @@ struct CsoportEditorMenu : public Menu {
 
     void draw() override;
     void inputHandle() override;
+    void process() override;
 };
 
 

@@ -1,0 +1,6 @@
+0 - alap
+1 - új részvény megadásának mezőjének szerkesztése
+2 - új csoport megadásának mezőjének szerkesztése
+3 - részvény törlésének szerkesztése
+4 - csoport törtlésének szerkesztése
+5 - kategória kiválasztása szerkesztésre

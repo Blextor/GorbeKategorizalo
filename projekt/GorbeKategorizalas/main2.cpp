@@ -136,8 +136,12 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     //thread konzol(konzolKezel);                             /// konzol input feldolgozás
     while(true){
         //SDL_PollEvent(&ev);
-        actualMenu->draw();
+        //cout<<"a";
         actualMenu->inputHandle();
+        //cout<<"b";
+        actualMenu->process();
+        //cout<<"c";
+        actualMenu->draw();
         //SDL_PollEvent(&ev);                                 /// Ez kell az input feldolgozáshoz külön szálon
         //if (!kirajzol){}
           //  draw(renderer);

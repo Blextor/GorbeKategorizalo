@@ -32,3 +32,8 @@ void FrissitoMenu::inputHandle() {
             exit(3);
     }
 }
+
+void FrissitoMenu::process(){
+
+}
+

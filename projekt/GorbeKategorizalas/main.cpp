@@ -3,6 +3,8 @@
 
 using namespace std;
 
+
+
 int main( int argc, char * argv[] )
 {
 
@@ -20,3 +22,4 @@ int main( int argc, char * argv[] )
     main2( *window, *renderer);
     return 0;
 }
+

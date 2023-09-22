@@ -36,3 +36,9 @@ void FoMenu::inputHandle(){
             exit(3);
     }
 }
+
+void FoMenu::process(){
+
+}
+
+

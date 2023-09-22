@@ -5,6 +5,7 @@
 #include <set>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
@@ -20,11 +21,16 @@
 #include <system_error>
 #include <windows.h>
 
+#include <tchar.h>
+#include <cctype> // is_alpha
+#include <algorithm>
+
+
 #include <stdlib.h>
 
 
 #define SZELES 640
-#define MAGAS 480
+#define MAGAS 520
 
 
 
