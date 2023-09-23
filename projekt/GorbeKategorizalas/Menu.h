@@ -76,17 +76,122 @@ struct FrissitoMenu : public Menu {
     Button CsopLetB, CsopFrissB; /// csoport letöltésének és frissítésének gombja
     Text CsopTxt, CsopVissz; /// csoport felirat és visszajelzés
 
+    Text kivalasztottDologT; /// kiválaszott részvényt vagy csoportot jelző szöveg
     ProgressBar progBar; /// töltőcsík
     Button PSSB, PCB; /// progressBar start/stop gomb és cancel gomb
 
+    bool letoltesValasztva = false;
     string kivResz = "", kivCsop = "";
 
     vector<string> meglevoReszvenyek;
     vector<string> meglevoCsoportok;
 
     thread letoltoSzal;
+    bool stopped = true;
+    bool inProc = false;
+
+    bool startStop(){
+        if (!inProc){
+            if (letoltoSzal.joinable()) //cout<<"Nagy a baj, befagyott a thread"<<endl;
+                letoltoSzal.join();
+            if (adatokLetoltese()){
+                stopped=false;
+                inProc=true;
+                PSSB.str="stop";
+                progBar.start();
+            } else {
+                kivalasztottDologT.str="Nincs kivalasztva reszveny vagy csoport!";
+            }
+        } else {
+            if (stopped){
+                progBar.start();
+                stopped=false;
+                PSSB.str="stop";
+            } else {
+                progBar.stop();
+                stopped=true;
+                PSSB.str="start";
+            }
+
+        }
+        return false;
+    }
+
+    bool cancel(){
+        if (!inProc){
+            if (kivCsop!="" || kivResz!=""){
+                kivCsop="";
+                kivResz="";
+                kivalasztottDologT.str="Torolve a kivalasztott!";
+                stopped=true;
+            }
+        } else {
+            progBar.cancel();
+            stopped=true;
+            PSSB.str="start";
+            inProc=false;
+            kivalasztottDologT.str="Megszakitva!";
+            kivCsop="";
+            kivResz="";
+        }
+        return false;
+    }
+
+    void kivReszSet(string str){
+        transform(str.begin(), str.end(), str.begin(), [](unsigned char c){ return toupper(c); });
+        kivResz=str;
+        kivCsop="";
+    }
+
+    void kivCsopSet(string str){
+        kivCsop=str;
+        kivResz="";
+    }
 
     void gombokKialakitasa();
+
+    void ujElemFeldolgozva(){
+        progBar.elemFeldolgozva();
+    }
+
+    int elemszamKiszamolasa(int reszvenyekSzama=1){
+        int y = getActYear();
+        int m = getActMonth();
+        int Y=2000, M=1;
+        int monthCnt = (y-2000)*12+m;
+        cout<<y<<" "<<m<<" "<<Y<<" "<<M<<" "<<monthCnt<<endl;
+        return 1+2+monthCnt;
+    }
+
+    bool adatokLetoltese(){
+        if (kivResz!=""){
+            if (letoltesValasztva) {
+                progBar.prepare(elemszamKiszamolasa());
+                progBar.start();
+                letoltoSzal = move(thread(reszvenyAPILetoltes,ref(kivResz),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this)));// reszvenyAPILetoltes(kivResz);
+            }
+            else {
+                progBar.prepare(elemszamKiszamolasa());
+                progBar.start();
+                letoltoSzal = move(thread(reszvenyAPIFrissites,ref(kivResz),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this)));
+            }
+        }
+        else if (kivCsop!=""){
+            if (letoltesValasztva){
+                progBar.prepare(elemszamKiszamolasa(csoportReszvenyei(kivCsop).size()));
+                progBar.start();
+                letoltoSzal = move(thread(csoportAPILetoltes,ref(kivCsop),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this)));
+            }
+            else {
+                progBar.prepare(elemszamKiszamolasa(csoportReszvenyei(kivCsop).size()));
+                progBar.start();
+                letoltoSzal = move(thread(csoportAPIFrissites,ref(kivCsop),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this)));
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
 
     FrissitoMenu(){}
     FrissitoMenu(SDL_Pack sdlp,Menu **act) : Menu(sdlp,act){}

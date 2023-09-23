@@ -7,7 +7,6 @@ using namespace std;
 
 vector<string> osszesReszveny();
 vector<string> osszesCsoport();
-vector<string> csoportListaja(string csoport);
 
 string createNewReszveny(string str);
 string createNewCsoport(string str);

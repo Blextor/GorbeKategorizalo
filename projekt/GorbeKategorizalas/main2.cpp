@@ -53,7 +53,7 @@ void megjelenites(Menu *actualMenu){
 
     cout<<actualMenu<< " "<<&actualMenu <<endl;
     while (true){
-        clock_t t1;
+        clock_t t1=clock();
         clock_t delay=60;
         if (clock()>t1+CLOCKS_PER_SEC/delay){
             //cout<<"alma"<<clock()<<endl;
@@ -100,10 +100,6 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     /// adatokat kell beolvasnom
 
 
-    int fps = 0;
-    clock_t f1 = 0, f2 = 0, f3 = 0, f4 = 0;
-
-    float szum=1.0f;
 
     LokMinMax m;
     Cimke c;

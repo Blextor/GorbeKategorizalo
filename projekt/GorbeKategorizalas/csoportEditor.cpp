@@ -102,7 +102,7 @@ void CsoportEditorMenu::draw() {
 
 void CsoportEditorMenu::inputHandle() {
     int MX=-1, MY=-1; /// kurzor pozíciója, ha -1 marad, nem történt változás
-    bool leftButton = true; /// külön kígyűjtöm, hogy lenyomták-e a bal egérgombot
+    //bool leftButton = true; /// külön kígyűjtöm, hogy lenyomták-e a bal egérgombot
     bool keyDown = false; /// vagy bármelyt a billentyűzeten
     bool mouseWheel = false; /// vagy görgettek-e
 
@@ -110,7 +110,7 @@ void CsoportEditorMenu::inputHandle() {
         if (ev->type==SDL_MOUSEBUTTONDOWN){ /// csak kattintáskor kérem le az egér pozíciót
             MX=ev->button.x;
             MY=ev->button.y;
-            leftButton=ev->button.button==SDL_BUTTON_LEFT; /// bal gomb
+            //leftButton=ev->button.button==SDL_BUTTON_LEFT; /// bal gomb
         } else if (ev->type==SDL_MOUSEBUTTONUP){
         } else if (ev->type==SDL_MOUSEMOTION){
             //MX = ev->motion.x;
@@ -355,7 +355,7 @@ void CsoportEditorMenu::process(){
     int meglevoReszvenyekSize = meglevoReszvenyek.size();
     meglevoReszvenyek = osszesReszveny();
     meglevoCsoportok = osszesCsoport();
-    if (meglevoReszvenyek.size()!=meglevoReszvenyekSize) /// ha új részvény van
+    if (meglevoReszvenyek.size()!=(size_t)meglevoReszvenyekSize) /// ha új részvény van
         OsszResz.elemekFrissitese(meglevoReszvenyek); /// a teljes listát befrissíti
     if (firstInitOszzLista){ /// először is egyszer be kell
         firstInitOszzLista=false; /// csak egyszer

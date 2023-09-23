@@ -33,8 +33,12 @@
 #include <curl/curl.h>
 #include <ws2tcpip.h>
 
+#include <chrono>
+#include <functional>
+
 
 #define gyoker ((string)"C:\\stockData\\")
+#define maxLetoltesPerMin 30
 
 
 #define SZELES 640

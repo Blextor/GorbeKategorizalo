@@ -7,8 +7,8 @@
 using namespace std;
 
 struct Text {
-    int x, y;
-    string str;
+    int x=0, y=0;
+    string str="";
 
     Text(){}
     Text(string s,int vx, int vy){str=s; x=vx; y=vy;}
@@ -18,15 +18,15 @@ struct Text {
 };
 
 struct Button {
-    int x, y;
-    int w, h;
-    bool wx, wy;
+    int x=0, y=0;
+    int w=0, h=0;
+    bool wx=0, wy=0;
 
     bool afk = false;
 
-    string str;
+    string str="";
 
-    int X, Y;
+    int X=0, Y=0;
 
     Button(){}
 
@@ -66,7 +66,7 @@ struct Gorgetheto {
     Gorgetheto(){}
     Gorgetheto(vector<string> e,int vx, int vy, int vw, int vh, int vgx=-1, int vgy=-1){
         elemek=e; x=vx; y=vy; h=vh; w=vw; gridX=vgx; gridY=vgy;
-        for (int i=0; i<elemek.size(); i++){
+        for (size_t i=0; i<elemek.size(); i++){
             Button temp(elemek[i],0,0,w-25,13,false,false);
             gombok.push_back(temp);
         }
@@ -77,7 +77,7 @@ struct Gorgetheto {
         elemek=e;
         roll=0;
         gombok.clear();
-        for (int i=0; i<elemek.size(); i++){
+        for (size_t i=0; i<elemek.size(); i++){
             if (benneVanAzStr(elemek[i],str) || str.size()==0){
                 if (!megElem || elemeAzStr(megfeleloElemek,elemek[i])){
                     Button temp(elemek[i],0,0,(w-25-(gridX-1)*00)/max(1,gridX)-8,13,true,true);
@@ -90,7 +90,7 @@ struct Gorgetheto {
     void draw(SDL_Renderer *renderer, int wa, int wb){
         int radius = 25;
         int gorgStart = y+13, gorgH = 10, gorgAlsoEnd = y+h-8; // y+h-8
-        int gridx = max(1,gridX), gridy = max(1,gridY);
+        int gridx = max(1,gridX);//, gridy = max(1,gridY);
         int listLength = (gombok.size()+max(0,gridx-1))/gridx;
         listLength = max(0,14*listLength+6*(listLength));
         maxRoll = max(0,listLength-h+2);
@@ -99,7 +99,7 @@ struct Gorgetheto {
         if (maxRoll>0)
             gorgPos = gorgStart+(gorgAlsoEnd-gorgStart-gorgH)*roll/maxRoll;
         /// gombok
-        for (int i=0;i<gombok.size();i++) {
+        for (size_t i=0;i<gombok.size();i++) {
             int by = y+6+(i/gridx)*20 - roll;
             if (by+13>=y && by-1<=y+h+5){
                 gombok[i].afk=false;
@@ -138,7 +138,7 @@ struct Gorgetheto {
     }
 
     string whichButton(int bx, int by){
-        for (int i=0; i<gombok.size(); i++){
+        for (size_t i=0; i<gombok.size(); i++){
             if (!gombok[i].afk && gombok[i].inClick(bx,by)){
                 return gombok[i].str;
             }
@@ -159,18 +159,18 @@ struct Gorgetheto {
 };
 
 struct ProgressBar{
-    int x, y;
-    int w, h;
-    bool wx, wy;
+    int x=0, y=0;
+    int w=0, h=0;
+    bool wx=0, wy=0;
 
-    int X,Y;
+    int X=0,Y=0;
 
     bool stopped = true;
     bool cancelled = true;
 
-    int eta_hour, eta_min, eta_sec;
+    int eta_hour=0, eta_min=0, eta_sec=0;
     int feldolgozottElemek=0, osszesElem=0;
-    float keszsegSzazalek;
+    float keszsegSzazalek=0;
 
     string holAllEpp;
 
@@ -212,6 +212,7 @@ struct ProgressBar{
         cancelled=true;
         osszesElem=0;
         feldolgozottElemek=0;
+        timePassed=1;
         holAllEpp="";
     }
 

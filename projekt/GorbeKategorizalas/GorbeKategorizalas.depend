@@ -77,7 +77,7 @@
 	"common.h"
 	"idosor.h"
 
-1695479952 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\common.h
+1695503637 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\common.h
 	<vector>
 	<set>
 	<string>
@@ -105,6 +105,8 @@
 	<sstream>
 	<curl/curl.h>
 	<ws2tcpip.h>
+	<chrono>
+	<functional>
 
 1694629802 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\idosor.h
 	"common.h"
@@ -112,13 +114,13 @@
 1695369926 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\fomenu.cpp
 	"Menu.h"
 
-1695470522 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\menu.h
+1695498479 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\menu.h
 	"common.h"
 	"button.h"
 	"adatBeolvas.h"
 	"adatLetoltes.h"
 
-1695485245 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\frissitomenu.cpp
+1695505884 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\frissitomenu.cpp
 	"Menu.h"
 
 1694630166 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\idosor.cpp
@@ -127,7 +129,7 @@
 1695370899 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\main.cpp
 	"common.h"
 
-1695411088 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\main2.cpp
+1695494820 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\main2.cpp
 	"common.h"
 	<list>
 	<utility>
@@ -154,23 +156,23 @@
 1695331779 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\menuk.cpp
 	"Menu.h"
 
-1695422226 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\csoporteditor.cpp
+1695494702 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\csoporteditor.cpp
 	"Menu.h"
 
-1695485332 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\button.h
+1695498884 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\button.h
 	"common.h"
 	"adatBeolvas.h"
 
-1695483996 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatbeolvas.h
+1695494723 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatbeolvas.h
 	"common.h"
 
-1695470812 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatbeolvas.cpp
+1695494778 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatbeolvas.cpp
 	"adatBeolvas.h"
 
-1695484396 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatletoltes.cpp
+1695506342 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatletoltes.cpp
 	"adatLetoltes.h"
 	"adatBeolvas.h"
 
-1695472667 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatletoltes.h
+1695498329 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatletoltes.h
 	"common.h"
 

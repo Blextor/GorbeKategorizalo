@@ -15,7 +15,7 @@ void FrissitoMenu::gombokKialakitasa(){
     ReszLetB = Button("letoltes",160,70,76,13,false,false);
     ReszFrissB = Button("frissites",160,100,76,13,false,false);
     ReszTxt = Text("reszveny",162,55);
-    ReszVissz = Text("teszt",162,129);
+    ReszVissz = Text("",162,129);
 
     /// Részvény letöltése
     CsopBevB = Button("csoport neve  V",340,70,124,13,false,false);
@@ -23,12 +23,13 @@ void FrissitoMenu::gombokKialakitasa(){
     CsopLetB = Button("letoltes",480,70,76,13,false,false);
     CsopFrissB = Button("frissites",480,100,76,13,false,false);
     CsopTxt = Text("csoport",482,55);
-    CsopVissz = Text("teszt",482,129);
+    CsopVissz = Text("",482,129);
 
     /// ProgressBar
+    kivalasztottDologT = Text("",32,280);
     progBar = ProgressBar(30,300,580,25,false,false);
-    PSSB = Button("start",495,335,43,13,false,false);
-    PCB = Button("megsem",555,335,50,13,false,false);
+    PSSB = Button("start",495,275,43,13,false,false);
+    PCB = Button("megsem",555,275,50,13,false,false);
 
 }
 
@@ -73,6 +74,7 @@ void FrissitoMenu::draw() {
     lineRGBA(renderer,320,55,320,200,0,0,0,255);
 
     /// progressBar
+    kivalasztottDologT.draw(renderer,x,y);
     progBar.draw(renderer,x,y);
     PSSB.draw(renderer,x,y);
     PCB.draw(renderer,x,y);
@@ -82,7 +84,7 @@ void FrissitoMenu::draw() {
 
 void FrissitoMenu::inputHandle() {
     int MX=-1, MY=-1; /// kurzor pozíciója, ha -1 marad, nem történt változás
-    bool leftButton = true; /// külön kígyűjtöm, hogy lenyomták-e a bal egérgombot
+    //bool leftButton = true; /// külön kígyűjtöm, hogy lenyomták-e a bal egérgombot
     bool keyDown = false; /// vagy bármelyt a billentyűzeten
     bool mouseWheel = false; /// vagy görgettek-e
 
@@ -90,7 +92,7 @@ void FrissitoMenu::inputHandle() {
         if (ev->type==SDL_MOUSEBUTTONDOWN){ /// csak kattintáskor kérem le az egér pozíciót
             MX=ev->button.x;
             MY=ev->button.y;
-            leftButton=ev->button.button==SDL_BUTTON_LEFT; /// bal gomb
+            //leftButton=ev->button.button==SDL_BUTTON_LEFT; /// bal gomb
         } else if (ev->type==SDL_MOUSEBUTTONUP){
         } else if (ev->type==SDL_MOUSEMOTION){
             //MX = ev->motion.x;
@@ -132,7 +134,9 @@ void FrissitoMenu::inputHandle() {
                 if (ReszBevB.str.size()==0) ReszVissz.str = "Ures!";
                 else ReszVissz.str = reszvenyLetoltesChk(ReszBevB.str);
                 if (ReszVissz.str=="Siker!"){
-
+                    letoltesValasztva=true;
+                    kivReszSet(ReszBevB.str);
+                    kivalasztottDologT.str="letolteni kivant reszveny: "+kivResz;
                 }
             }
             state=0;
@@ -142,7 +146,9 @@ void FrissitoMenu::inputHandle() {
                 if (CsopBevB.str.size()==0) CsopVissz.str = "Ures!";
                 else CsopVissz.str = csoportLetoltesChk(CsopBevB.str);
                 if (CsopVissz.str=="Siker!"){
-
+                    letoltesValasztva=true;
+                    kivCsopSet(CsopBevB.str);
+                    kivalasztottDologT.str="letolteni kivant csoport: "+kivCsop;
                 }
             }
             state=0;
@@ -152,7 +158,9 @@ void FrissitoMenu::inputHandle() {
                 if (ReszBevB.str.size()==0) ReszVissz.str = "Ures!";
                 else ReszVissz.str = reszvenyFrissitesChk(ReszBevB.str);
                 if (ReszVissz.str=="Siker!"){
-
+                    letoltesValasztva=false;
+                    kivReszSet(ReszBevB.str);
+                    kivalasztottDologT.str="frissiteni kivant csoport: "+kivResz;
                 }
             }
             state=0;
@@ -162,7 +170,9 @@ void FrissitoMenu::inputHandle() {
                 if (CsopBevB.str.size()==0) CsopVissz.str = "Ures!";
                 else CsopVissz.str = csoportFrissitesChk(CsopBevB.str);
                 if (CsopVissz.str=="Siker!"){
-
+                    letoltesValasztva=false;
+                    kivCsopSet(CsopBevB.str);
+                    kivalasztottDologT.str="frissiteni kivant csoport: "+kivCsop;
                 }
             }
             state=0;
@@ -187,6 +197,12 @@ void FrissitoMenu::inputHandle() {
 
             }
         }
+        else if (PSSB.inClick(MX,MY)){
+            startStop();
+        }
+        else if (PCB.inClick(MX,MY)){
+            cancel();
+        }
         else { /// ha kikattintunk a semmibe
             state=0; /// akkor térjünk vissza a kezdő állapotba
         }
@@ -197,14 +213,16 @@ void FrissitoMenu::inputHandle() {
         timestampText=ev->text.timestamp; /// szövegbevitel esemény végtelen, de időbélyege nem
         progBar.elemFeldolgozva();
         if (state==1){ /// új részvény
-            if (isalpha(ev->text.text[0])) /// csak karakterek lehetnek
+            if (isalpha(ev->text.text[0])){ /// csak karakterek lehetnek
                 ReszBevB.str+=ev->text.text[0];
                 ReszBevG.elemekFrissitese(meglevoReszvenyek,ReszBevB.str);
+            }
         }
         if (state==2){ /// új részvény
-            if (isalpha(ev->text.text[0])) /// csak karakterek lehetnek
+            if (isalpha(ev->text.text[0])){ /// csak karakterek lehetnek
                 CsopBevB.str+=ev->text.text[0];
                 CsopBevG.elemekFrissitese(meglevoCsoportok,CsopBevB.str);
+            }
         }
 
     }
@@ -254,9 +272,11 @@ void FrissitoMenu::inputHandle() {
 
 void FrissitoMenu::process(){
     /// adatok befrissítése (lehet túl sokszor is)
-    int meglevoReszvenyekSize = meglevoReszvenyek.size();
+    //int meglevoReszvenyekSize = meglevoReszvenyek.size();
     meglevoReszvenyek = osszesReszveny();
     meglevoCsoportok = osszesCsoport();
+
+    //if (letoltoSzal.joinable()){cout<<"join"<<endl;}
 
     if (oldState!=state){ /// amikor állapotváltozás van
         oldState=state;

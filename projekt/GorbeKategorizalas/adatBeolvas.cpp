@@ -58,10 +58,6 @@ vector<string> osszesCsoport(){
     return subdirectories;
 }
 
-vector<string> csoportListaja(string csoport){
-
-}
-
 string createNewReszveny(string str){
     string path = gyoker+"\\stocks";
     transform(str.begin(), str.end(), str.begin(), [](unsigned char c){ return toupper(c); });
@@ -184,7 +180,7 @@ string csoportFrissites(vector<string> vec, string csop){
     string path = gyoker+"\\groups\\"+csop;
     ofstream file(path);
     if (!file.is_open()){return "Hiba!";}
-    for (int i=0; i<vec.size(); i++){
+    for (size_t i=0; i<vec.size(); i++){
         file<<vec[i]<<" ";
         if (i%5==4) file<<endl;
     }
