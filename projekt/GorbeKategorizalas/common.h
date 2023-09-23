@@ -29,6 +29,12 @@
 #include <memory>
 
 #include <stdlib.h>
+#include <sstream>
+#include <curl/curl.h>
+#include <ws2tcpip.h>
+
+
+#define gyoker ((string)"C:\\stockData\\")
 
 
 #define SZELES 640

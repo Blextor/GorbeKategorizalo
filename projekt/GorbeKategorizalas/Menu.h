@@ -4,6 +4,7 @@
 #include "common.h"
 #include "button.h"
 #include "adatBeolvas.h"
+#include "adatLetoltes.h"
 
 using namespace std;
 
@@ -78,9 +79,12 @@ struct FrissitoMenu : public Menu {
     ProgressBar progBar; /// töltőcsík
     Button PSSB, PCB; /// progressBar start/stop gomb és cancel gomb
 
+    string kivResz = "", kivCsop = "";
 
     vector<string> meglevoReszvenyek;
     vector<string> meglevoCsoportok;
+
+    thread letoltoSzal;
 
     void gombokKialakitasa();
 

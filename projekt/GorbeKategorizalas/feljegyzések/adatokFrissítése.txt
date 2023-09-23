@@ -30,3 +30,83 @@ Az új stringek alapján létrehoz új mappákat és azok alapján már tud fris
 
 Mappákat közvetlenül a C:\stockData\... mappában lesznek.
 	Hogy az API kulcsom ne legyen publikus, azt is onnan olvassa be a C:\stockData\API_Key.txt fájlból.
+
+
+
+#################################################################
+Gondolat 2:
+
+ki kell választani egy részvényt
+aztán letöltés esetén meg kell nézni, hogy létezik-e a részvény
+	Ezt egy napi adatok lekérdezésével könnyen lehetséges.
+frissítés esetén szintén, és hogy létezik-e már ilyen mappa
+	ha nem létezik semmi fájl hozzá, akkor letöltés
+		"semmi" ~ nincs meg a napi bontású (első) fájl és a mappaszerkezet
+
+Miként tölt le:
+	először az elmúlt 20+ évet napi bontában, ez egy fájl (ez a gyökérben van)
+	ezt követően a negyedéveket
+	ezt követően a hónapokat percbontásban (először a 2000-01 -et)
+
+Hogyan frissít:
+	először letölti újra a 20+ évet nepi bontásban (le kell frissíteni)
+	ezt követően a negyedéveket (egy fájlban van az elmúl 20+ év így egyben kell lekérdezni)
+	ezt követően csak a hónapok közül azokat amik a legkésőbbi hónap után vannak a mai napig
+		plusz az eltárolt utolsó hónapot is (hátha egyezik a tényelegesen utolsó hónappal)
+
+
+Részvény letöltése:
+	- kiválasztott részvény
+	- részvény ellenőrzése (ha nem jó akkor visszadob "Hiba!"-t)
+	- progressBar el is indul
+		(meg lehet állítani és elvetni is lehet)
+
+
+
+Hány letöltést fog végezni?
+	Egy részvény teljes letöltése:
+		1 napi, 2-3 negyedéves, és 12*(22+) havi adatot
+		max. 300 letöltés ~ 10 perc
+	Egy csoport frissítése:
+		1 napi, 2-3 negyedéves, és 1-2 havi adatot
+		max. 5 letöltése ~ 1/6 perc
+		100 tagú csoport: ~17 perc (ez naponta 5-ször)
+		1000 tagú cs.: ~3 óra  (ezt naponta egyszer) 23-2-ig fut, reggel meg elemzés
+		3000 tagú cs.: ~8.5 óra (ezt hétvégéken egyszer bőven jó)
+		Ez csak 50 óra. (viszont nap közben nem tudom milyen jó adatokat letölteni)
+
+
+Működése:		
+részvény vagy csoport mezőbe beírunk valamit
+	OK (letöltés / frissítés) után gyors ellenőrzés
+		ha van olyan részvény, 
+			akkor elmenti a részvény nevét (string)
+		ha nincs
+			akkor törli a jelenlegi részvény nevet is
+		mindkét esetben visszajelzés
+	
+	ha valid, ha nem, a másik dolog (részvény vagy csoport) tartalmát törli
+
+Ezt követően a "start" gombot megnyomva kezd csak el futni a letöltés.
+	(remélhetőleg külön szálon, hogy addig is lehessen elemezni)
+	Vagy csak kétszer kell a programot megnyitni...
+		Ekkor nem is kell a változókhoz a hozzáféréssel bajlódni.
+
+Letöltés szüneteltetése / megállítása.
+	külön szálon bonyolultabb, mert másik szálba bele kellene nyúlni.
+	Megállítás egyszerű. Töröljük a szálat.
+
+
+
+					
+
+
+
+
+
+
+
+
+
+
+

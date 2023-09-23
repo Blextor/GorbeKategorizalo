@@ -41,6 +41,8 @@
 		<Unit filename="MenuK.cpp" />
 		<Unit filename="adatBeolvas.cpp" />
 		<Unit filename="adatBeolvas.h" />
+		<Unit filename="adatLetoltes.cpp" />
+		<Unit filename="adatLetoltes.h" />
 		<Unit filename="button.h" />
 		<Unit filename="cimke.cpp" />
 		<Unit filename="cimke.h" />

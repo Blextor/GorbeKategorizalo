@@ -15,7 +15,7 @@ void FrissitoMenu::gombokKialakitasa(){
     ReszLetB = Button("letoltes",160,70,76,13,false,false);
     ReszFrissB = Button("frissites",160,100,76,13,false,false);
     ReszTxt = Text("reszveny",162,55);
-    ReszVissz = Text("teszt",248,89);
+    ReszVissz = Text("teszt",162,129);
 
     /// Részvény letöltése
     CsopBevB = Button("csoport neve  V",340,70,124,13,false,false);
@@ -23,10 +23,12 @@ void FrissitoMenu::gombokKialakitasa(){
     CsopLetB = Button("letoltes",480,70,76,13,false,false);
     CsopFrissB = Button("frissites",480,100,76,13,false,false);
     CsopTxt = Text("csoport",482,55);
-    CsopVissz = Text("teszt",568,89);
+    CsopVissz = Text("teszt",482,129);
 
     /// ProgressBar
-    progBar = ProgressBar(20,300,600,30,false,false);
+    progBar = ProgressBar(30,300,580,25,false,false);
+    PSSB = Button("start",495,335,43,13,false,false);
+    PCB = Button("megsem",555,335,50,13,false,false);
 
 }
 
@@ -70,6 +72,11 @@ void FrissitoMenu::draw() {
     /// szeparátor
     lineRGBA(renderer,320,55,320,200,0,0,0,255);
 
+    /// progressBar
+    progBar.draw(renderer,x,y);
+    PSSB.draw(renderer,x,y);
+    PCB.draw(renderer,x,y);
+
     SDL_RenderPresent(renderer);
 }
 
@@ -104,7 +111,82 @@ void FrissitoMenu::inputHandle() {
         /// kérdés, hogy eltaláltunk-e valami kattinthatót
         if (FMB.inClick(MX,MY)) *menu = fomenu; /// főmenübe írányító gombot
         else if (RCSMB.inClick(MX,MY)) *menu = csoportEditormenu; /// csoport szerksztő menü gombot
+        else if (ReszBevB.inClick(MX,MY)){
+            ReszVissz.str="";
+            if (state!=1){ /// ha nem nyomtunk még bele
+                ReszBevB.str="";    /// törli a szöveget
+                ReszBevG.elemekFrissitese(meglevoReszvenyek); /// és lekérdezi a részvényeket
+            }
+            state=1;
+        }
+        else if (CsopBevB.inClick(MX,MY)){
+            CsopVissz.str="";
+            if (state!=2){ /// ha nem nyomtunk még bele
+                CsopBevB.str="";    /// törli a szöveget
+                CsopBevG.elemekFrissitese(meglevoCsoportok); /// és lekérdezi a részvényeket
+            }
+            state=2;
+        }
+        else if (ReszLetB.inClick(MX,MY)){
+            if (state==1){
+                if (ReszBevB.str.size()==0) ReszVissz.str = "Ures!";
+                else ReszVissz.str = reszvenyLetoltesChk(ReszBevB.str);
+                if (ReszVissz.str=="Siker!"){
 
+                }
+            }
+            state=0;
+        }
+        else if (CsopLetB.inClick(MX,MY)){
+            if (state==2){
+                if (CsopBevB.str.size()==0) CsopVissz.str = "Ures!";
+                else CsopVissz.str = csoportLetoltesChk(CsopBevB.str);
+                if (CsopVissz.str=="Siker!"){
+
+                }
+            }
+            state=0;
+        }
+        else if (ReszFrissB.inClick(MX,MY)){
+            if (state==1){
+                if (ReszBevB.str.size()==0) ReszVissz.str = "Ures!";
+                else ReszVissz.str = reszvenyFrissitesChk(ReszBevB.str);
+                if (ReszVissz.str=="Siker!"){
+
+                }
+            }
+            state=0;
+        }
+        else if (CsopFrissB.inClick(MX,MY)){
+            if (state==2){
+                if (CsopBevB.str.size()==0) CsopVissz.str = "Ures!";
+                else CsopVissz.str = csoportFrissitesChk(CsopBevB.str);
+                if (CsopVissz.str=="Siker!"){
+
+                }
+            }
+            state=0;
+        }
+        else if (state == 1 && ReszBevG.inClick(MX,MY)){ /// részvény lista
+            /// görgető-be kattintva kérdéses még, hogy hova is érkezett a kattintás
+            string btStr = ReszBevG.whichButton(MX,MY);
+            if (btStr!=""){ /// ha siker, akkor szövegét használjuk
+                ReszBevB.str=btStr;
+                ReszBevG.elemekFrissitese(meglevoReszvenyek,btStr);
+            } else {/// csúszka használatra fenntartva
+
+            }
+        }
+        else if (state == 2 && CsopBevG.inClick(MX,MY)){ /// részvény lista
+            /// görgető-be kattintva kérdéses még, hogy hova is érkezett a kattintás
+            string btStr = CsopBevG.whichButton(MX,MY);
+            if (btStr!=""){ /// ha siker, akkor szövegét használjuk
+                CsopBevB.str=btStr;
+                CsopBevG.elemekFrissitese(meglevoCsoportok,btStr);
+            } else {/// csúszka használatra fenntartva
+
+            }
+        }
         else { /// ha kikattintunk a semmibe
             state=0; /// akkor térjünk vissza a kezdő állapotba
         }
@@ -113,9 +195,16 @@ void FrissitoMenu::inputHandle() {
 
     if (ev->type == SDL_TEXTINPUT && ev->text.timestamp!=timestampText){ /// bevitel
         timestampText=ev->text.timestamp; /// szövegbevitel esemény végtelen, de időbélyege nem
+        progBar.elemFeldolgozva();
         if (state==1){ /// új részvény
-            //if (isalpha(ev->text.text[0])) /// csak karakterek lehetnek
-              //  ReszMegB.str+=ev->text.text[0];
+            if (isalpha(ev->text.text[0])) /// csak karakterek lehetnek
+                ReszBevB.str+=ev->text.text[0];
+                ReszBevG.elemekFrissitese(meglevoReszvenyek,ReszBevB.str);
+        }
+        if (state==2){ /// új részvény
+            if (isalpha(ev->text.text[0])) /// csak karakterek lehetnek
+                CsopBevB.str+=ev->text.text[0];
+                CsopBevG.elemekFrissitese(meglevoCsoportok,CsopBevB.str);
         }
 
     }
@@ -123,7 +212,18 @@ void FrissitoMenu::inputHandle() {
     if (keyDown){ /// ha billentyűzetet nem gépelés miatt ütöttük le
         if (ev->key.keysym.sym==SDLK_BACKSPACE){ /// pl. törlés miatt
             /// előző beviteli mezők tartalmának redukálása és szűrések frissítése
-            //if (state==1){if (ReszMegB.str.size()>0) ReszMegB.str.pop_back();}
+            if (state==1){
+                if (ReszBevB.str.size()>0) {
+                    ReszBevB.str.pop_back();
+                    ReszBevG.elemekFrissitese(meglevoReszvenyek,ReszBevB.str);
+                }
+            }
+            if (state==2){
+                if (CsopBevB.str.size()>0) {
+                    CsopBevB.str.pop_back();
+                    CsopBevG.elemekFrissitese(meglevoCsoportok,CsopBevB.str);
+                }
+            }
             /*
             if (state==3){
                 if (ReszMinB.str.size()>0) {
@@ -134,22 +234,47 @@ void FrissitoMenu::inputHandle() {
             */
         }
         if (ev->key.keysym.sym==SDLK_UP){ /// pl. görgetés gyorsítása
-            //if (state==3) {ReszMinG.speedUpRoll();}
+            if (state==1) {ReszBevG.speedUpRoll();}
+            if (state==2) {CsopBevG.speedUpRoll();}
         }
         if (ev->key.keysym.sym==SDLK_DOWN){ /// lassítása
-            //if (state==3) {ReszMinG.speedDownRoll();}
+            if (state==1) {ReszBevG.speedDownRoll();}
+            if (state==2) {CsopBevG.speedDownRoll();}
         }
     }
 
     if (mouseWheel){ /// vagy épp görgetnénk?
         /// görgetőknek átadjuk az irányt, többi az ő bajuk
-        //if (state==3)ReszMinG.rollIt(-ev->wheel.y);
+        if (state==1)ReszBevG.rollIt(-ev->wheel.y);
+        if (state==2)CsopBevG.rollIt(-ev->wheel.y);
     }
 
 
 }
 
 void FrissitoMenu::process(){
+    /// adatok befrissítése (lehet túl sokszor is)
+    int meglevoReszvenyekSize = meglevoReszvenyek.size();
+    meglevoReszvenyek = osszesReszveny();
+    meglevoCsoportok = osszesCsoport();
 
+    if (oldState!=state){ /// amikor állapotváltozás van
+        oldState=state;
+        if (state!=1){ /// resetelem a mezők nagyját
+            ReszBevB.str="reszveny neve V";
+            ReszBevG.roll=0;
+            ReszBevG.elemekFrissitese(meglevoCsoportok,"-1");
+        }
+        if (state!=2){
+            CsopBevB.str="csoport neve  V";
+            CsopBevG.roll=0; /// és a görgetők tekertségét
+            CsopBevG.elemekFrissitese(meglevoCsoportok,"-1");
+        }
+        if (state!=5){
+            //AktCsop.str=aktCsopStr;
+            //OsszCsop.roll=0;
+            //OsszCsop.elemekFrissitese(meglevoCsoportok,"-1"); /// és szűrök a helytelenre
+        }
+    }
 }
 

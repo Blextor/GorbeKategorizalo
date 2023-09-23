@@ -91,7 +91,7 @@ struct Gorgetheto {
         int radius = 25;
         int gorgStart = y+13, gorgH = 10, gorgAlsoEnd = y+h-8; // y+h-8
         int gridx = max(1,gridX), gridy = max(1,gridY);
-        int listLength = (gombok.size()+3)/gridx;
+        int listLength = (gombok.size()+max(0,gridx-1))/gridx;
         listLength = max(0,14*listLength+6*(listLength));
         maxRoll = max(0,listLength-h+2);
         gorgH = gorgH; /// TODO! (jó lesz ez így)
@@ -165,14 +165,18 @@ struct ProgressBar{
 
     int X,Y;
 
-    bool stopped = false;
-    bool cancelled = false;
+    bool stopped = true;
+    bool cancelled = true;
 
     int eta_hour, eta_min, eta_sec;
-    int feldolgozottElemek, osszesElem;
+    int feldolgozottElemek=0, osszesElem=0;
     float keszsegSzazalek;
 
     string holAllEpp;
+
+    clock_t startTime = 1;
+    clock_t forDeltaTime = 1;
+    clock_t timePassed = 1;
 
     //mutex rajzolasi;
 
@@ -181,14 +185,81 @@ struct ProgressBar{
         x=vx; y=vy; w=vw; h=vh; wx=vwx; wy=vwy;
     }
 
+    void elemFeldolgozva(int cnt=1){
+        feldolgozottElemek+=cnt;
+        if(osszesElem<feldolgozottElemek)
+            feldolgozottElemek=osszesElem;
+    }
+
+    void prepare(int oE){
+        cancelled=false;
+        osszesElem=oE;
+    }
+
+    void start(){
+        cancelled=false;
+        stopped=false;
+        startTime=clock();
+        forDeltaTime=clock();
+    }
+
+    void stop(){
+        stopped=true;
+    }
+
+    void cancel(){
+        stop();
+        cancelled=true;
+        osszesElem=0;
+        feldolgozottElemek=0;
+        holAllEpp="";
+    }
+
     void draw (SDL_Renderer *renderer, int wa, int wb){
+        if (!stopped && !cancelled){
+            clock_t t = clock();
+            timePassed+=(t-forDeltaTime);
+            forDeltaTime=t;
+            if (t-forDeltaTime>5000) timePassed-=(t-forDeltaTime);
+        }
+        long unsigned int i = timePassed/1000;
+
         if (wx) X = wa - x;
         else X = x;
         if (wy) Y = wb - y;
         else Y = y;
 
-        //stringRGBA(renderer,X+5,Y+5,str.c_str(),0,0,0,255);
-        //rectangleRGBA(renderer,X,Y,X+w+5,Y+h+5,0,0,0,255);
+        rectangleRGBA(renderer,X,Y,X+w,Y+h,0,0,0,255);
+        float p = (float)feldolgozottElemek/(float)osszesElem;
+        int kti = p*100*100;
+        float ktp = (float)kti/100.0f;
+
+        if (p>0)
+            boxRGBA(renderer,X+1,Y+1,X+1+((w-3)*p),Y+h-2,100-50*p,145+60*p,100-50*p,255);
+        if (p>=1)
+            boxRGBA(renderer,X+1,Y+1,X+1+((w-3)*p),Y+h-2,0,255,0,255);
+
+        int tempF = max(feldolgozottElemek,1);
+        float tempO = osszesElem;
+        i = i*(tempO-tempF)/tempF;
+        eta_hour = i/3600;
+        eta_min = (i%3600)/60;
+        eta_sec = i%60;
+        if (cancelled){eta_hour=0; eta_min=0; eta_sec=0;}
+        stringstream ss1; ss1<<"ETA: ";
+        if (eta_hour>0) ss1<<eta_hour<<":";
+        if (eta_min>0 || eta_hour>0) ss1<<eta_min/10<<eta_min%10<<":";
+        ss1<<eta_sec/10<<eta_sec%10;
+
+        stringRGBA(renderer,X+5,Y+h+7,ss1.str().c_str(),0,0,0,255);
+
+        stringstream ss2;
+        if (cancelled)
+            ss2<<"_ / _ - _ %";
+        else
+            ss2<<feldolgozottElemek<<" / "<<osszesElem<<" - "<<ktp<<" %";
+
+        stringRGBA(renderer,X+w/2-120,Y+h+7,ss2.str().c_str(),0,0,0,255);
     }
 
 };

@@ -15,6 +15,9 @@ string createNewCsoport(string str);
 string deleteReszveny(string str);
 string deleteCsoport(string str);
 
+vector<string> getSubdirectories(const string& directoryPath);
+vector<string> getFiles(const string& directoryPath);
+
 bool benneVanAzStr (string miben, string mi);
 bool elemeAzStr ( vector<string> v, string mi);
 

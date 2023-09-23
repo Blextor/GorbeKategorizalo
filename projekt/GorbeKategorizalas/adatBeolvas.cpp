@@ -1,7 +1,5 @@
 #include "adatBeolvas.h"
 
-const string gyoker = "C:\\stockData\\";
-
 vector<string> getSubdirectories(const string& directoryPath) {
     vector<string> subdirectories;
 
