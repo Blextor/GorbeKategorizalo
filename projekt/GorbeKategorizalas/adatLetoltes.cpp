@@ -11,6 +11,8 @@ int counter = 0;
 
 clock_t t = clock();
 
+string errorMsg = "";
+
 
 int getActMin(){
     /// CGPT
@@ -147,11 +149,13 @@ string downloadLink(string link) {
 
         if(res != CURLE_OK) {
             fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-
+            cout<<"error: "<<endl<<readBuffer<<endl;
             return "Hiba!";
         } else {
             if (readBuffer.size()<1000){
-                cout<<"alma: "<<endl<<readBuffer<<endl;
+                if (debug) cout<<"error: "<<endl<<readBuffer<<endl;
+                cout<<"link: "<<link<<endl;
+                errorMsg=readBuffer;
                 //return "Túl kicsi a readBuffer";
                 return "Hiba!";
             }
@@ -270,16 +274,6 @@ bool reszvenyHonapLetrehoz(string stock, string str, int year, int month){
 }
 
 void reszvenyAPILetoltes(string stock, bool &stopped, bool &inProc, function<void()> func){
-    while (false){
-        if (!stopped){
-            func();
-            Sleep(100);
-        } else {
-            Sleep(1);
-        }
-        if (!inProc) return;
-    }
-
     int state = 0;
     int year = 2000, month = 1;
     int celY = getActYear(), celM=getActMonth();
@@ -288,8 +282,8 @@ void reszvenyAPILetoltes(string stock, bool &stopped, bool &inProc, function<voi
     path+="\\months";
     CreateDirectory(path.c_str(), NULL);
     while (true){
+        if (!inProc) return;
         if (stopped) Sleep(1);
-        else if (!inProc) return;
         else {
             string str;
             if (state==0) { /// még nincs letöltve a napi
@@ -325,15 +319,20 @@ void reszvenyAPILetoltes(string stock, bool &stopped, bool &inProc, function<voi
             }
             else if (state==3) { /// még nincsenek letöltve a hónapok
                 str = downloadLink(getLinkMonth(stock,year,month));
-                if (str!="Hiba!" || benneVanAzStr(str,"Invalid API call.")){
-                    if (!benneVanAzStr(str,"Invalid API call."))
+
+                if (str!="Hiba!" || benneVanAzStr(errorMsg,"Invalid API call.")){
+                    if (str!="Hiba!"){
                         reszvenyHonapLetrehoz(stock,str,year,month);
+
+                    } else {
+                        downloadCnt--;
+                    }
                     month++;
                     func();
                     if (month>12){ month=1; year++; }
                     if (year>celY || (year==celY && month>celM)) return;
                 } else {
-                    cout<<"Hiba: "<<stock<<", nem tolti le a napot"<<endl;
+                    cout<<"Hiba: "<<stock<<", nem tolti le a honapot"<<endl;
                     cout<<getLinkMonth(stock,year,month)<<endl;
                 }
             }
@@ -381,8 +380,8 @@ void reszvenyAPIFrissites(string stock, bool &stopped, bool &inProc, function<vo
     path+="\\months";
     CreateDirectory(path.c_str(), NULL);
     while (true){
+        if (!inProc) return;
         if (stopped) Sleep(1);
-        else if (!inProc) return;
         else {
             string str;
             if (state==0) { /// még nincs letöltve a napi

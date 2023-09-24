@@ -92,8 +92,9 @@ struct FrissitoMenu : public Menu {
 
     bool startStop(){
         if (!inProc){
-            if (letoltoSzal.joinable()) //cout<<"Nagy a baj, befagyott a thread"<<endl;
+            if (letoltoSzal.joinable()){
                 letoltoSzal.join();
+            }
             if (adatokLetoltese()){
                 stopped=false;
                 inProc=true;
@@ -165,6 +166,10 @@ struct FrissitoMenu : public Menu {
 
     bool adatokLetoltese(){
         if (kivResz!=""){
+            if (letoltoSzal.joinable()){
+                cout<<"JoinBajAdatLetol"<<endl;
+                letoltoSzal.join();
+            }
             if (letoltesValasztva) {
                 progBar.prepare(elemszamKiszamolasa());
                 progBar.start();
@@ -177,6 +182,11 @@ struct FrissitoMenu : public Menu {
             }
         }
         else if (kivCsop!=""){
+            if (letoltoSzal.joinable()){
+                letoltoSzal.join();
+            }
+            if (letoltoSzal.joinable())
+                letoltoSzal.join();
             if (letoltesValasztva){
                 progBar.prepare(elemszamKiszamolasa(csoportReszvenyei(kivCsop).size()));
                 progBar.start();
