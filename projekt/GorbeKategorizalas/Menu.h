@@ -119,6 +119,7 @@ struct FrissitoMenu : public Menu {
     }
 
     bool cancel(){
+        progBar.cancel();
         if (!inProc){
             if (kivCsop!="" || kivResz!=""){
                 kivCsop="";
@@ -127,7 +128,6 @@ struct FrissitoMenu : public Menu {
                 stopped=true;
             }
         } else {
-            progBar.cancel();
             stopped=true;
             PSSB.str="start";
             inProc=false;
@@ -139,20 +139,22 @@ struct FrissitoMenu : public Menu {
     }
 
     void kivReszSet(string str){
+        cancel();
         transform(str.begin(), str.end(), str.begin(), [](unsigned char c){ return toupper(c); });
         kivResz=str;
         kivCsop="";
     }
 
     void kivCsopSet(string str){
+        cancel();
         kivCsop=str;
         kivResz="";
     }
 
     void gombokKialakitasa();
 
-    void ujElemFeldolgozva(){
-        progBar.elemFeldolgozva();
+    void ujElemFeldolgozva(int x){
+        progBar.elemFeldolgozva(x);
     }
 
     int elemszamKiszamolasa(int reszvenyekSzama=1){
@@ -160,11 +162,12 @@ struct FrissitoMenu : public Menu {
         int m = getActMonth();
         int Y=2000, M=1;
         int monthCnt = (y-2000)*12+m;
-        cout<<y<<" "<<m<<" "<<Y<<" "<<M<<" "<<monthCnt<<endl;
-        return 1+2+monthCnt;
+        //cout<<y<<" "<<m<<" "<<Y<<" "<<M<<" "<<monthCnt<<endl;
+        return (1+2+monthCnt)*reszvenyekSzama;
     }
 
     bool adatokLetoltese(){
+        int x=0;
         if (kivResz!=""){
             if (letoltoSzal.joinable()){
                 cout<<"JoinBajAdatLetol"<<endl;
@@ -173,29 +176,27 @@ struct FrissitoMenu : public Menu {
             if (letoltesValasztva) {
                 progBar.prepare(elemszamKiszamolasa());
                 progBar.start();
-                letoltoSzal = move(thread(reszvenyAPILetoltes,ref(kivResz),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this)));// reszvenyAPILetoltes(kivResz);
+                letoltoSzal = move(thread(reszvenyAPILetoltes,ref(kivResz),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this,std::placeholders::_1)));// reszvenyAPILetoltes(kivResz);
             }
             else {
                 progBar.prepare(elemszamKiszamolasa());
                 progBar.start();
-                letoltoSzal = move(thread(reszvenyAPIFrissites,ref(kivResz),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this)));
+                letoltoSzal = move(thread(reszvenyAPIFrissites,ref(kivResz),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this,std::placeholders::_1)));
             }
         }
         else if (kivCsop!=""){
             if (letoltoSzal.joinable()){
                 letoltoSzal.join();
             }
-            if (letoltoSzal.joinable())
-                letoltoSzal.join();
             if (letoltesValasztva){
                 progBar.prepare(elemszamKiszamolasa(csoportReszvenyei(kivCsop).size()));
                 progBar.start();
-                letoltoSzal = move(thread(csoportAPILetoltes,ref(kivCsop),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this)));
+                letoltoSzal = move(thread(csoportAPILetoltes,ref(kivCsop),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this,std::placeholders::_1)));
             }
             else {
                 progBar.prepare(elemszamKiszamolasa(csoportReszvenyei(kivCsop).size()));
                 progBar.start();
-                letoltoSzal = move(thread(csoportAPIFrissites,ref(kivCsop),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this)));
+                letoltoSzal = move(thread(csoportAPIFrissites,ref(kivCsop),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this,std::placeholders::_1)));
             }
         } else {
             return false;

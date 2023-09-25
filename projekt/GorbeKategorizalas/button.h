@@ -186,9 +186,19 @@ struct ProgressBar{
     }
 
     void elemFeldolgozva(int cnt=1){
-        feldolgozottElemek+=cnt;
-        if(osszesElem<feldolgozottElemek)
-            feldolgozottElemek=osszesElem;
+
+        if (cnt<0){
+            osszesElem+=cnt;
+            if(osszesElem<1) osszesElem=1;
+            forDeltaTime=clock();
+        } else if (cnt>0){
+            feldolgozottElemek+=cnt;
+            if(osszesElem<feldolgozottElemek)
+                feldolgozottElemek=osszesElem;
+        } else {
+
+            stop();
+        }
     }
 
     void prepare(int oE){
@@ -197,6 +207,7 @@ struct ProgressBar{
     }
 
     void start(){
+        feldolgozottElemek=0;
         cancelled=false;
         stopped=false;
         startTime=clock();
@@ -261,6 +272,9 @@ struct ProgressBar{
             ss2<<feldolgozottElemek<<" / "<<osszesElem<<" - "<<ktp<<" %";
 
         stringRGBA(renderer,X+w/2-120,Y+h+7,ss2.str().c_str(),0,0,0,255);
+
+        if (osszesElem==feldolgozottElemek && osszesElem!=0)
+            stringRGBA(renderer,X+w-35,Y+h+7,"kesz",0,0,0,255);
     }
 
 };

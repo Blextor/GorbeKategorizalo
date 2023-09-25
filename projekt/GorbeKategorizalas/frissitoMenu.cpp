@@ -276,6 +276,9 @@ void FrissitoMenu::process(){
     meglevoReszvenyek = osszesReszveny();
     meglevoCsoportok = osszesCsoport();
 
+    if (progBar.stopped) PSSB.str="start";
+    else PSSB.str="stop";
+
     //if (letoltoSzal.joinable()){cout<<"join"<<endl;}
 
     if (oldState!=state){ /// amikor állapotváltozás van

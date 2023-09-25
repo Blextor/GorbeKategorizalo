@@ -22,9 +22,9 @@ string csoportLetoltesChk(string group);
 string csoportFrissitesChk(string group);
 
 
-void reszvenyAPILetoltes(string stock, bool &stopped, bool &inProc, function<void()> func);
-void csoportAPILetoltes(string group, bool &stopped, bool &inProc, function<void()> func);
-void reszvenyAPIFrissites(string stock, bool &stopped, bool &inProc, function<void()> func);
-void csoportAPIFrissites(string group, bool &stopped, bool &inProc, function<void()> func);
+void reszvenyAPILetoltes(string stock, bool &stopped, bool &inProc, function<void(int x)> func);
+void csoportAPILetoltes(string group, bool &stopped, bool &inProc, function<void(int x)> func);
+void reszvenyAPIFrissites(string stock, bool &stopped, bool &inProc, function<void(int x)> func);
+void csoportAPIFrissites(string group, bool &stopped, bool &inProc, function<void(int x)> func);
 
 #endif // ADATLETOLTES_H_INCLUDED

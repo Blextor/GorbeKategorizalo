@@ -73,7 +73,7 @@ Hány letöltést fog végezni?
 		100 tagú csoport: ~17 perc (ez naponta 5-ször)
 		1000 tagú cs.: ~3 óra  (ezt naponta egyszer) 23-2-ig fut, reggel meg elemzés
 		3000 tagú cs.: ~8.5 óra (ezt hétvégéken egyszer bőven jó)
-		Ez csak 50 óra. (viszont nap közben nem tudom milyen jó adatokat letölteni)
+		Ez csak 155 óra. (viszont nap közben nem tudom milyen jó adatokat letölteni)
 
 
 Működése:		

@@ -170,7 +170,8 @@ vector<string> csoportReszvenyei(string str){
     while (!file.eof()){
         string temp;
         file>>temp;
-        lista.push_back(temp);
+        if (temp.size()!=0)
+            lista.push_back(temp);
     }
     return lista;
 }
@@ -186,3 +187,5 @@ string csoportFrissites(vector<string> vec, string csop){
     }
     return "Siker!";
 }
+
+

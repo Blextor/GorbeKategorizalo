@@ -152,7 +152,8 @@ string downloadLink(string link) {
             cout<<"error: "<<endl<<readBuffer<<endl;
             return "Hiba!";
         } else {
-            if (readBuffer.size()<1000){
+            if (benneVanAzStr(readBuffer,"Error")){
+            //if (readBuffer.size()<600){
                 if (debug) cout<<"error: "<<endl<<readBuffer<<endl;
                 cout<<"link: "<<link<<endl;
                 errorMsg=readBuffer;
@@ -176,7 +177,8 @@ string downloadLink(string link) {
 bool letezoReszveny (string stock){
     clock_t t = clock();
     string readBuf = downloadLink(getLinkEarnings(stock));
-    cout<<"f: "<<(clock()-t)<<endl;
+    cout<<"dt: "<<(clock()-t)<<" ms"<<endl;
+    if (readBuf.size()<5) return false;
     if (readBuf!="Hiba!") return true;
     return false;
 }
@@ -213,27 +215,19 @@ string reszvenyFrissitesChk(string stock){
 }
 
 string csoportLetoltesChk(string group){
-    return "Hiba!";
-    /// létezik-e ilyen részvény?
-    if (!letezoReszveny(group)){
-        return "Nem letezo csoport";
+    /// létezik-e ilyen csoport?
+    if (elemeAzStr(osszesCsoport(),group)){
+        return "Siker!";
     }
-    ///
-    thread m = valami();
-
-    return "Siker!";
+    return "Nem letezo csoport";
 }
 
 string csoportFrissitesChk(string group){
-    return "Hiba!";
-    /// létezik-e ilyen részvény?
-    if (!letezoReszveny(group)){
-        return "Nem letezo csoport";
+    /// létezik-e ilyen csoport?
+    if (elemeAzStr(osszesCsoport(),group)){
+        return "Siker!";
     }
-    ///
-    thread m = valami();
-
-    return "Siker!";
+    return "Nem letezo csoport";
 }
 
 bool reszvenyNapiLetrehoz(string stock, string str){
@@ -273,9 +267,11 @@ bool reszvenyHonapLetrehoz(string stock, string str, int year, int month){
     return true;
 }
 
-void reszvenyAPILetoltes(string stock, bool &stopped, bool &inProc, function<void()> func){
+void reszvenyAPILetoltes(string stock, bool &stopped, bool &inProc, function<void(int x)> func){
     int state = 0;
     int year = 2000, month = 1;
+    bool alosztaly = !inProc;
+    inProc=true;
     int celY = getActYear(), celM=getActMonth();
     string path = gyoker+"\\stocks\\"+stock;
     CreateDirectory(path.c_str(), NULL);
@@ -291,7 +287,7 @@ void reszvenyAPILetoltes(string stock, bool &stopped, bool &inProc, function<voi
                 if (str!="Hiba!"){
                     reszvenyNapiLetrehoz(stock,str);
                     state=1;
-                    func();
+                    func(1);
                 } else {
                     cout<<"Hiba: "<<stock<<", nem tolti le a napit"<<endl;
                 }
@@ -301,7 +297,7 @@ void reszvenyAPILetoltes(string stock, bool &stopped, bool &inProc, function<voi
                 if (str!="Hiba!"){
                     reszvenyJelentesLetrehoz(stock,str);
                     state=2;
-                    func();
+                    func(1);
                 } else {
                     cout<<"Hiba: "<<stock<<", nem tolti le a jeletest"<<endl;
                 }
@@ -311,7 +307,7 @@ void reszvenyAPILetoltes(string stock, bool &stopped, bool &inProc, function<voi
                 if (str!="Hiba!"){
                     reszvenyBevetelLetrehoz(stock,str);
                     state=3;
-                    func();
+                    func(1);
                 } else {
                     cout<<"Hiba: "<<stock<<", nem tolti le a bevetelt"<<endl;
                     cout<<getLinkIncome(stock)<<endl;
@@ -323,14 +319,18 @@ void reszvenyAPILetoltes(string stock, bool &stopped, bool &inProc, function<voi
                 if (str!="Hiba!" || benneVanAzStr(errorMsg,"Invalid API call.")){
                     if (str!="Hiba!"){
                         reszvenyHonapLetrehoz(stock,str,year,month);
-
+                        func(1);
                     } else {
+                        func(-1);
                         downloadCnt--;
                     }
                     month++;
-                    func();
                     if (month>12){ month=1; year++; }
-                    if (year>celY || (year==celY && month>celM)) return;
+                    if (year>celY || (year==celY && month>celM)) {
+                        inProc=false;
+                        if (!alosztaly) func(0);
+                        return;
+                    }
                 } else {
                     cout<<"Hiba: "<<stock<<", nem tolti le a honapot"<<endl;
                     cout<<getLinkMonth(stock,year,month)<<endl;
@@ -343,7 +343,7 @@ void reszvenyAPILetoltes(string stock, bool &stopped, bool &inProc, function<voi
 int legregebbiReszvenyHonap(string stock) { /// return YYYYMM
     string path = gyoker+"\\stocks\\"+stock+"\\months";
     vector<string> honapok = getFiles(path);
-    int maxY = 0, maxM = 0;
+    int maxY = 2000, maxM = 1;
     for (size_t i=0; i<honapok.size(); i++){
         stringstream ss; ss<<honapok[i];
         int y = 0, m = 0;
@@ -361,15 +361,16 @@ int legregebbiReszvenyHonap(string stock) { /// return YYYYMM
     return maxY*100+maxM;
 }
 
-void reszvenyAPIFrissites(string stock, bool &stopped, bool &inProc, function<void()> func){
+void reszvenyAPIFrissites(string stock, bool &stopped, bool &inProc, function<void(int x)> func){
     int state = 0;
+    bool alosztaly = !inProc;
+    inProc=true;
     int YYYYMM=legregebbiReszvenyHonap(stock);
     int year = YYYYMM/100, month = YYYYMM%100;
-    cout<<year<<" "<<month<<endl;
     if (true){
         int y = 2000, m=1;
         while (year!=y || m!=month){
-            func();
+            func(-1);
             m++;
             if (m>12) {m=1; y++;}
         }
@@ -389,7 +390,7 @@ void reszvenyAPIFrissites(string stock, bool &stopped, bool &inProc, function<vo
                 if (str!="Hiba!"){
                     reszvenyNapiLetrehoz(stock,str);
                     state=1;
-                    func();
+                    func(1);
                 } else {
                     cout<<"Hiba: "<<stock<<", nem tolti le a napit"<<endl;
                 }
@@ -399,7 +400,7 @@ void reszvenyAPIFrissites(string stock, bool &stopped, bool &inProc, function<vo
                 if (str!="Hiba!"){
                     reszvenyJelentesLetrehoz(stock,str);
                     state=2;
-                    func();
+                    func(1);
                 } else {
                     cout<<"Hiba: "<<stock<<", nem tolti le a jeletest"<<endl;
                 }
@@ -409,7 +410,7 @@ void reszvenyAPIFrissites(string stock, bool &stopped, bool &inProc, function<vo
                 if (str!="Hiba!"){
                     reszvenyBevetelLetrehoz(stock,str);
                     state=3;
-                    func();
+                    func(1);
                 } else {
                     cout<<"Hiba: "<<stock<<", nem tolti le a bevetelt"<<endl;
                     cout<<getLinkIncome(stock)<<endl;
@@ -417,12 +418,21 @@ void reszvenyAPIFrissites(string stock, bool &stopped, bool &inProc, function<vo
             }
             else if (state==3) { /// még nincsenek letöltve a hónapok
                 str = downloadLink(getLinkMonth(stock,year,month));
-                if (str!="Hiba!"){
-                    reszvenyHonapLetrehoz(stock,str,year,month);
+                if (str!="Hiba!" || benneVanAzStr(errorMsg,"Invalid API call.")){
+                    if (str!="Hiba!"){
+                        reszvenyHonapLetrehoz(stock,str,year,month);
+                        func(1); /// megcsinált egyet
+                    } else {
+                        func(-1); /// ki lehetett hagyni egyet
+                        downloadCnt--;
+                    }
                     month++;
-                    func();
                     if (month>12){ month=1; year++; }
-                    if (year>celY || (year==celY && month>celM)) return;
+                    if (year>celY || (year==celY && month>celM)) {
+                        inProc=false;
+                        if (!alosztaly) func(0); /// végzett
+                        return;
+                    }
                 } else {
                     cout<<"Hiba: "<<stock<<", nem tolti le a napot"<<endl;
                     cout<<getLinkMonth(stock,year,month)<<endl;
@@ -432,13 +442,63 @@ void reszvenyAPIFrissites(string stock, bool &stopped, bool &inProc, function<vo
     }
 }
 
-void csoportAPILetoltes(string group, bool &stopped, bool &inProc, function<void()> func){
-
+void csoportAPILetoltes(string group, bool &stopped, bool &inProc, function<void(int x)> func){
+    vector<string> reszvenyek = csoportReszvenyei(group);
+    for (size_t i=0; i<reszvenyek.size(); i++){
+        if (letezoReszveny(reszvenyek[i])){
+            bool sS = false, iPS = true;
+            bool s = false, iP = false; /// iP azért false, hogy jelezze a rAPIL-nek, hogy csak részfolyamat
+            thread thr(reszvenyAPILetoltes,ref(reszvenyek[i]),ref(s),ref(iP),func);
+            Sleep(500);
+            while (true){
+                Sleep(1);
+                if (iPS && !iP){
+                    thr.join();
+                    break;
+                }
+                iP=inProc;
+                iPS=inProc;
+                s=stopped;
+                sS=stopped;
+                if (!inProc) {iPS=false; thr.join(); return;}
+            }
+        } else {
+            func(-288);
+        }
+    }
+    func(0);
+    inProc=false;
+    return;
 }
 
-
-void csoportAPIFrissites(string group, bool &stopped, bool &inProc, function<void()> func){
-
+void csoportAPIFrissites(string group, bool &stopped, bool &inProc, function<void(int x)> func){
+    vector<string> reszvenyek = csoportReszvenyei(group);
+    for (size_t i=0; i<reszvenyek.size(); i++){
+        if (letezoReszveny(reszvenyek[i])){
+            bool sS = false, iPS = true;
+            bool s = false, iP = false;
+            thread thr(reszvenyAPIFrissites,ref(reszvenyek[i]),ref(s),ref(iP),func);
+            Sleep(500);
+            while (true){
+                Sleep(1);
+                //cout<<true<<" "<<stopped<<" "<<inProc<<" "<<s<<" "<<iP<<" "<<sS<<" "<<iPS<<endl;
+                if (iPS && !iP){
+                    thr.join();
+                    break;
+                }
+                iP=inProc;
+                iPS=inProc;
+                s=stopped;
+                sS=stopped;
+                if (!inProc) {iPS=false; thr.join(); return;}
+            }
+        } else {
+            func(-288);
+        }
+    }
+    func(0);
+    inProc=false;
+    return;
 }
 
 

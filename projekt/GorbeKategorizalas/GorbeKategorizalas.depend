@@ -114,13 +114,13 @@
 1695369926 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\fomenu.cpp
 	"Menu.h"
 
-1695511899 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\menu.h
+1695563718 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\menu.h
 	"common.h"
 	"button.h"
 	"adatBeolvas.h"
 	"adatLetoltes.h"
 
-1695505884 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\frissitomenu.cpp
+1695561054 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\frissitomenu.cpp
 	"Menu.h"
 
 1694630166 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\idosor.cpp
@@ -159,20 +159,20 @@
 1695494702 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\csoporteditor.cpp
 	"Menu.h"
 
-1695498884 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\button.h
+1695561088 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\button.h
 	"common.h"
 	"adatBeolvas.h"
 
 1695494723 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatbeolvas.h
 	"common.h"
 
-1695494778 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatbeolvas.cpp
+1695552905 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatbeolvas.cpp
 	"adatBeolvas.h"
 
-1695511808 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatletoltes.cpp
+1695562781 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatletoltes.cpp
 	"adatLetoltes.h"
 	"adatBeolvas.h"
 
-1695498329 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatletoltes.h
+1695558361 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatletoltes.h
 	"common.h"
 
