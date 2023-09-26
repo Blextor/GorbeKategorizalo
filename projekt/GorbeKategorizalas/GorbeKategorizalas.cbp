@@ -36,6 +36,7 @@
 			<Add option="-static-libstdc++" />
 			<Add option="-static-libgcc" />
 			<Add option="-static" />
+			<Add option="-lcurl" />
 		</Linker>
 		<Unit filename="Menu.h" />
 		<Unit filename="MenuK.cpp" />
@@ -50,11 +51,11 @@
 		<Unit filename="csoportEditor.cpp" />
 		<Unit filename="fomenu.cpp" />
 		<Unit filename="frissitoMenu.cpp" />
-		<Unit filename="idosor.cpp" />
-		<Unit filename="idosor.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main2.cpp" />
 		<Unit filename="menu.cpp" />
+		<Unit filename="stock.cpp" />
+		<Unit filename="stock.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

@@ -121,6 +121,8 @@ bool bevetelBetoltes(string path, set<Negyed> &negyedevek, bool reset=true){
 bool napiBetoltes(string path, set<Nap> &osszesNap, bool reset=true){
     string honapokPath=path+"\\months";
     vector<string> fajlok = getFiles(honapokPath);
+    if (reset)
+        osszesNap.clear();
 
     for (int i=0; i<fajlok.size(); i++){
         string fileP = honapokPath+"\\"+fajlok[i];
@@ -143,6 +145,17 @@ bool napiBetoltes(string path, set<Nap> &osszesNap, bool reset=true){
                 it = osszesNap.find(nap);
             }
             (*it).valid=true;
+            (*it).minimum=min((*it).minimum,mini);
+            (*it).maximum=max((*it).minimum,maxi);
+            (*it).volumen+=vol;
+            Arfolyam arf(hour,minute,open,close,mini,maxi,vol);
+            set<Arfolyam>::iterator itP = (*it).percek.find(arf);
+            if (itP == (*it).percek.end()) {
+                (*it).percek.insert(arf);
+                itP = (*it).percek.find(arf);
+            }
+
+
             /// TODO
         }
     }

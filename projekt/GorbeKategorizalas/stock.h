@@ -9,6 +9,12 @@ using namespace std;
 struct Idopont{
     int ora=-1,perc=-1;
     Idopont(int o=-1, int p=-1){ora=o; perc=p;}
+
+    bool operator<(const Idopont& other) const {
+        if (ora==other.ora)
+            return perc < other.perc;
+        return ora<other.ora;
+    }
 };
 
 struct Datum{
@@ -54,8 +60,18 @@ struct Idopillanat{
 };
 
 struct Arfolyam {
-    Idopillanat idopillanat;
-    float ertek;
+    Idopont idopont;
+    float open, close, minimum, maximum, volumen;
+
+    Arfolyam(int h=0, int m=0,
+             float n=0, float z=0, float mi=0, float ma=0, float vol=0
+             ){idopont.ora=h; idopont.perc=m;
+                open=n; close=z; minimum=mi; maximum=ma; volumen=vol;
+             }
+
+    bool operator<(const Arfolyam& other) const {
+        return idopont < other.idopont;
+    }
 };
 
 struct Idosor{
@@ -64,6 +80,7 @@ struct Idosor{
 
 struct Nap{
     mutable bool valid=false;
+    mutable bool closedMarket = false;
     mutable bool unnep=false;
     Datum datum;
     mutable Datum elozoNap, kovetkezoNap;
@@ -72,7 +89,11 @@ struct Nap{
     mutable int hetMelyikNapja;
     mutable set<Arfolyam> percek;
 
-    Nap(int y=0, int m=0, int d=0){datum=Datum(y,m,d);}
+    Nap(int y=0, int m=0, int d=0){
+        datum=Datum(y,m,d);
+        idoNyitas=Idopont(9,30);
+        idoZaras=Idopont(16,30);
+    }
 
     bool operator<(const Nap& other) const {
         return datum < other.datum;
