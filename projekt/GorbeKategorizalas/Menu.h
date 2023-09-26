@@ -5,8 +5,11 @@
 #include "button.h"
 #include "adatBeolvas.h"
 #include "adatLetoltes.h"
+#include "stock.h"
 
 using namespace std;
+
+
 
 struct SDL_Pack{
     SDL_Window *window;

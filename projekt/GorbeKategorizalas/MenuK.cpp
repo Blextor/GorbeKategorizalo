@@ -10,6 +10,9 @@ MenuK::MenuK(SDL_Pack sdlp, Menu **act){
     csoportEditormenu.nextMenus(&fomenu,&frissitomenu);
 
 
+    Stock stock;
+
+
     startMenu = &fomenu;
     *act = startMenu;
 }

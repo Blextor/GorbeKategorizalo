@@ -2,7 +2,8 @@
 #define CIMKE_H_INCLUDED
 
 #include "common.h"
-#include "idosor.h"
+
+/*
 
 using namespace std;
 
@@ -28,5 +29,6 @@ public:
 
     bool azIdosorIlyen (Idosor idosor);
 };
+*/
 
 #endif // CIMKE_H_INCLUDED

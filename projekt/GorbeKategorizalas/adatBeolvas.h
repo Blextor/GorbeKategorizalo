@@ -18,7 +18,7 @@ vector<string> getSubdirectories(const string& directoryPath);
 vector<string> getFiles(const string& directoryPath);
 
 bool benneVanAzStr (string miben, string mi);
-bool elemeAzStr ( vector<string> v, string mi);
+bool elemeAzStr (vector<string> v, string mi);
 
 vector<string> csoportReszvenyei(string str);
 string csoportFrissites(vector<string> vec, string csop);

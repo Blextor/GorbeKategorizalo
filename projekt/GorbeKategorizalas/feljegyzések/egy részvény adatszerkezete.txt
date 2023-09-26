@@ -1,0 +1,35 @@
+4 típusú fájl van:
+	napi, pénzügyi jelentés EPS, bevételes, hónapos
+
+
+Hogy melyik részvényről beszélünk?
+
+PLUSZ
+
+egy pénzügyi jelentés adatai:
+	melyik időszakot elemzi (időszak vége) [dátum]
+	mikor jött ki ténylegesen (melyik nyitás előtt) [dátum]
+	mikor van vége a negyedévnek (következőt megelőző nap / mai?) (dátum)
+
+	becsült EPS (float)
+	jelentett EPS (float)
+	meglepetés (float)
+	meglepetés% (float)
+
+napi:
+	legutolsó dátum
+	legelső dátum
+	dátum alapján kereshető és sorrendben végigiterálható napok:
+		nyitás, zárás, min, max, vol
+
+hónapos:
+	első nap
+	utolsó nap
+	napok száma
+	naponta:
+		ünnepnap-e?
+		a hét melyik napja
+		mikor volt nyitás
+		mikor volt zárás
+		időpont alapján kereshető és iterálható percadatok:
+			nyitás, zárás, min, max, vol

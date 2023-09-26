@@ -99,8 +99,24 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
     /// adatokat kell beolvasnom
 
+    vector<string> fajlok = getFiles(gyoker+"\\stocks\\AAPL\\months");
+    //for (int i=0; i<fajlok.size(); i++) cout<<fajlok[i]<<endl;
 
+    string fileP = gyoker+"\\stocks\\AAPL\\months\\"+fajlok[0];
+    ifstream file(fileP);
+    while (false && getline(file,fileP)) {
+        stringstream ss; ss<<fileP;
+        char c;
+        int year=0, month=0, day=0, hour=0, minute=0;
+        ss>>year>>c>>month>>c>>day>>hour>>c>>minute;
+        ss>>c>>c>>c>>c;
+        float open, maxi, mini, close, vol;
+        ss>>open>>c>>maxi>>c>>mini>>c>>close>>c>>vol;
+        cout<<year<<" "<<month<<" "<<day<<" "<<hour<<" "<<minute<<" "<<open<<" "<<maxi<<" "<<mini<<" "<<close<<" "<<vol<<endl;
+            //cout<<fileP<<" alma"<<endl;
 
+    }
+    /*
     LokMinMax m;
     Cimke c;
     Idosor ids;
@@ -110,12 +126,8 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     std::vector<Cimke*> animals;
 
     animals.push_back(&m);
-    //animals.push_back(std::make_unique<Cat>());
     animals.push_back(&c);
-
-    //for (const auto& animal : animals) {
-      //  cout<<animal->azIdosorIlyen(ids);
-    //}
+    */
 
 
     //cout<<m.type<<c.type<<endl;
