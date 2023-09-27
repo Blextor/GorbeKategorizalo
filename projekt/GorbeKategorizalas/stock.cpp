@@ -364,7 +364,15 @@ void Stock::adatokKiirasaFajlba (string fajlNev){
 }
 
 
+void Stock::adatokFeldolgozasa(){
 
+    for (const Nap& nap : mindenNap) {
+
+        for (const Arfolyam& perc : nap.percek){
+
+        }
+    }
+}
 
 
 

@@ -120,12 +120,12 @@ struct Stock{
 
     set<Negyed> negyedevek;
     set<Nap> mindenNap;
-    vector<Nap> mindenNapVec;
 
     void adatokKiirasaFajlba (string fajlNev);
     bool adatokBetoltese(string stock);
     bool adatokBetoltese2Teszt(string stock);
-    bool adatokBetoltese3Teszt(string stock);
+
+    void adatokFeldolgozasa();
 };
 
 

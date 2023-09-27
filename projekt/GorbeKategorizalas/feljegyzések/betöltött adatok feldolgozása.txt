@@ -1,0 +1,37 @@
+Be töltöttem minden adatot.
+Minden nap, minden percét.
+
+A napokból nem lesz több, csak a percből.
+
+Az új perceket a nap vizsgálata végén be lehet szúrni, hogy a ciklust ne zavarja meg.
+
+
+Egy nap:
+	a hét melyik napja (ünnepnap?)
+	nyitás és zárás közti minimum, maximum, nyitás és zárás, volumen érték
+		fél nap esetén hogy van ez
+	Előző és azt követő nap.
+	Előző nap zárásához mért nyitási kiugrás.
+	Mikor nyitott, mikor zárt? (default 9:30 és 16:00 között csak?)
+
+
+Percek:
+	Egy perc tökéletes, ha megvan.
+	Ha nincs meg, akkor meg kipótoljuk.
+	Sorban végigmegy ->talál egyet 9:30 előtt, azt választja meg aktuális értéknek.
+	9:30-tól ezzel, vagy az első értéket amit talál, azzal kitölti a perceket.
+	Majd a maradék perceket a talált utolsó percadatból tölti ki.
+		(min max a kitöltő percekben már egyenlő az elmentett percadat zárásával)
+
+	
+Először kipótolja a perceket, majd kimenti a naphoz az adatokat.
+
+
+
+
+
+
+
+
+
+
