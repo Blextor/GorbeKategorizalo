@@ -1,5 +1,123 @@
 #include "stock.h"
 
+#include <windows.h>
+#include <iostream>
+#include <vector>
+#include <cctype> // isdigit, isspace
+#include <cstdlib> // strtol, strtof
+
+int npB(string path, set<Nap> &osszesNap, bool reset=true){
+    // Fájl megnyitása
+    cout<<path<<endl;
+    HANDLE hFile = CreateFile(path.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) {
+        std::cerr << "Nem sikerült megnyitni a fájlt" << std::endl;
+        return 1;
+    }
+
+    // Fájl méretének lekérdezése
+    DWORD fileSize = GetFileSize(hFile, NULL);
+    if (fileSize == INVALID_FILE_SIZE) {
+        std::cerr << "Nem sikerült lekérdezni a fájl méretét" << std::endl;
+        CloseHandle(hFile);
+        return 1;
+    }
+
+    // Fájl memóriába mappelése
+    HANDLE hMap = CreateFileMapping(hFile, NULL, PAGE_READONLY, 0, 0, NULL);
+    if (hMap == NULL) {
+        std::cerr << "Nem sikerült létrehozni a memóriatérképet" << std::endl;
+        CloseHandle(hFile);
+        return 1;
+    }
+
+    char* addr = static_cast<char*>(MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, 0));
+    if (addr == NULL) {
+        std::cerr << "Nem sikerült betölteni a fájlt a memóriába" << std::endl;
+        CloseHandle(hMap);
+        CloseHandle(hFile);
+        return 1;
+    }
+
+    // Beolvasott értékek tárolása
+    std::vector<int> intValues;
+    std::vector<float> floatValues;
+
+    // Fájl tartalmának feldolgozása és értékek kinyerése
+    char* end;
+    int fieldCount = 0;
+    for (char* ptr = addr; ptr < addr + fileSize; ++ptr) {
+        // Szám elejének keresése
+        if (std::isdigit(*ptr) || *ptr == '-' || *ptr == '+') {
+            if (fieldCount < 5) {
+                int value = std::strtol(ptr, &end, 10);
+                intValues.push_back(value);
+            } else {
+                float value = std::strtof(ptr, &end);
+                floatValues.push_back(value);
+                if (fieldCount == 9) {
+                    fieldCount = -1; // Reset field count for next row
+                }
+            }
+            ptr = end;
+            fieldCount++;
+        }
+    }
+
+    // Memória térkép eltávolítása és fájl bezárása
+    UnmapViewOfFile(addr);
+    CloseHandle(hMap);
+    CloseHandle(hFile);
+
+    cout<<intValues.size()<<" "<<floatValues.size()<<endl;
+    /*
+    cout<<intValues[0]<<" "<<intValues[1]<<" "<<intValues[2]<<endl;
+    cout<<intValues[3]<<" "<<intValues[4]<<endl;
+    cout<<floatValues[0]<<" "<<floatValues[1]<<" "<<floatValues[2]<<" "<<floatValues[3]<<endl;
+    cout<<longValues[0]<<endl;
+
+    cout<<intValues[5]<<" "<<intValues[6]<<" "<<intValues[7]<<endl;
+    cout<<intValues[8]<<" "<<intValues[9]<<endl;
+    cout<<floatValues[4]<<" "<<floatValues[5]<<" "<<floatValues[6]<<" "<<floatValues[7]<<endl;
+    cout<<longValues[1]<<endl;
+    */
+    // Itt használhatja a beolvasott értékeket
+    // ...
+
+    for (int i=0; i<intValues.size()/5;i++){
+        int intChange=i*5, floatChange=i*5;
+
+        /*
+        cout<<intValues[intChange+0]<<" "<<intValues[intChange+1]<<" "<<intValues[intChange+2]<<endl;
+        cout<<intValues[intChange+3]<<" "<<intValues[intChange+4]<<endl;
+        cout<<floatValues[floatChange+0]<<" "<<floatValues[floatChange+1]<<" "<<floatValues[floatChange+2]<<" "<<floatValues[floatChange+3]<<endl;
+        cout<<floatValues[floatChange+4]<<endl;
+        */
+
+        Nap nap(intValues[intChange+0],intValues[intChange+1],intValues[intChange+2]);
+        set<Nap>::iterator it = osszesNap.find(nap);
+        if (it == osszesNap.end()) {
+            osszesNap.insert(nap);
+            it = osszesNap.find(nap);
+        }
+
+        //(*it).valid=true;
+        //(*it).minimum=min((*it).minimum,floatValues[floatChange+2]);
+        //(*it).maximum=max((*it).maximum,floatValues[floatChange+3]);
+        //(*it).volumen+=longValues[i];
+        Arfolyam arf(intValues[intChange+3],intValues[intChange+4],floatValues[floatChange+0],floatValues[floatChange+1],floatValues[floatChange+2],floatValues[floatChange+3],floatValues[floatChange+4]);
+        set<Arfolyam>::iterator itP = (*it).percek.find(arf);
+        if (itP == (*it).percek.end()) {
+            (*it).percek.insert(arf);
+            itP = (*it).percek.find(arf);
+        }
+    }
+
+
+    return 0;
+}
+
+
 bool jelentesBetoltes(string path, set<Negyed> &negyedevek, bool reset=true){
 
     string jelentesPath=path+"\\jelentes.txt";
@@ -154,7 +272,7 @@ bool napiBetoltes(string path, set<Nap> &osszesNap, bool reset=true){
             }
             (*it).valid=true;
             (*it).minimum=min((*it).minimum,mini);
-            (*it).maximum=max((*it).minimum,maxi);
+            (*it).maximum=max((*it).maximum,maxi);
             (*it).volumen+=vol;
             Arfolyam arf(hour,minute,open,close,mini,maxi,vol);
             set<Arfolyam>::iterator itP = (*it).percek.find(arf);
@@ -170,7 +288,44 @@ bool napiBetoltes(string path, set<Nap> &osszesNap, bool reset=true){
     return true;
 }
 
+bool napiBetoltes2(string path, set<Nap> &osszesNap, bool reset=true){
+    string honapokPath=path+"\\months";
+    vector<string> fajlok = getFiles(honapokPath);
+    if (reset)
+        osszesNap.clear();
+
+    /*
+    for (int i=0; i<fajlok.size(); i++){
+        npB(honapokPath+"\\"+fajlok[i],osszesNap,false);
+    }
+    */
+    npB("AMDminutes.txt",osszesNap,false);
+
+    return true;
+}
+
 bool Stock::adatokBetoltese(string stock){
+    name=stock;
+    string path = gyoker + "stocks";
+    if (!elemeAzStr(getSubdirectories(path),stock))
+        return false;
+    path = gyoker + "stocks\\"+stock;
+
+    clock_t t = clock();
+    if (!jelentesBetoltes(path,negyedevek)) return false;
+    cout<<(clock()-t)<<endl;
+    t=clock();
+    if (!bevetelBetoltes(path,negyedevek,false)) return false;
+    cout<<(clock()-t)<<endl;
+    t=clock();
+    if (!napiBetoltes(path,mindenNap,true)) return false;
+    cout<<(clock()-t)<<endl;
+    t=clock();
+
+    return true;
+}
+
+bool Stock::adatokBetoltese2Teszt(string stock){
     name=stock;
     string path = gyoker + "\\stocks";
     if (!elemeAzStr(getSubdirectories(path),stock))
@@ -184,7 +339,7 @@ bool Stock::adatokBetoltese(string stock){
     if (!bevetelBetoltes(path,negyedevek,false)) return false;
     cout<<(clock()-t)<<endl;
     t=clock();
-    if (!napiBetoltes(path,mindenNap,true)) return false;
+    if (napiBetoltes2(path,mindenNap,true)) return false;
     cout<<(clock()-t)<<endl;
     t=clock();
 
@@ -228,8 +383,14 @@ void Stock::adatokKiirasaFajlba (string fajlNev){
             file2 << elem2.close << " \t";
             file2 << elem2.minimum << " \t";
             file2 << elem2.maximum << " \t";
-            file2 << elem2.volumen;
+            file2 << (long long)elem2.volumen;
         }
     }
     file2.close();
 }
+
+
+
+
+
+

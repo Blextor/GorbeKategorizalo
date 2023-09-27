@@ -96,7 +96,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     srand(time(NULL));
     SDL_Event ev;
 
-    /**
+
     /// adatokat kell beolvasnom
     clock_t t = clock();
     Stock stock;
@@ -110,7 +110,22 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     //stock.adatokKiirasaFajlba("AMD");
     cout<<"a3: "<<(clock()-t)<<endl;
     t=clock();
+
+
+    /*
+    Stock ss2;
+    cout<<"a1: "<<(clock()-t)<<endl;
+    t=clock();
+    ss2.adatokBetoltese2Teszt("AMD");
+    cout<<"a2: "<<(clock()-t)<<endl;
+    t=clock();
+    //ss2.adatokKiirasaFajlba("AMD2");
+    cout<<"a3: "<<(clock()-t)<<endl;
+    t=clock();
     */
+    //cout<<_msize(stock)<<endl;
+
+
 
 
 
