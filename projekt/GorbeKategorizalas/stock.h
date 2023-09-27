@@ -92,7 +92,7 @@ struct Nap{
     Nap(int y=0, int m=0, int d=0){
         datum=Datum(y,m,d);
         idoNyitas=Idopont(9,30);
-        idoZaras=Idopont(16,30);
+        idoZaras=Idopont(16,0);
     }
 
     bool operator<(const Nap& other) const {
@@ -116,12 +116,16 @@ struct Negyed{
 };
 
 struct Stock{
-    string name;
+    string name="teszt";
 
     set<Negyed> negyedevek;
     set<Nap> mindenNap;
+    vector<Nap> mindenNapVec;
 
+    void adatokKiirasaFajlba (string fajlNev);
     bool adatokBetoltese(string stock);
+    bool adatokBetoltese2Teszt(string stock);
+    bool adatokBetoltese3Teszt(string stock);
 };
 
 

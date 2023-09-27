@@ -98,7 +98,24 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
 
     /// adatokat kell beolvasnom
+    clock_t t = clock();
+    Stock stock;
 
+
+    cout<<"a1: "<<(clock()-t)<<endl;
+    t=clock();
+    stock.adatokBetoltese("AMD");
+    cout<<"a2: "<<(clock()-t)<<endl;
+    t=clock();
+    stock.adatokKiirasaFajlba("AMD");
+    cout<<"a3: "<<(clock()-t)<<endl;
+    t=clock();
+
+
+
+
+
+    /*
     vector<string> fajlok = getFiles(gyoker+"\\stocks\\AAPL\\months");
     //for (int i=0; i<fajlok.size(); i++) cout<<fajlok[i]<<endl;
 
@@ -115,7 +132,8 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
         cout<<year<<" "<<month<<" "<<day<<" "<<hour<<" "<<minute<<" "<<open<<" "<<maxi<<" "<<mini<<" "<<close<<" "<<vol<<endl;
             //cout<<fileP<<" alma"<<endl;
 
-    }
+    }*/
+
     /*
     LokMinMax m;
     Cimke c;

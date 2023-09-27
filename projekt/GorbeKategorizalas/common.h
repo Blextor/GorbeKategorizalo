@@ -33,6 +33,9 @@
 #include <curl/curl.h>
 #include <ws2tcpip.h>
 
+#include <fcntl.h>
+#include <unistd.h>
+
 #include <chrono>
 #include <functional>
 
