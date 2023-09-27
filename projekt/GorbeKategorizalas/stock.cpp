@@ -136,9 +136,8 @@ bool napiBetoltes(string path, set<Nap> &osszesNap, bool reset=true){
             int year=0, month=0, day=0, hour=0, minute=0;
             ss>>year>>c>>month>>c>>day>>hour>>c>>minute;
             ss>>c>>c>>c>>c;
-
-
             string ommcv; ss>>ommcv;
+
             vector<string> zzz;
             string s;
             stringstream ss2(ommcv);
@@ -171,120 +170,6 @@ bool napiBetoltes(string path, set<Nap> &osszesNap, bool reset=true){
     return true;
 }
 
-bool napiBetoltes2Teszt(string path, set<Nap> &osszesNap, bool reset=true){
-
-    if (reset)
-        osszesNap.clear();
-
-    ifstream file(path+"minutes.txt");
-    string line;
-    getline(file,line);
-    /// datum, idopont, nyitás, zárás, minimum, maximum, volumen
-    /// 2000 1 3 	9 30 	0.903 	0.908 	0.9 	0.909 	76799
-    while(!file.eof()){
-        int year=0, month=0, day=0, hour=0, minute=0;
-        file>>year>>month>>day>>hour>>minute;
-        float open, maxi, mini, close, vol;
-        file>>open>>close>>mini>>maxi>>vol;
-        Nap nap(year,month,day);
-        set<Nap>::iterator it = osszesNap.find(nap);
-        if (it == osszesNap.end()) {
-            osszesNap.insert(nap);
-            it = osszesNap.find(nap);
-        }
-        (*it).valid=true;
-        (*it).minimum=min((*it).minimum,mini);
-        (*it).maximum=max((*it).minimum,maxi);
-        (*it).volumen+=vol;
-        Arfolyam arf(hour,minute,open,close,mini,maxi,vol);
-        set<Arfolyam>::iterator itP = (*it).percek.find(arf);
-        if (itP == (*it).percek.end()) {
-            (*it).percek.insert(arf);
-            itP = (*it).percek.find(arf);
-        }
-    }
-    file.close();
-
-
-    return true;
-}
-
-bool napiBetoltes3Teszt(string path, set<Nap> &osszesNap, bool reset=true){
-
-    if (reset)
-        osszesNap.clear();
-
-    ifstream file(path+"minutes.txt");
-    string line;
-    getline(file,line);
-    string hm;
-
-    long long szum=0;
-
-    /// datum, idopont, nyitás, zárás, minimum, maximum, volumen
-    /// 2000 1 3 	9 30 	0.903 	0.908 	0.9 	0.909 	76799
-    while(getline(file,line)){
-        int year, month, day, hour, minute;
-        string open, maxi, mini, close, vol;
-        file>>year>>month>>day>>hour>>minute;
-        file>>open>>close>>mini>>maxi>>vol;
-        float o=stof(open), ma=stof(maxi), mi=stof(mini), c=stof(close), v=stof(vol);
-
-
-        Nap nap(year,month,day);
-        set<Nap>::iterator it = osszesNap.find(nap);
-        if (it == osszesNap.end()) {
-            osszesNap.insert(nap);
-            it = osszesNap.find(nap);
-        }
-
-
-        (*it).valid=true;
-        (*it).minimum=min((*it).minimum,mi);
-        (*it).maximum=max((*it).minimum,ma);
-        (*it).volumen+=v;
-        Arfolyam arf(hour,minute,o,c,mi,ma,v);
-        set<Arfolyam>::iterator itP = (*it).percek.find(arf);
-        if (itP == (*it).percek.end()) {
-            (*it).percek.insert(arf);
-            itP = (*it).percek.find(arf);
-        }
-        /*
-        int year=0, month=0, day=0, hour=0, minute=0;
-        float open, maxi, mini, close, vol;
-        file>>year>>month>>day>>hour>>minute;
-        file>>open>>close>>mini>>maxi>>vol;
-        */
-
-        /*
-        Nap nap(year,month,day);
-        vector<Nap>::iterator it = osszesNap.find(nap);
-        if (it == osszesNap.end()) {
-            osszesNap.insert(nap);
-            it = osszesNap.find(nap);
-        }
-        (*it).valid=true;
-        (*it).minimum=min((*it).minimum,mini);
-        (*it).maximum=max((*it).minimum,maxi);
-        (*it).volumen+=vol;
-        */
-        /*
-        Arfolyam arf(hour,minute,open,close,mini,maxi,vol);
-        set<Arfolyam>::iterator itP = (*it).percek.find(arf);
-        if (itP == (*it).percek.end()) {
-            (*it).percek.insert(arf);
-            itP = (*it).percek.find(arf);
-        }
-        */
-    }
-    //cout<<"Open: "<<szum<<endl;
-
-    file.close();
-
-
-    return true;
-}
-
 bool Stock::adatokBetoltese(string stock){
     name=stock;
     string path = gyoker + "\\stocks";
@@ -300,48 +185,6 @@ bool Stock::adatokBetoltese(string stock){
     cout<<(clock()-t)<<endl;
     t=clock();
     if (!napiBetoltes(path,mindenNap,true)) return false;
-    cout<<(clock()-t)<<endl;
-    t=clock();
-
-    return true;
-}
-
-bool Stock::adatokBetoltese2Teszt(string stock){
-    name=stock;
-    string path = gyoker + "\\stocks";
-    if (!elemeAzStr(getSubdirectories(path),stock))
-        return false;
-    path = gyoker + "\\stocks\\"+stock;
-
-    clock_t t = clock();
-    if (!jelentesBetoltes(path,negyedevek)) return false;
-    cout<<(clock()-t)<<endl;
-    t=clock();
-    if (!bevetelBetoltes(path,negyedevek,false)) return false;
-    cout<<(clock()-t)<<endl;
-    t=clock();
-    if (!napiBetoltes2Teszt(stock,mindenNap,true)) return false;
-    cout<<(clock()-t)<<endl;
-    t=clock();
-
-    return true;
-}
-
-bool Stock::adatokBetoltese3Teszt(string stock){
-    name=stock;
-    string path = gyoker + "\\stocks";
-    if (!elemeAzStr(getSubdirectories(path),stock))
-        return false;
-    path = gyoker + "\\stocks\\"+stock;
-
-    clock_t t = clock();
-    if (!jelentesBetoltes(path,negyedevek)) return false;
-    cout<<(clock()-t)<<endl;
-    t=clock();
-    if (!bevetelBetoltes(path,negyedevek,false)) return false;
-    cout<<(clock()-t)<<endl;
-    t=clock();
-    if (!napiBetoltes3Teszt(stock,mindenNap,true)) return false;
     cout<<(clock()-t)<<endl;
     t=clock();
 
