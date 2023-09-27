@@ -202,12 +202,13 @@ struct ProgressBar{
     }
 
     void prepare(int oE){
-        cancelled=false;
+        cancelled=true;
         osszesElem=oE;
     }
 
     void start(){
-        feldolgozottElemek=0;
+        if (cancelled)
+            feldolgozottElemek=0;
         cancelled=false;
         stopped=false;
         startTime=clock();
