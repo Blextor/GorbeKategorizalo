@@ -7,47 +7,47 @@
 #include <cstdlib> // strtol, strtof
 
 int npB(string path, set<Nap> &osszesNap, bool reset=true){
-    // F·jl megnyit·sa CHAT GPT
+    // F√°jl megnyit√°sa CHAT GPT
     cout<<path<<endl;
     HANDLE hFile = CreateFile(path.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
-        std::cerr << "Nem siker¸lt megnyitni a f·jlt" << std::endl;
+        std::cerr << "Nem siker√ºlt megnyitni a f√°jlt" << std::endl;
         return 1;
     }
 
-    // F·jl mÈretÈnek lekÈrdezÈse
+    // F√°jl m√©ret√©nek lek√©rdez√©se
     DWORD fileSize = GetFileSize(hFile, NULL);
     if (fileSize == INVALID_FILE_SIZE) {
-        std::cerr << "Nem siker¸lt lekÈrdezni a f·jl mÈretÈt" << std::endl;
+        std::cerr << "Nem siker√ºlt lek√©rdezni a f√°jl m√©ret√©t" << std::endl;
         CloseHandle(hFile);
         return 1;
     }
 
-    // F·jl memÛri·ba mappelÈse
+    // F√°jl mem√≥ri√°ba mappel√©se
     HANDLE hMap = CreateFileMapping(hFile, NULL, PAGE_READONLY, 0, 0, NULL);
     if (hMap == NULL) {
-        std::cerr << "Nem siker¸lt lÈtrehozni a memÛriatÈrkÈpet" << std::endl;
+        std::cerr << "Nem siker√ºlt l√©trehozni a mem√≥riat√©rk√©pet" << std::endl;
         CloseHandle(hFile);
         return 1;
     }
 
     char* addr = static_cast<char*>(MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, 0));
     if (addr == NULL) {
-        std::cerr << "Nem siker¸lt betˆlteni a f·jlt a memÛri·ba" << std::endl;
+        std::cerr << "Nem siker√ºlt bet√∂lteni a f√°jlt a mem√≥ri√°ba" << std::endl;
         CloseHandle(hMap);
         CloseHandle(hFile);
         return 1;
     }
 
-    // Beolvasott ÈrtÈkek t·rol·sa
+    // Beolvasott √©rt√©kek t√°rol√°sa
     std::vector<int> intValues;
     std::vector<float> floatValues;
 
-    // F·jl tartalm·nak feldolgoz·sa Ès ÈrtÈkek kinyerÈse
+    // F√°jl tartalm√°nak feldolgoz√°sa √©s √©rt√©kek kinyer√©se
     char* end;
     int fieldCount = 0;
     for (char* ptr = addr; ptr < addr + fileSize; ++ptr) {
-        // Sz·m elejÈnek keresÈse
+        // Sz√°m elej√©nek keres√©se
         if (std::isdigit(*ptr) || *ptr == '-' || *ptr == '+') {
             if (fieldCount < 5) {
                 int value = std::strtol(ptr, &end, 10);
@@ -64,7 +64,7 @@ int npB(string path, set<Nap> &osszesNap, bool reset=true){
         }
     }
 
-    // MemÛria tÈrkÈp elt·volÌt·sa Ès f·jl bez·r·sa
+    // Mem√≥ria t√©rk√©p elt√°vol√≠t√°sa √©s f√°jl bez√°r√°sa
     UnmapViewOfFile(addr);
     CloseHandle(hMap);
     CloseHandle(hFile);
@@ -103,14 +103,14 @@ bool jelentesBetoltes(string path, set<Negyed> &negyedevek, bool reset=true){
     //set<Negyed> negyedevek;
     while (getline(file,line)){
         if (benneVanAzStr(line,"fiscalDateEnding")){
-            /// megtudja, melyik idıszakrÛl van szÛ
+            /// megtudja, melyik id√µszakr√≥l van sz√≥
             stringstream ss; ss<<line;
             string temp; ss>>temp;
             char c;ss>>c;
             int year=0, month=0, day=0;
             ss>>year>>c>>month>>c>>day;
 
-            /// lÈtrehozza a negyedÈvet, ha nem lÈtezik, egyÈbkÈnt meg azt csin·lja
+            /// l√©trehozza a negyed√©vet, ha nem l√©tezik, egy√©bk√©nt meg azt csin√°lja
             Negyed negyed(year,month,day);
             set<Negyed>::iterator it = negyedevek.find(negyed);
             if (it == negyedevek.end()) {
@@ -118,10 +118,10 @@ bool jelentesBetoltes(string path, set<Negyed> &negyedevek, bool reset=true){
                 it = negyedevek.find(negyed);
             }
 
-            /// bekÈri az ut·ne lÈvı adatot(okat)
+            /// bek√©ri az ut√°ne l√©v√µ adatot(okat)
             getline(file,line);
             if (benneVanAzStr(line,"reportedEPS")){
-                /// Èves jelentÈsek (nem foglalkozok jelenleg vele)
+                /// √©ves jelent√©sek (nem foglalkozok jelenleg vele)
                 /*
                 stringstream ss2; ss<<line;
                 ss2>>temp>>c;
@@ -344,7 +344,7 @@ void Stock::adatokKiirasaFajlba (string fajlNev){
 
 
     ofstream file2(fajlNev+"minutes.txt");
-    file2<<"datum, idopont, nyit·s, z·r·s, minimum, maximum, volumen"<<endl;
+    file2<<"datum, idopont, nyit√°s, z√°r√°s, minimum, maximum, volumen"<<endl;
     for (const auto& elem : mindenNap) {
         for (const auto& elem2 : elem.percek){
             file2 << endl;
@@ -366,12 +366,128 @@ void Stock::adatokKiirasaFajlba (string fajlNev){
 
 void Stock::adatokFeldolgozasa(){
 
+    Nap ntm;
+    Arfolyam itm;
+    const Nap *legutobbiNap = &ntm;
     for (const Nap& nap : mindenNap) {
 
-        for (const Arfolyam& perc : nap.percek){
-
+        /// ha l√©tezik az el≈ëz≈ë nap
+        if (legutobbiNap->datum.year>1800){ /// akkor √∂sszelinkelem ≈ëket
+            nap.elozoNap=legutobbiNap->datum;
+            legutobbiNap->kovetkezoNap=nap.datum;
         }
+
+        /// be√°ll√≠tom statikusan a nyit√°st z√°r√°st
+        nap.idoNyitas=Idopont(9,30);
+        nap.idoZaras=Idopont(15,59);
+        nap.valid=true;
+
+        /// √©s lek√©rdezem, hogy a h√©z melyik napja
+        nap.hetMelyikNapja=hetNapja(nap.datum);
+
+        const Arfolyam *legutobbiPerc = &itm;
+        bool ny=false, z=false;
+        vector<Arfolyam> pluszPercek;
+
+        for (const Arfolyam& perc : nap.percek){
+            /// amennyiben van el≈ëz≈ë perc
+            if (legutobbiPerc->idopont.ora>2){
+                /// √©s elm√∫lt a nyit√°s vagy a z√°r√°s
+                if (!(perc.idopont<nap.idoNyitas) && !ny){
+                    if (legutobbiPerc->idopont<nap.idoNyitas)
+                        nap.nyitas=legutobbiPerc->close;
+                    else
+                        nap.nyitas=legutobbiPerc->open;
+                    ny=true;
+                }
+                if (!(perc.idopont<nap.idoZaras) && !z){
+                    nap.zaras=legutobbiPerc->close;
+                    z=true;
+                }
+            }
+
+
+            /// ha nyitva van a piac, a napi adatot torn√°ztatjuk
+            Idopont zarasP = nap.idoZaras; zarasP.kovetkezoPerc(); /// hoz az 15:59 is benne legyen
+            if (!(perc.idopont<nap.idoNyitas) && (perc.idopont<nap.idoZaras)){
+                nap.minimum=min(nap.minimum,perc.minimum);
+                nap.maximum=max(nap.maximum,perc.maximum);
+                nap.volumen+=perc.volumen;
+            }
+
+
+            /// hi√°nyz√≥ percek p√≥tl√°sa
+            if (legutobbiPerc->idopont.ora>2){ /// ha valid az utols√≥ perc
+                if (legutobbiPerc->idopont<nap.idoZaras && nap.idoNyitas<perc.idopont){ ///
+                    int elteltPercek = perc.idopont-legutobbiPerc->idopont;
+                    if (elteltPercek>1){
+                        Idopont utobbiP = legutobbiPerc->idopont;
+                        for (int i=1; i<elteltPercek; i++){
+                            utobbiP.kovetkezoPerc();
+                            Arfolyam temp(utobbiP.ora,utobbiP.perc,legutobbiPerc->close,legutobbiPerc->close,legutobbiPerc->close,legutobbiPerc->close,0);
+                            pluszPercek.push_back(temp);
+                        }
+                    }
+                }
+            }
+            else if (nap.idoNyitas<perc.idopont){ /// ha nem, de a jelenlegi m√°r nyit√°son t√∫l van
+                Idopont tempI = nap.idoNyitas;
+                int kulonb = perc.idopont-nap.idoNyitas;
+                for (int i=0; i<kulonb; i++){
+                    Arfolyam tempA(tempI.ora,tempI.perc,perc.open,perc.open,perc.open,perc.open,0);
+                    pluszPercek.push_back(tempA);
+                    tempI.kovetkezoPerc();
+                }
+            }
+
+            legutobbiPerc=&perc;
+        }
+
+        /// he z√°r√°s el≈ëtt van m√©g az utols√≥ adat
+        if (legutobbiPerc->idopont<nap.idoZaras){
+            int elteltPercek = nap.idoZaras-legutobbiPerc->idopont;
+            Idopont utobbiP = legutobbiPerc->idopont;
+            for (int i=1; i<elteltPercek+1; i++){ /// +1 mert a z√°r√°s idej√©t is bele kell venni (√≠gy logikus a ciklus fejl√©c)
+                utobbiP.kovetkezoPerc();
+                Arfolyam temp(utobbiP.ora,utobbiP.perc,legutobbiPerc->close,legutobbiPerc->close,legutobbiPerc->close,legutobbiPerc->close,0);
+                pluszPercek.push_back(temp);
+            }
+        }
+
+        /// plusz percek hozz√°ad√°sa
+        for (int i=0; i<pluszPercek.size(); i++)
+            nap.percek.insert(pluszPercek[i]);
+
+
+        /// madj elmenti a kiugrast
+        if (legutobbiNap->datum.year>1800)
+            nap.elozohozKiugras=nap.nyitas-legutobbiNap->zaras;
+
+
+        /// nap nyit√°sa √©s z√°r√°sa
+        Arfolyam arf(nap.idoNyitas.ora,nap.idoNyitas.perc);
+        set<Arfolyam>::iterator it = nap.percek.find(arf);
+        if (it == nap.percek.end()) {
+            cout<<"nagy a baj : Arfolyam adatfeldolgozo iterator 1"<<endl;
+        }
+        else {
+            nap.nyitas=(*it).open;
+        }
+        arf = Arfolyam(nap.idoZaras.ora,nap.idoZaras.perc);
+        it = nap.percek.find(arf);
+        if (it == nap.percek.end()) {
+            cout<<"nagy a baj : Arfolyam adatfeldolgozo iterator 2"<<endl;
+        }
+        else {
+            nap.zaras=(*it).close;
+        }
+
+        legutobbiNap=&nap;
     }
+
+    /// megvannak a perc adatok √©s a napok √∂sszegz√©se
+    /// kell a nagyed√©vek √∂sszehangol√°sa is
+
 }
 
 

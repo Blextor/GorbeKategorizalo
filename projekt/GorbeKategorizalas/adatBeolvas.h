@@ -23,4 +23,5 @@ bool elemeAzStr (vector<string> v, string mi);
 vector<string> csoportReszvenyei(string str);
 string csoportFrissites(vector<string> vec, string csop);
 
+
 #endif // ADATBEOLVAS_H_INCLUDED

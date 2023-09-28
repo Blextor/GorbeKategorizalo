@@ -104,10 +104,11 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
     cout<<"a1: "<<(clock()-t)<<endl;
     t=clock();
-    //stock.adatokBetoltese("AMD");
+    stock.adatokBetoltese("INTC");
+    //stock.adatokFeldolgozasa();
     cout<<"a2: "<<(clock()-t)<<endl;
     t=clock();
-    //stock.adatokKiirasaFajlba("AMD");
+    stock.adatokKiirasaFajlba("INTC2");
     cout<<"a3: "<<(clock()-t)<<endl;
     t=clock();
 
