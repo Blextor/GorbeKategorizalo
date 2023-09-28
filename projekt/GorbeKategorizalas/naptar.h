@@ -39,7 +39,7 @@ struct Datum{
         return day < other.day;
     }
 
-    int tavolsag(Datum other){
+    int tavolsag(const Datum other){
         // Létrehozza a kezdeti dátumot: 1990. január 1.
         std::tm start_date = {};
         start_date.tm_year = other.year - 1900; // tm_year: évszám 1900-tól

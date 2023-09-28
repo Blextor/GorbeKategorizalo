@@ -131,7 +131,7 @@
 1695370899 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\main.cpp
 	"common.h"
 
-1695897492 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\main2.cpp
+1695901829 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\main2.cpp
 	"common.h"
 	<list>
 	<utility>
@@ -178,7 +178,7 @@
 1695558361 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatletoltes.h
 	"common.h"
 
-1695897777 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\stock.cpp
+1695901574 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\stock.cpp
 	"stock.h"
 	<windows.h>
 	<iostream>
@@ -191,7 +191,7 @@
 	"adatBeolvas.h"
 	"naptar.h"
 
-1695893580 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\naptar.h
+1695901235 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\naptar.h
 	"common.h"
 
 1695892039 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\naptar.cpp

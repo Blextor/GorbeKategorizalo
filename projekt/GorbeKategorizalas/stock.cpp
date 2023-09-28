@@ -487,7 +487,35 @@ void Stock::adatokFeldolgozasa(){
 
     /// megvannak a perc adatok és a napok összegzése
     /// kell a nagyedévek összehangolása is
-
+    vector<Negyed> olvasztottNegyedek;
+    vector<Negyed> ujNegyedek;
+    for (const Negyed& negyed: negyedevek){
+        /// ha nincs valahol tényleges jelentési dátum
+        if (negyed.tenylegesJelentes.year==-1){
+            /// akkor az egy magányos bevételi adatos rekord
+            /// kell találni hozzá egy párt
+            for (const Negyed& keresettNegyed: negyedevek){
+                Datum keresett = keresettNegyed.idoszakVege;
+                Datum talalt = negyed.idoszakVege;
+                if (keresett.tavolsag(talalt)<10 && /// közel legyen max. egy hétre
+                    keresett.tavolsag(talalt)!=0){ /// de ne ugyan az
+                    olvasztottNegyedek.push_back(negyed);
+                    olvasztottNegyedek.push_back(keresettNegyed);
+                    Negyed ujNegyed = keresettNegyed;
+                    ujNegyed.income=negyed.income;
+                    ujNegyed.earn=negyed.earn;
+                    ujNegyedek.push_back(ujNegyed);
+                    break; /// nem kell másikat keresni
+                }
+            }
+        }
+    }
+    for (int i=0; i<olvasztottNegyedek.size(); i++){ /// beolvasztott negyedek törlése
+        negyedevek.erase(negyedevek.find(olvasztottNegyedek[i]));
+    }
+    for (int i=0; i<ujNegyedek.size(); i++){ /// új negyedek beillesztése
+        negyedevek.insert(ujNegyedek[i]);
+    }
 }
 
 
