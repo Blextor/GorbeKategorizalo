@@ -6,6 +6,7 @@
 #include "adatBeolvas.h"
 #include "adatLetoltes.h"
 #include "stock.h"
+#include "config.h"
 
 using namespace std;
 
@@ -49,6 +50,18 @@ struct FoMenu : public Menu {
 
     Menu *frissitoMenu;
     Menu *csoportEditormenu;
+
+    Text FoCim;
+
+    Button FrissMB, RCSMB;
+    Button GorbeMB, ElemzesMB;
+    Button KilepB;
+
+    Button szalMennyisegB;
+    Text szalakKiv;
+    Text szalakKivInfo;
+
+    void gombokKialakitasa();
 
     FoMenu(){}
     FoMenu(SDL_Pack sdlp,Menu **act) : Menu(sdlp,act){}
@@ -267,7 +280,6 @@ struct CsoportEditorMenu : public Menu {
     void inputHandle() override;
     void process() override;
 };
-
 
 
 

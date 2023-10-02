@@ -40,8 +40,8 @@
 #include <functional>
 
 
-#define gyoker ((string)"C:\\stockData\\")
-#define maxLetoltesPerMin 30
+#define Kgyoker ((string)"C:\\stockData\\")
+
 
 
 #define SZELES 640

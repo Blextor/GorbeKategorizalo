@@ -47,19 +47,19 @@ vector<string> getFiles(const string& directoryPath) {
 }
 
 vector<string> osszesReszveny(){
-    string directoryPath = gyoker+"\\stocks";
+    string directoryPath = Config.getRootDirectory()+"\\stocks";
     vector<string> subdirectories = getSubdirectories(directoryPath);
     return subdirectories;
 }
 
 vector<string> osszesCsoport(){
-    string directoryPath = gyoker+"\\groups";
+    string directoryPath = Config.getRootDirectory()+"\\groups";
     vector<string> subdirectories = getFiles(directoryPath);
     return subdirectories;
 }
 
 string createNewReszveny(string str){
-    string path = gyoker+"\\stocks";
+    string path = Config.getRootDirectory()+"\\stocks";
     transform(str.begin(), str.end(), str.begin(), [](unsigned char c){ return toupper(c); });
 
     string directoryName = str;
@@ -74,7 +74,7 @@ string createNewReszveny(string str){
 }
 
 string createNewCsoport(string str){
-    string path = gyoker+"\\groups";
+    string path = Config.getRootDirectory()+"\\groups";
     string fileName = str;
 
     string fullPath = path + "\\" + fileName;
@@ -138,14 +138,14 @@ bool DeleteDirectory(const std::string &directoryPath) {
 string deleteReszveny(string str){
     transform(str.begin(), str.end(), str.begin(), [](unsigned char c){ return toupper(c); });
 
-    string path = gyoker+"\\stocks\\"+str;
+    string path = Config.getRootDirectory()+"\\stocks\\"+str;
     bool siker = DeleteDirectory(path);
     if (siker) return "Siker!";
     return "Hiba!";
 }
 
 string deleteCsoport(string str){
-    string filePath = gyoker+"\\groups\\"+str; // Változtassa meg a saját útvonalára
+    string filePath = Config.getRootDirectory()+"\\groups\\"+str; // Változtassa meg a saját útvonalára
 
     if (std::remove(filePath.c_str()) == 0) {
         return "Siker!";
@@ -164,7 +164,7 @@ bool elemeAzStr ( vector<string> v, string mi){
 }
 
 vector<string> csoportReszvenyei(string str){
-    string path = gyoker+"\\groups\\"+str;
+    string path = Config.getRootDirectory()+"\\groups\\"+str;
     ifstream file(path);
     vector<string> lista;
     while (!file.eof()){
@@ -178,7 +178,7 @@ vector<string> csoportReszvenyei(string str){
 
 string csoportFrissites(vector<string> vec, string csop){
     if (csop.size()==0) return "Ures!";
-    string path = gyoker+"\\groups\\"+csop;
+    string path = Config.getRootDirectory()+"\\groups\\"+csop;
     ofstream file(path);
     if (!file.is_open()){return "Hiba!";}
     for (size_t i=0; i<vec.size(); i++){

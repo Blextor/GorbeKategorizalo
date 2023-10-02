@@ -280,10 +280,10 @@ bool napiBetoltes2(string path, set<Nap> &osszesNap, bool reset=true){
 
 bool Stock::adatokBetoltese(string stock){
     name=stock;
-    string path = gyoker + "stocks";
+    string path = Config.getRootDirectory() + "stocks";
     if (!elemeAzStr(getSubdirectories(path),stock))
         return false;
-    path = gyoker + "stocks\\"+stock;
+    path = Config.getRootDirectory() + "stocks\\"+stock;
 
     clock_t t = clock();
     if (!jelentesBetoltes(path,negyedevek)) return false;
@@ -301,10 +301,10 @@ bool Stock::adatokBetoltese(string stock){
 
 bool Stock::adatokBetoltese2Teszt(string stock){
     name=stock;
-    string path = gyoker + "\\stocks";
+    string path = Config.getRootDirectory() + "\\stocks";
     if (!elemeAzStr(getSubdirectories(path),stock))
         return false;
-    path = gyoker + "\\stocks\\"+stock;
+    path = Config.getRootDirectory() + "\\stocks\\"+stock;
 
     clock_t t = clock();
     if (!jelentesBetoltes(path,negyedevek)) return false;

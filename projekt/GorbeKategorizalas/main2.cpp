@@ -96,6 +96,9 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     srand(time(NULL));
     SDL_Event ev;
 
+     AppConfig& config = AppConfig::getInstance();
+     config.loadConfig();
+     cout<<config.getRootDirectory()<<" "<<config.getMaxThreads()<<endl;
 
     /// adatokat kell beolvasnom
     clock_t t = clock();
@@ -104,7 +107,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
     cout<<"a1: "<<(clock()-t)<<endl;
     t=clock();
-    stock.adatokBetoltese("DBX");
+    //stock.adatokBetoltese("DBX");
     cout<<"a2: "<<(clock()-t)<<endl;
     t=clock();
     stock.adatokFeldolgozasa();

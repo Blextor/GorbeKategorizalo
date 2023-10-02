@@ -1,5 +1,6 @@
 #include "adatLetoltes.h"
 #include "adatBeolvas.h"
+#include "config.h"
 
 clock_t utolsoLetoltes=0;
 
@@ -39,7 +40,8 @@ int getActMonth(){
 }
 
 void waitForAPI(){
-    if (!(downloadCnt++<maxLetoltesPerMin)){
+    AppConfig& config = AppConfig::getInstance();
+    if (!(downloadCnt++<config.getMaxAPICalls())){
         while (aktMin==getActMin()){
             Sleep(10);
         }
@@ -65,7 +67,7 @@ size_t WriteCallback(void* contents, size_t size, size_t nmemb, string& s) {
 }
 
 string getAPI_Key(){
-    ifstream file(gyoker+"API_Key.txt");
+    ifstream file(Config.getRootDirectory()+"API_Key.txt");
     string key; file>>key;
     file.close();
     return key;
@@ -186,15 +188,10 @@ bool letezoReszveny (string stock){
 bool felkeszReszveny (string stock){
     bool chk = elemeAzStr(osszesReszveny(),stock);
     if (chk){
-        string path = gyoker+"\\stocks\\"+stock+"\\months";
+        string path = Config.getRootDirectory()+"\\stocks\\"+stock+"\\months";
         return getFiles(path).size()!=0;
     }
     return false;
-}
-
-thread valami(){
-    thread temp;
-    return temp;
 }
 
 
@@ -231,7 +228,7 @@ string csoportFrissitesChk(string group){
 }
 
 bool reszvenyNapiLetrehoz(string stock, string str){
-    string path = gyoker+"\\stocks\\"+stock+"\\napi.txt";
+    string path = Config.getRootDirectory()+"\\stocks\\"+stock+"\\napi.txt";
     ofstream file(path);
     if (!file.is_open()) return false;
     file<<str;
@@ -240,7 +237,7 @@ bool reszvenyNapiLetrehoz(string stock, string str){
 }
 
 bool reszvenyJelentesLetrehoz(string stock, string str){
-    string path = gyoker+"\\stocks\\"+stock+"\\jelentes.txt";
+    string path = Config.getRootDirectory()+"\\stocks\\"+stock+"\\jelentes.txt";
     ofstream file(path);
     if (!file.is_open()) return false;
     file<<str;
@@ -249,7 +246,7 @@ bool reszvenyJelentesLetrehoz(string stock, string str){
 }
 
 bool reszvenyBevetelLetrehoz(string stock, string str){
-    string path = gyoker+"\\stocks\\"+stock+"\\bevetel.txt";
+    string path = Config.getRootDirectory()+"\\stocks\\"+stock+"\\bevetel.txt";
     ofstream file(path);
     if (!file.is_open()) return false;
     file<<str;
@@ -258,7 +255,7 @@ bool reszvenyBevetelLetrehoz(string stock, string str){
 }
 
 bool reszvenyHonapLetrehoz(string stock, string str, int year, int month){
-    string path = gyoker+"\\stocks\\"+stock+"\\months\\";
+    string path = Config.getRootDirectory()+"\\stocks\\"+stock+"\\months\\";
     stringstream ss; ss<<path<<year<<"_"<<(month/10)<<(month%10)<<".csv";
     ofstream file(ss.str());
     if (!file.is_open()) return false;
@@ -273,7 +270,7 @@ void reszvenyAPILetoltes(string stock, bool &stopped, bool &inProc, function<voi
     bool alosztaly = !inProc;
     inProc=true;
     int celY = getActYear(), celM=getActMonth();
-    string path = gyoker+"\\stocks\\"+stock;
+    string path = Config.getRootDirectory()+"\\stocks\\"+stock;
     CreateDirectory(path.c_str(), NULL);
     path+="\\months";
     CreateDirectory(path.c_str(), NULL);
@@ -341,7 +338,7 @@ void reszvenyAPILetoltes(string stock, bool &stopped, bool &inProc, function<voi
 }
 
 int legregebbiReszvenyHonap(string stock) { /// return YYYYMM
-    string path = gyoker+"\\stocks\\"+stock+"\\months";
+    string path = Config.getRootDirectory()+"\\stocks\\"+stock+"\\months";
     vector<string> honapok = getFiles(path);
     int maxY = 2000, maxM = 1;
     for (size_t i=0; i<honapok.size(); i++){
@@ -376,7 +373,7 @@ void reszvenyAPIFrissites(string stock, bool &stopped, bool &inProc, function<vo
         }
     }
     int celY = getActYear(), celM=getActMonth();
-    string path = gyoker+"\\stocks\\"+stock;
+    string path = Config.getRootDirectory()+"\\stocks\\"+stock;
     CreateDirectory(path.c_str(), NULL);
     path+="\\months";
     CreateDirectory(path.c_str(), NULL);

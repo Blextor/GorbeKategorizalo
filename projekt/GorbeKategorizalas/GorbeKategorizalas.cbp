@@ -54,6 +54,8 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="main2.cpp" />
 		<Unit filename="menu.cpp" />
+		<Unit filename="naptar.cpp" />
+		<Unit filename="naptar.h" />
 		<Unit filename="stock.cpp" />
 		<Unit filename="stock.h" />
 		<Extensions>

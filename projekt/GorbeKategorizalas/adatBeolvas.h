@@ -2,6 +2,7 @@
 #define ADATBEOLVAS_H_INCLUDED
 
 #include "common.h"
+#include "config.h"
 
 using namespace std;
 
