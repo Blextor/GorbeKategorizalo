@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "adatBeolvas.h"
+#include "stock.h"
 
 using namespace std;
 
@@ -278,6 +279,96 @@ struct ProgressBar{
             stringRGBA(renderer,X+w-35,Y+h+7,"kesz",0,0,0,255);
     }
 
+};
+
+struct KeziGorbe{
+    int x=0, y=0;
+    string stockName = "";
+
+    int X=0, Y=0;
+
+    Stock *stock;
+
+    Gorbe(int vx, int vy){
+
+    }
+
+    void draw (SDL_Renderer *renderer, int wa, int wb){
+
+    }
+
+    bool inClick(int bx, int by){
+
+    }
+};
+
+void loadStock(string name, Stock &stock);
+
+struct ReszvenySor{
+    vector<KeziGorbe> gorbek;
+    int x=0, y=0;
+
+    int X=0, Y=0;
+    Stock stock;
+
+    std::mutex mfs;
+    thread th1;
+
+    Button UjElemB, ElemzesB;
+
+    // Mozgató konstruktor
+    ReszvenySor(ReszvenySor&& other) noexcept : stock(other.stock) {
+        // A mutex átvétele nem szükséges, mivel az állapota nem befolyásolja az objektum állapotát
+    }
+
+    // Mozgató értékadó operátor
+    ReszvenySor& operator=(ReszvenySor&& other) noexcept {
+        if (this != &other) {
+            stock = other.stock;
+            // A mutex átvétele itt sem szükséges
+        }
+        return *this;
+    }
+
+    // Töröljük a másoló konstruktort és értékadó operátort
+    ReszvenySor(const ReszvenySor&) = delete;
+    ReszvenySor& operator=(const ReszvenySor&) = delete;
+
+    ReszvenySor() : x(0) {
+        gorbek.clear();
+        UjElemB=Button("Uj elem",0,0,60,13,true,true);
+        ElemzesB=Button("Elemzes",0,0,60,13,true,true);
+    }
+
+    ReszvenySor(int vx, int vy){
+        gorbek.clear();
+    }
+
+
+
+    void setStock(string name){
+        if (isLocked(mfs)) return;
+        mfs.lock();
+        if (th1.joinable()) th1.join();
+        th1 = move(thread(loadStock, name, ref(stock)));
+        mfs.unlock();
+        return;
+    }
+
+    void draw (SDL_Renderer *renderer, int wa, int wb){
+        rectangleRGBA(renderer, wa, wb, wa+max(gorbek.size(),(size_t)1)*200, wb+200,0,0,0,255);
+        UjElemB.draw(renderer,wa+5,wb+30);
+        ElemzesB.draw(renderer,wa+5,wb+60);
+        if (!isLocked(mfs))
+            stringRGBA(renderer,wa+5,wb+5,stock.name.c_str(),0,0,0,255);
+        for (int i=0; i<gorbek.size(); i++){
+            gorbek[i].draw(renderer,wa,wb+100+200*i);
+        }
+    }
+
+    bool inClick(int bx, int by){
+
+    }
 };
 
 #endif // BUTTON_H_INCLUDED

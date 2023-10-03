@@ -50,6 +50,7 @@ struct FoMenu : public Menu {
 
     Menu *frissitoMenu;
     Menu *csoportEditormenu;
+    Menu *gorbeMenu;
 
     Text FoCim;
 
@@ -66,7 +67,7 @@ struct FoMenu : public Menu {
     FoMenu(){}
     FoMenu(SDL_Pack sdlp,Menu **act) : Menu(sdlp,act){}
 
-    void nextMenus(Menu *frissito, Menu *csoport);
+    void nextMenus(Menu *frissito, Menu *csoport, Menu *gorbe);
 
     void draw() override;
     void inputHandle() override;
@@ -281,7 +282,31 @@ struct CsoportEditorMenu : public Menu {
     void process() override;
 };
 
+struct ReszvenyMenu : public Menu {
 
+    Text FoCim; /// fejléc
+    Button FoMB, ElmMB, CimMB; /// menü gombok
+    Menu *cimkeMenu, *foMenu, *elemzoMenu;
+
+    Button ujReszInp, reszOKB; /// új részvény sor létrehozása
+    Gorgetheto reszvenyLista;
+
+    vector<bool> boolR;
+    vector<ReszvenySor> reszvenyek; /// a részvények sorai
+
+
+
+    void gombokKialakitasa();
+
+    ReszvenyMenu(){}
+    ReszvenyMenu(SDL_Pack sdlp,Menu **act) : Menu(sdlp,act){}
+
+    void nextMenus(Menu *fomenu);
+
+    void draw() override;
+    void inputHandle() override;
+    void process() override;
+};
 
 
 
@@ -290,6 +315,7 @@ struct MenuK {
     FoMenu fomenu;
     FrissitoMenu frissitomenu;
     CsoportEditorMenu csoportEditormenu;
+    ReszvenyMenu reszvenyMenu;
 
     MenuK(SDL_Pack sdlp, Menu **act);
 };

@@ -188,4 +188,13 @@ string csoportFrissites(vector<string> vec, string csop){
     return "Siker!";
 }
 
+bool isLocked(const std::mutex& mtx) {
+    std::mutex& non_const_mtx = const_cast<std::mutex&>(mtx);
+    if (non_const_mtx.try_lock()) {
+        non_const_mtx.unlock();
+        return false;  // A mutex nem volt zár alatt, mivel sikerült megszerezni a zárat
+    }
+    return true;  // A mutex zár alatt volt
+}
+
 

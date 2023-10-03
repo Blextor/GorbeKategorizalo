@@ -1,0 +1,53 @@
+A részvények megtekintésénél több részvény több időszaktás is érdemes lehet megnézni.
+Egy részvényt akár többször is?
+	Lehet...
+
+Egy grafikonon 40 nap - 390 perc adat van.
+	+ kiugrás és néhány másik érték, pl az igaz címkék rá
+	nyitás zárás min max vol *390 az kb 2000 float ami 64kB ami nem sok.
+
+Ha kigyűjtöm az összeset külön, akkor egy új diagram megnyitása során bármilyen eseten is kell várni 2 sec-et.	
+
+
+NVDA megnyitása 7 sec.
+Érdemes lenne csak egyszer beolvasni valahogy az adatokat.
+
+Ha van 100 részvényből példa, akkor be kell tölteni, vagy el kell tárolni azt az X példát.
+
+
+Kézi elemzés során, amikor magunk választjuk ki a görbét, akkor a részvény egészét betöltjük, és kész.
+	Ekkor valahol el van tárolva a részvény minden adata.
+	És ha túlcsordulnánk, akkor be kell zárni egy meglévőt.
+
+
+
+Jó, lesz akkor két féle módszer a grafikonnak az adatszerzésre.
+	Egy, betölti a részvény egészéből valamilyen intervallumot.
+	Kettő, betölt egy mentett példát, ami egy előző esetből lett kimentve.
+
+Mentett példa:
+	részvény neve
+	görbe értékei
+	címkék
+
+
+Új kattintási rendszer:
+	A kézi vizsgálat során sorok lesznek.
+		Sorokban több intervallum is akár egy részvényből.
+	Egy részvénynek egy sora lesz.
+
+	Ha kattintok valahova, akkor mindenkinek adok egy értesítést.
+		Így valaki aktívvá válik, valaki afkol tovább.
+
+
+Szóval, a kézi nézetnél egy sor magának betölt egy részvényt
+	egy sor fél GB, szóval csak okosan.
+	Ezt aszinkron érdemes csinálni.
+
+
+
+
+
+
+
+

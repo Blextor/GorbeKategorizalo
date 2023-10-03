@@ -91,6 +91,10 @@ int npB(string path, set<Nap> &osszesNap, bool reset=true){
     return 0;
 }
 
+void loadStock(string name, Stock &stock){
+    stock.adatokBetoltese(name);
+    stock.adatokFeldolgozasa();
+}
 
 bool jelentesBetoltes(string path, set<Negyed> &negyedevek, bool reset=true){
 

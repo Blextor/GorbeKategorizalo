@@ -6,6 +6,8 @@
 
 using namespace std;
 
+bool isLocked(const std::mutex& mtx);
+
 vector<string> osszesReszveny();
 vector<string> osszesCsoport();
 

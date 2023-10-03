@@ -23,9 +23,10 @@ void FoMenu::gombokKialakitasa(){
 }
 
 
-void FoMenu::nextMenus(Menu *frissito, Menu *csoport){
+void FoMenu::nextMenus(Menu *frissito, Menu *csoport, Menu *gorbe){
     frissitoMenu=frissito;
     csoportEditormenu=csoport;
+    gorbeMenu=gorbe;
     gombokKialakitasa();
 }
 
@@ -81,6 +82,7 @@ void FoMenu::inputHandle(){
         /// kérdés, hogy eltaláltunk-e valami kattinthatót
         if (FrissMB.inClick(MX,MY)) *menu = frissitoMenu; /// fõmenübe írányító gombot
         else if (RCSMB.inClick(MX,MY)) *menu = csoportEditormenu; /// csoport szerksztõ menü gombot
+        else if (GorbeMB.inClick(MX,MY)) *menu = gorbeMenu; /// részvény menü gombot
         else if (KilepB.inClick(MX,MY)) exit(3); /// csoport szerksztõ menü gombot
         else if (szalMennyisegB.inClick(MX,MY)) {
             state=1;
@@ -119,9 +121,9 @@ void FoMenu::inputHandle(){
             int val; ss>>val;
             Config.setMaxThreads(val);
             ss.str(" "); ss.clear(); ss<<Config.getMaxThreads();
-            cout<<ss.str()<<endl;
+            //cout<<ss.str()<<endl;
             szalMennyisegB.str=ss.str();
-            cout<<"valma "<<Config.getMaxThreads()<<endl;
+            //cout<<"valma "<<Config.getMaxThreads()<<endl;
         }
     }
 }
