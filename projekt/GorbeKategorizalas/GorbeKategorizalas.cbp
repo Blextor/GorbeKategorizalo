@@ -48,6 +48,8 @@
 		<Unit filename="cimke.cpp" />
 		<Unit filename="cimke.h" />
 		<Unit filename="common.h" />
+		<Unit filename="config.cpp" />
+		<Unit filename="config.h" />
 		<Unit filename="csoportEditor.cpp" />
 		<Unit filename="fomenu.cpp" />
 		<Unit filename="frissitoMenu.cpp" />
@@ -56,6 +58,7 @@
 		<Unit filename="menu.cpp" />
 		<Unit filename="naptar.cpp" />
 		<Unit filename="naptar.h" />
+		<Unit filename="reszvenyMenu.cpp" />
 		<Unit filename="stock.cpp" />
 		<Unit filename="stock.h" />
 		<Extensions>

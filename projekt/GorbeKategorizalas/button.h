@@ -68,7 +68,7 @@ struct Gorgetheto {
     Gorgetheto(vector<string> e,int vx, int vy, int vw, int vh, int vgx=-1, int vgy=-1){
         elemek=e; x=vx; y=vy; h=vh; w=vw; gridX=vgx; gridY=vgy;
         for (size_t i=0; i<elemek.size(); i++){
-            Button temp(elemek[i],0,0,w-25,13,false,false);
+            Button temp(elemek[i],0,0,w-25,13,true,true);
             gombok.push_back(temp);
         }
     }
@@ -76,6 +76,20 @@ struct Gorgetheto {
     void elemekFrissitese(vector<string> e, string str=""){
         megfeleloElemekSzelekt=megfeleloElemek;
         elemek=e;
+        roll=0;
+        gombok.clear();
+        for (size_t i=0; i<elemek.size(); i++){
+            if (benneVanAzStr(elemek[i],str) || str.size()==0){
+                if (!megElem || elemeAzStr(megfeleloElemek,elemek[i])){
+                    Button temp(elemek[i],0,0,(w-25-(gridX-1)*00)/max(1,gridX)-8,13,true,true);
+                    gombok.push_back(temp);
+                }
+            }
+        }
+    }
+
+    void elemekKeresese(string str=""){
+        megfeleloElemekSzelekt=megfeleloElemek;
         roll=0;
         gombok.clear();
         for (size_t i=0; i<elemek.size(); i++){
@@ -99,6 +113,8 @@ struct Gorgetheto {
         int gorgPos=0;
         if (maxRoll>0)
             gorgPos = gorgStart+(gorgAlsoEnd-gorgStart-gorgH)*roll/maxRoll;
+
+        boxRGBA(renderer,x-1,y+2,x+w+5,y+h+5,100,100,100,255);
         /// gombok
         for (size_t i=0;i<gombok.size();i++) {
             int by = y+6+(i/gridx)*20 - roll;
@@ -346,13 +362,14 @@ struct ReszvenySor{
 
 
 
-    void setStock(string name){
-        if (isLocked(mfs)) return;
+    bool setStock(string name){
+        if (!elemeAzStr(osszesReszveny(),name)) return false;
+        if (isLocked(mfs)) return false;
         mfs.lock();
         if (th1.joinable()) th1.join();
         th1 = move(thread(loadStock, name, ref(stock)));
         mfs.unlock();
-        return;
+        return true;
     }
 
     void draw (SDL_Renderer *renderer, int wa, int wb){

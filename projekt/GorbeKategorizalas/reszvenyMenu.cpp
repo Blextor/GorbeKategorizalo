@@ -8,7 +8,7 @@ void ReszvenyMenu::gombokKialakitasa(){
     CimMB = Button("Uj cimke",422,15,68,13,false,false);
 
     ujReszInp = Button("reszveny neve",20,50,120,13,false, false);
-    reszvenyLista = Gorgetheto(osszesReszveny(),20,70,120,90);
+    reszvenyLista = Gorgetheto(osszesReszveny(),20,70,124,102,false,false);
     reszOKB = Button("OK",150,50,32,13,false, false);
 }
 
@@ -21,8 +21,8 @@ void ReszvenyMenu::nextMenus(Menu *fomenu){
 }
 
 void ReszvenyMenu::draw() {
-    int x, y; /// ablak mÈretei
-    SDL_GetWindowSize(window,&x,&y); /// mÈretek lekÈrdezÈse
+    int x, y; /// ablak m√©retei
+    SDL_GetWindowSize(window,&x,&y); /// m√©retek lek√©rdez√©se
     SDL_SetRenderDrawColor(renderer,100,100,100,255);
     SDL_RenderClear(renderer);
 
@@ -31,27 +31,29 @@ void ReszvenyMenu::draw() {
     ElmMB.draw(renderer,x,y);
     CimMB.draw(renderer,x,y);
 
-    if (state == 1)
-        reszvenyLista.draw(renderer,x,y);
-    ujReszInp.draw(renderer,x,y);
-    reszOKB.draw(renderer,x,y);
 
     for (int i=0; i<reszvenyek.size(); i++)
         if (boolR[i])
             reszvenyek[i].draw(renderer,50,100+220*i);
+
+
+    if (state == 1)
+        reszvenyLista.draw(renderer,x,y);
+    ujReszInp.draw(renderer,x,y);
+    reszOKB.draw(renderer,x,y);
 
     SDL_RenderPresent(renderer);
 }
 
 void ReszvenyMenu::inputHandle(){
     int oldState=state;
-    int MX=-1, MY=-1; /// kurzor pozÌciÛja, ha -1 marad, nem tˆrtÈnt v·ltoz·s
-    //bool leftButton = true; /// k¸lˆn kÌgy˚jtˆm, hogy lenyomt·k-e a bal egÈrgombot
-    bool keyDown = false; /// vagy b·rmelyt a billenty˚zeten
-    bool mouseWheel = false; /// vagy gˆrgettek-e
+    int MX=-1, MY=-1; /// kurzor poz√≠ci√≥ja, ha -1 marad, nem t√∂rt√©nt v√°ltoz√°s
+    //bool leftButton = true; /// k√ºl√∂n k√≠gy√ªjt√∂m, hogy lenyomt√°k-e a bal eg√©rgombot
+    bool keyDown = false; /// vagy b√°rmelyt a billenty√ªzeten
+    bool mouseWheel = false; /// vagy g√∂rgettek-e
 
-    if (SDL_PollEvent(ev)){ /// lekÈrem az esemÈnyt Ès kigy˚jtˆm, hogy mi tˆrtÈnt
-        if (ev->type==SDL_MOUSEBUTTONDOWN){ /// csak kattint·skor kÈrem le az egÈr pozÌciÛt
+    if (SDL_PollEvent(ev)){ /// lek√©rem az esem√©nyt √©s kigy√ªjt√∂m, hogy mi t√∂rt√©nt
+        if (ev->type==SDL_MOUSEBUTTONDOWN){ /// csak kattint√°skor k√©rem le az eg√©r poz√≠ci√≥t
             MX=ev->button.x;
             MY=ev->button.y;
             //leftButton=ev->button.button==SDL_BUTTON_LEFT; /// bal gomb
@@ -60,73 +62,105 @@ void ReszvenyMenu::inputHandle(){
             //MX = ev->motion.x;
             //MY = ev->motion.y;
         }
-        if (ev->type==SDL_MOUSEWHEEL){ /// gˆrgtÈs
+        if (ev->type==SDL_MOUSEWHEEL){ /// g√∂rgt√©s
             mouseWheel=true;
         }
-        if (ev->type==SDL_KEYDOWN){ /// billenty˚
+        if (ev->type==SDL_KEYDOWN){ /// billenty√ª
             keyDown=true;
             //if (ev->key.keysym.sym==SDLK_r)
         }
-        if (ev->type == SDL_QUIT) /// beÈgetett kilÈpÈs engedÈlyezÈse
+        if (ev->type == SDL_QUIT) /// be√©getett kil√©p√©s enged√©lyez√©se
             exit(3);
     }
 
-    if (MX!=-1){ /// azaz az egÈrrel kattintottunk
-        /// kÈrdÈs, hogy eltal·ltunk-e valami kattinthatÛt
+    if (MX!=-1){ /// azaz az eg√©rrel kattintottunk
+        /// k√©rd√©s, hogy eltal√°ltunk-e valami kattinthat√≥t
         if (FoMB.inClick(MX,MY)) *menu = foMenu;
+        else if (ujReszInp.inClick(MX,MY)){
+            state = 1;
+            ujReszInp.str="";
+            reszvenyLista.elemekKeresese(ujReszInp.str);
+        }
+        else if (state == 1 && reszvenyLista.inClick(MX,MY)){
+            /// g√∂rget≈ë-be kattintva k√©rd√©ses m√©g, hogy hova is √©rkezett a kattint√°s
+            string btStr = reszvenyLista.whichButton(MX,MY);
+            if (btStr!=""){ /// ha siker, akkor sz√∂veg√©t haszn√°ljuk
+                ujReszInp.str=btStr;
+                reszvenyLista.elemekKeresese(ujReszInp.str);
+            } else {/// cs√∫szka haszn√°latra fenntartva
+
+            }
+        }
         else if (reszOKB.inClick(MX,MY)) {
             for (int i=0; i<boolR.size(); i++){
                 if (!boolR[i]){
                     boolR[i]=true;
-                    reszvenyek[i].setStock("DBX");
+                    if (!reszvenyek[i].setStock(ujReszInp.str))
+                        boolR[i]=false;
                     break;
                 }
             }
+            state=0;
         }
         else { /// ha kikattintunk a semmibe
-            state=0; /// akkor tÈrj¸nk vissza a kezdı ·llapotba
+            state=0; /// akkor t√©rj√ºnk vissza a kezd√µ √°llapotba
         }
         /*
-        if (FrissMB.inClick(MX,MY)) *menu = frissitoMenu; /// fımen¸be Ìr·nyÌtÛ gombot
-        else if (RCSMB.inClick(MX,MY)) *menu = csoportEditormenu; /// csoport szerksztı men¸ gombot
-        else if (KilepB.inClick(MX,MY)) exit(3); /// csoport szerksztı men¸ gombot
+        if (FrissMB.inClick(MX,MY)) *menu = frissitoMenu; /// f√µmen√ºbe √≠r√°ny√≠t√≥ gombot
+        else if (RCSMB.inClick(MX,MY)) *menu = csoportEditormenu; /// csoport szerkszt√µ men√º gombot
+        else if (KilepB.inClick(MX,MY)) exit(3); /// csoport szerkszt√µ men√º gombot
         else if (szalMennyisegB.inClick(MX,MY)) {
             state=1;
         }
 
         else { /// ha kikattintunk a semmibe
-            state=0; /// akkor tÈrj¸nk vissza a kezdı ·llapotba
+            state=0; /// akkor t√©rj√ºnk vissza a kezd√µ √°llapotba
         }
         */
     }
 
     if (ev->type == SDL_TEXTINPUT && ev->text.timestamp!=timestampText){ /// bevitel
-        timestampText=ev->text.timestamp; /// szˆvegbevitel esemÈny vÈgtelen, de idıbÈlyege nem
-        /*
-        if (state==1){ /// ˙j rÈszvÈny
-            if (isalnum(ev->text.text[0]) && !isalpha(ev->text.text[0])){ /// csak karakterek lehetnek
-                szalMennyisegB.str+=ev->text.text[0];
+        timestampText=ev->text.timestamp; /// sz√∂vegbevitel esem√©ny v√©gtelen, de id√µb√©lyege nem
+
+        if (state==1){ /// √∫j r√©szv√©ny
+            if (isalpha(ev->text.text[0])){ /// csak karakterek lehetnek
+                ujReszInp.str+=ev->text.text[0];
+                reszvenyLista.elemekKeresese(ujReszInp.str);
             }
         }
-        */
+
     }
 
-    if (keyDown){ /// ha billenty˚zetet nem gÈpelÈs miatt ¸tˆtt¸k le
-        if (ev->key.keysym.sym==SDLK_BACKSPACE){ /// pl. tˆrlÈs miatt
-            /// elızı beviteli mezık tartalm·nak reduk·l·sa Ès sz˚rÈsek frissÌtÈse
-            /*
+    if (keyDown){ /// ha billenty√ªzetet nem g√©pel√©s miatt √ºt√∂tt√ºk le
+        if (ev->key.keysym.sym==SDLK_BACKSPACE){ /// pl. t√∂rl√©s miatt
+            /// el√µz√µ beviteli mez√µk tartalm√°nak reduk√°l√°sa √©s sz√ªr√©sek friss√≠t√©se
+
             if (state==1){
-                if (szalMennyisegB.str.size()>0) {
-                    szalMennyisegB.str.pop_back();
+                if (ujReszInp.str.size()>0) {
+                    ujReszInp.str.pop_back();
+                    reszvenyLista.elemekKeresese(ujReszInp.str);
                 }
             }
-            */
+
         }
+
+        if (ev->key.keysym.sym==SDLK_UP){ /// pl. g√∂rget√©s gyors√≠t√°sa
+            if (state==1) {reszvenyLista.speedUpRoll();}
+        }
+        if (ev->key.keysym.sym==SDLK_DOWN){ /// lass√≠t√°sa
+            if (state==1) {reszvenyLista.speedDownRoll();}
+        }
+    }
+
+    if (mouseWheel){ /// vagy √©pp g√∂rgetn√©nk?
+        /// g√∂rget≈ëknek √°tadjuk az ir√°nyt, t√∂bbi az ≈ë bajuk
+        if (state==1)reszvenyLista.rollIt(-ev->wheel.y);
     }
 
     if (state!=oldState){
         if (oldState==1){
-
+            ujReszInp.str="reszveny neve";
+            reszvenyLista.elemekKeresese();
         }
     }
 }
