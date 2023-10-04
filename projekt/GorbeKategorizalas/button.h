@@ -58,11 +58,11 @@ struct Gorgetheto {
     bool elemSzelekt = false;
     vector<Button> gombok;
     vector<Button> megjelnoGombok;
-    int roll = 0; /// mennyi van gˆrgetve
-    int maxRoll = 0; /// meddig tekerhetı
-    int x, y; /// pozÌciÛ
-    int w, h; /// mÈret
-    int gridX=-1, gridY=-1; /// milyen form·ba legyenek rendezve
+    int roll = 0; /// mennyi van g√∂rgetve
+    int maxRoll = 0; /// meddig tekerhet√µ
+    int x, y; /// poz√≠ci√≥
+    int w, h; /// m√©ret
+    int gridX=-1, gridY=-1; /// milyen form√°ba legyenek rendezve
 
     Gorgetheto(){}
     Gorgetheto(vector<string> e,int vx, int vy, int vw, int vh, int vgx=-1, int vgy=-1){
@@ -109,7 +109,7 @@ struct Gorgetheto {
         int listLength = (gombok.size()+max(0,gridx-1))/gridx;
         listLength = max(0,14*listLength+6*(listLength));
         maxRoll = max(0,listLength-h+2);
-        gorgH = gorgH; /// TODO! (jÛ lesz ez Ìgy)
+        gorgH = gorgH; /// TODO! (j√≥ lesz ez √≠gy)
         int gorgPos=0;
         if (maxRoll>0)
             gorgPos = gorgStart+(gorgAlsoEnd-gorgStart-gorgH)*roll/maxRoll;
@@ -132,12 +132,12 @@ struct Gorgetheto {
             }
             else gombok[i].afk=true;
         }
-        /// gˆrgı
+        /// g√∂rg√µ
         if (maxRoll>0){
             rectangleRGBA(renderer,x+w-9,y+11,x+w-3,y+h-5,50,50,50,255);
             boxRGBA(renderer,x+w-11,gorgPos,x+w-2,gorgPos+gorgH,50,rollSpeed%255,50,255);
         }
-        /// elfedı
+        /// elfed√µ
         boxRGBA(renderer,x-radius,y-radius,x+w+radius,y+2,100,100,100,255);
         boxRGBA(renderer,x-radius,y-radius,x-1,y+h+radius,100,100,100,255);
         boxRGBA(renderer,x+w+5,y-radius,x+w+radius,y+h+radius,100,100,100,255);
@@ -305,12 +305,87 @@ struct KeziGorbe{
 
     Stock *stock;
 
-    Gorbe(int vx, int vy){
+    int type = 0; /// 0 egy nap - perc bont√°sban, 1 egy negyed√©v - nap bont√°sban
+    Datum kezdoNap; /// az a nap, vagy a p√©nz√ºgyi jelent√©st k√∂vet≈ë nyit√°s napja
+    Nap egyetlenNap;    /// a k√©rt nap
+    float maxVal = 0, minVal=0;
+    Negyed valasztottNegyed; /// a v√°lasztott negyed
+    vector<Arfolyam> gorbe; /// maguk az √©rt√©kek
 
+    void setLastDay(){
+        setGorbeDay((*(stock->mindenNap.rbegin())).datum);
+        maxVal=arfolyamGetMaxErtek(gorbe);
+        minVal=arfolyamGetMinErtek(gorbe);
+    }
+
+    bool setGorbeDay(Datum datum){
+        type = 0;
+        Nap peldaNap(datum.year,datum.month,datum.day);
+        set<Nap>::iterator it = find(stock->mindenNap.begin(),stock->mindenNap.end(),peldaNap);
+        if (it==stock->mindenNap.end()) return false;
+        egyetlenNap = *it;
+        std::vector<Arfolyam> napiErtekek(egyetlenNap.percek.begin(), egyetlenNap.percek.end());
+        gorbe.resize(390);
+        int j = 0;
+        for (int i=0; i<390; i++){
+            if (napiErtekek[i+j].idopont<egyetlenNap.idoNyitas) {
+                j++; i--;
+            } else {
+                gorbe[i]=napiErtekek[i+j];
+            }
+        }
+        return true;
+    }
+
+    KeziGorbe(Stock *s){
+        stock=s;
+        setLastDay();
     }
 
     void draw (SDL_Renderer *renderer, int wa, int wb){
+        /// nagy keret
+        rectangleRGBA(renderer,wa,wb,wa+398,wb+180,0,0,0,255);
 
+        /// kiugr√°s
+        rectangleRGBA(renderer,wa,wb,wa+130,wb+18,0,0,0,255);
+        stringRGBA(renderer,wa+5,wb+5,"kiugras:",0,0,0,255);
+        stringRGBA(renderer,wa+69,wb+5,"-41,23%",100,255,100,255);
+
+        /// napi/negyed plusz d√°tum
+        rectangleRGBA(renderer,wa,wb+161,wa+56,wb+180,0,0,0,255);
+        stringRGBA(renderer,wa+5,wb+167,"napi",0,0,0,255);
+        if (type==0) filledCircleRGBA(renderer,wa+45,wb+170,4,0,255,0,255);
+        circleRGBA(renderer,wa+45,wb+170,5,0,0,0,255);
+
+        rectangleRGBA(renderer,wa+56,wb+161,wa+150,wb+180,0,0,0,255);
+        stringRGBA(renderer,wa+61,wb+167,"negyed ev",0,0,0,255);
+        if (type==1) filledCircleRGBA(renderer,wa+140,wb+170,4,0,255,0,255);
+        circleRGBA(renderer,wa+140,wb+170,5,0,0,0,255);
+
+
+        /// plusz d√°tum
+
+
+        /// g√∂rbe
+        stringRGBA(renderer,wa+2,wb+150,"09:30",0,0,0,255);
+        stringRGBA(renderer,wa+42,wb+150,"10:00",0,0,0,255);
+        stringRGBA(renderer,wa+82,wb+150,"10:30",0,0,0,255);
+        rectangleRGBA(renderer,wa,wb+17,wa+398,wb+145,0,0,0,255);
+        int yT = 20, yL = 142;
+        for (int i=0; i<gorbe.size(); i++){
+            if (gorbe.size()==390){
+                int y1 = yL-((gorbe[i].open-minVal)*(yL-yT)/(maxVal-minVal));
+                int y2 = yL-((gorbe[i].close-minVal)*(yL-yT)/(maxVal-minVal));
+                if (y2<y1) lineRGBA(renderer,wa+5+i,wb+y1,wa+5+i,wb+y2,0,255,0,255);
+                else lineRGBA(renderer,wa+5+i,wb+y1,wa+5+i,wb+y2,255,0,0,255);
+            }
+            if (i%30==0){
+                lineRGBA(renderer,wa+5+i,wb+yT,wa+5+i,wb+yL,255,255,255,50);
+            }
+        }
+
+        stringRGBA(renderer,wa+2,wb+23,"123.2",255,255,255,50);
+        stringRGBA(renderer,wa+2,wb+135,"122.1",255,255,255,50);
     }
 
     bool inClick(int bx, int by){
@@ -332,21 +407,21 @@ struct ReszvenySor{
 
     Button UjElemB, ElemzesB;
 
-    // MozgatÛ konstruktor
+    // Mozgat√≥ konstruktor
     ReszvenySor(ReszvenySor&& other) noexcept : stock(other.stock) {
-        // A mutex ·tvÈtele nem sz¸ksÈges, mivel az ·llapota nem befoly·solja az objektum ·llapot·t
+        // A mutex √°tv√©tele nem sz√ºks√©ges, mivel az √°llapota nem befoly√°solja az objektum √°llapot√°t
     }
 
-    // MozgatÛ ÈrtÈkadÛ oper·tor
+    // Mozgat√≥ √©rt√©kad√≥ oper√°tor
     ReszvenySor& operator=(ReszvenySor&& other) noexcept {
         if (this != &other) {
             stock = other.stock;
-            // A mutex ·tvÈtele itt sem sz¸ksÈges
+            // A mutex √°tv√©tele itt sem sz√ºks√©ges
         }
         return *this;
     }
 
-    // Tˆrˆlj¸k a m·solÛ konstruktort Ès ÈrtÈkadÛ oper·tort
+    // T√∂r√∂lj√ºk a m√°sol√≥ konstruktort √©s √©rt√©kad√≥ oper√°tort
     ReszvenySor(const ReszvenySor&) = delete;
     ReszvenySor& operator=(const ReszvenySor&) = delete;
 
@@ -373,18 +448,26 @@ struct ReszvenySor{
     }
 
     void draw (SDL_Renderer *renderer, int wa, int wb){
-        rectangleRGBA(renderer, wa, wb, wa+max(gorbek.size(),(size_t)1)*200, wb+200,0,0,0,255);
+        rectangleRGBA(renderer, wa, wb, wa+70+gorbek.size()*420, wb+200,0,0,0,255);
         UjElemB.draw(renderer,wa+5,wb+30);
         ElemzesB.draw(renderer,wa+5,wb+60);
         if (!isLocked(mfs))
             stringRGBA(renderer,wa+5,wb+5,stock.name.c_str(),0,0,0,255);
         for (int i=0; i<gorbek.size(); i++){
-            gorbek[i].draw(renderer,wa,wb+100+200*i);
+            gorbek[i].draw(renderer,wa+80+420*i,wb+10);
         }
     }
 
     bool inClick(int bx, int by){
-
+        if (UjElemB.inClick(bx,by)){
+            if (isLocked(mfs)) return true;
+            else {
+                KeziGorbe temp(&stock);
+                gorbek.push_back(temp);
+            }
+            return true;
+        }
+        return false;
     }
 };
 

@@ -295,6 +295,7 @@ struct ReszvenyMenu : public Menu {
     vector<ReszvenySor> reszvenyek; /// a részvények sorai
 
 
+    bool reszvenyekClick(int bx, int by);
 
     void gombokKialakitasa();
 

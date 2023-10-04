@@ -7,6 +7,7 @@
 
 using namespace std;
 
+
 struct Arfolyam {
     Idopont idopont;
     float open, close, minimum, maximum, volumen;
@@ -21,6 +22,9 @@ struct Arfolyam {
         return idopont < other.idopont;
     }
 };
+
+float arfolyamGetMaxErtek(vector<Arfolyam> &v);
+float arfolyamGetMinErtek(vector<Arfolyam> &v);
 
 struct Nap{
     mutable bool valid=false;
@@ -42,6 +46,10 @@ struct Nap{
 
     bool operator<(const Nap& other) const {
         return datum < other.datum;
+    }
+
+    bool operator==(const Nap& other) const {
+        return datum == other.datum;
     }
 };
 

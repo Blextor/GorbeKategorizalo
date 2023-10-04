@@ -45,6 +45,16 @@ void ReszvenyMenu::draw() {
     SDL_RenderPresent(renderer);
 }
 
+bool ReszvenyMenu::reszvenyekClick(int bx, int by){
+    for (int i=0; i<boolR.size(); i++){
+        if (boolR[i]){
+            if (reszvenyek[i].inClick(bx,by))
+                return true;
+        }
+    }
+    return false;
+}
+
 void ReszvenyMenu::inputHandle(){
     int oldState=state;
     int MX=-1, MY=-1; /// kurzor pozíciója, ha -1 marad, nem történt változás
@@ -101,6 +111,9 @@ void ReszvenyMenu::inputHandle(){
                 }
             }
             state=0;
+        }
+        else if (reszvenyekClick(MX,MY)){
+
         }
         else { /// ha kikattintunk a semmibe
             state=0; /// akkor térjünk vissza a kezdõ állapotba

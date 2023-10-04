@@ -69,7 +69,7 @@ int npB(string path, set<Nap> &osszesNap, bool reset=true){
     CloseHandle(hMap);
     CloseHandle(hFile);
 
-    for (int i=0; i<intValues.size()/5;i++){
+    for (size_t i=0; i<intValues.size()/5;i++){
         int intChange=i*5, floatChange=i*5;
 
         Nap nap(intValues[intChange+0],intValues[intChange+1],intValues[intChange+2]);
@@ -220,7 +220,7 @@ bool napiBetoltes(string path, set<Nap> &osszesNap, bool reset=true){
     if (reset)
         osszesNap.clear();
 
-    for (int i=0; i<fajlok.size(); i++){
+    for (size_t i=0; i<fajlok.size(); i++){
         string fileP = honapokPath+"\\"+fajlok[i];
         ifstream file(fileP);
         string temp, line;
@@ -459,7 +459,7 @@ void Stock::adatokFeldolgozasa(){
         }
 
         /// plusz percek hozzáadása
-        for (int i=0; i<pluszPercek.size(); i++)
+        for (size_t i=0; i<pluszPercek.size(); i++)
             nap.percek.insert(pluszPercek[i]);
 
 
@@ -514,13 +514,27 @@ void Stock::adatokFeldolgozasa(){
             }
         }
     }
-    for (int i=0; i<olvasztottNegyedek.size(); i++){ /// beolvasztott negyedek törlése
+    for (size_t i=0; i<olvasztottNegyedek.size(); i++){ /// beolvasztott negyedek törlése
         negyedevek.erase(negyedevek.find(olvasztottNegyedek[i]));
     }
-    for (int i=0; i<ujNegyedek.size(); i++){ /// új negyedek beillesztése
+    for (size_t i=0; i<ujNegyedek.size(); i++){ /// új negyedek beillesztése
         negyedevek.insert(ujNegyedek[i]);
     }
 }
 
+float arfolyamGetMaxErtek(vector<Arfolyam> &v){
+    float ret = 0;
+    for (size_t i=0; i<v.size(); i++){
+        ret=max(v[i].maximum,ret);
+    }
+    return ret;
+}
 
+float arfolyamGetMinErtek(vector<Arfolyam> &v){
+    float ret = 10000000;
+    for (size_t i=0; i<v.size(); i++){
+        ret=min(v[i].minimum,ret);
+    }
+    return ret;
+}
 
