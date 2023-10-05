@@ -438,8 +438,7 @@ struct KeziGorbe{
 };
 
 void loadStock(string name, Stock &stock);
-void loadStock2(string name, Stock &stock);
-void loadStock3(string name, Stock &stock);
+void loadStockOld(string name, Stock &stock);
 
 struct ReszvenySor{
     vector<KeziGorbe> gorbek;

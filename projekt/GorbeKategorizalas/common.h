@@ -40,7 +40,6 @@
 #include <functional>
 
 
-#define Kgyoker ((string)"C:\\stockData\\")
 
 
 

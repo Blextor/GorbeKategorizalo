@@ -104,28 +104,48 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     clock_t t = clock();
     Stock stock1,stock2,stock3,stock4,stock5,stock;
 
-    loadStock2("TSLA",stock1);
+    loadStock("TSLA",stock1);
+    /*
     cout<<"z"<<endl;
-    loadStock2("NVDA",stock2);
+    loadStock2("TSLA",stock2);
     cout<<"zz"<<endl;
-    loadStock2("PEP",stock3);
+    loadStock3("TSLA",stock3);
     cout<<"zzz"<<endl;
+    /*
     loadStock2("MCD",stock4);
     cout<<"zzzz"<<endl;
     loadStock2("WMT",stock5);
+    */
 
     cout<<"a1: "<<(clock()-t)<<endl;
     t=clock();
 
+    /*
     Stock stock11,stock22,stock33,stock44,stock55;
-    //stock11.adatokBetoltese2Teszt("TSLA");
-    //loadStock2("TSLA",stock11);
-    thread th1(loadStock2,"TSLA",ref(stock11));
-    thread th2(loadStock2,"NVDA",ref(stock22));
-    thread th3(loadStock2,"PEP",ref(stock33));
-    thread th4(loadStock2,"MCD",ref(stock44));
-    thread th5(loadStock2,"WMT",ref(stock55));
-    th1.join();th2.join();th3.join();th4.join();th5.join();
+    thread th1(loadStock,"AA",ref(stock11));th1.join();
+    thread th2(loadStock,"V",ref(stock22));th2.join();
+    thread th3(loadStock,"VZ",ref(stock33));th3.join();
+    thread th4(loadStock,"INTC",ref(stock44));th4.join();
+    thread th5(loadStock,"EA",ref(stock55));th5.join();
+    */
+
+
+    vector<string> reszvenyekNeve = osszesReszveny();
+    vector<thread> szalak; szalak.resize(32);
+    vector<Stock> stocks; stocks.resize(32);
+    for (int i=1000; i<reszvenyekNeve.size(); i++){
+        for (int j=0; j<32; j++){
+            szalak[j] = thread(loadStock,reszvenyekNeve[i],ref(stocks[j]));
+            i++;
+            cout<<i<<endl;
+        }
+        for (int j=0; j<32; j++){
+            szalak[j].join();
+        }
+    }
+
+
+
 
     //stock.adatokBetoltese("NVDA");
     cout<<"a2: "<<(clock()-t)<<endl;

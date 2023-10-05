@@ -86,8 +86,7 @@ struct Stock{
 
     void adatokKiirasaFajlba (string fajlNev);
     bool adatokBetoltese(string stock);
-    bool adatokBetoltese2(string stock);
-    bool adatokBetoltese2Teszt(string stock);
+    bool adatokBetolteseOld(string stock);
 
     void adatokFeldolgozasa();
     void negyedevekKorrigalasa();

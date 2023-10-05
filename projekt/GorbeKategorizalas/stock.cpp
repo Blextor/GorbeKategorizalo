@@ -6,7 +6,30 @@
 #include <cctype> // isdigit, isspace
 #include <cstdlib> // strtol, strtof
 
-int npB2(string path, set<Nap> &osszesNap, bool reset=true){
+float strToFloat(char *ptr, char** ende){
+    size_t i = 0;
+    float ret = 0.0f;
+    int j = -1;
+    while (ptr[i]>45 && ptr[i]<58 && ptr[i]!=47){
+        if (ptr[i]==46){
+            j=0;
+        } else {
+            if (j>=0) j++;
+            else ret*=10;
+            ret+=((float)ptr[i]-48)/pow(10,max(0,j));
+        }
+        //cout<<ptr[i];
+        i++;
+        ++(*ende);
+    }
+    ++(*ende);
+    //cout<<ptr[i];
+    //cout<<endl;
+    //cout<<ret<<endl;
+    return ret;
+}
+
+int npB(string path, set<Nap> &osszesNap, bool reset=true){
     // Fájl megnyitása CHAT GPT
     ///cout<<path<<endl;
     HANDLE hFile = CreateFile(path.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -52,7 +75,9 @@ int npB2(string path, set<Nap> &osszesNap, bool reset=true){
                 int value = std::strtol(ptr, &ende, 10);
                 intValues.push_back(value);
             } else {
-                float value = std::strtof(ptr, &ende);
+                //float value = std::strtof(ptr, &ende);
+                float value =
+                strToFloat(ptr,&ende);
                 floatValues.push_back(value);
                 if (fieldCount == 10) {
                     fieldCount = -1; // Reset field count for next row
@@ -81,7 +106,7 @@ int npB2(string path, set<Nap> &osszesNap, bool reset=true){
             ///cout<<intValues[intChange+0]<<". "<<intValues[intChange+1]<<". "<<intValues[intChange+2]<<". "<<intValues[intChange+3]<<":"<<intValues[intChange+4]<<endl;
         }
 
-        Arfolyam arf(intValues[intChange+3],intValues[intChange+4],0,0,0,0,0);
+        Arfolyam arf(intValues[intChange+3],intValues[intChange+4],floatValues[floatChange+0],floatValues[floatChange+3],floatValues[floatChange+2],floatValues[floatChange+1],floatValues[floatChange+4]);
         set<Arfolyam>::iterator itP = (*it).percek.find(arf);
         if (itP == (*it).percek.end()) {
             (*it).percek.insert(arf);
@@ -90,102 +115,13 @@ int npB2(string path, set<Nap> &osszesNap, bool reset=true){
         //cout<<intValues[intChange+0]<<". "<<intValues[intChange+1]<<". "<<intValues[intChange+2]<<". "<<intValues[intChange+3]<<":"<<intValues[intChange+4]<<endl;
         //cout<<floatValues[floatChange+0]<<". "<<floatValues[floatChange+1]<<". "<<floatValues[floatChange+2]<<". "<<floatValues[floatChange+3]<<":"<<floatValues[floatChange+4]<<endl;
     }
-
-    return 0;
-}
-
-int npB(string path, set<Nap> &osszesNap, bool reset=true){
-    // Fájl megnyitása CHAT GPT
-    ///cout<<path<<endl;
-    HANDLE hFile = CreateFile(path.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (hFile == INVALID_HANDLE_VALUE) {
-        std::cerr << "Nem sikerült megnyitni a fájlt" << std::endl;
-        return 1;
-    }
-
-    // Fájl méretének lekérdezése
-    DWORD fileSize = GetFileSize(hFile, NULL);
-    if (fileSize == INVALID_FILE_SIZE) {
-        std::cerr << "Nem sikerült lekérdezni a fájl méretét" << std::endl;
-        CloseHandle(hFile);
-        return 1;
-    }
-
-    // Fájl memóriába mappelése
-    HANDLE hMap = CreateFileMapping(hFile, NULL, PAGE_READONLY, 0, 0, NULL);
-    if (hMap == NULL) {
-        std::cerr << "Nem sikerült létrehozni a memóriatérképet" << std::endl;
-        CloseHandle(hFile);
-        return 1;
-    }
-
-    char* addr = static_cast<char*>(MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, 0));
-    if (addr == NULL) {
-        std::cerr << "Nem sikerült betölteni a fájlt a memóriába" << std::endl;
-        CloseHandle(hMap);
-        CloseHandle(hFile);
-        return 1;
-    }
-
-    // Beolvasott értékek tárolása
-    std::vector<int> intValues;
-    std::vector<float> floatValues;
-    // Fájl tartalmának feldolgozása és értékek kinyerése
-    char* end;
-    int fieldCount = 0;
-    for (char* ptr = addr; ptr < addr + fileSize; ++ptr) {
-        // Szám elejének keresése
-        if (std::isdigit(*ptr) || *ptr == '-' || *ptr == '+') {
-            if (fieldCount < 6) {
-                int value = std::strtol(ptr, &end, 10);
-                intValues.push_back(value);
-            } else {
-                float value = std::strtof(ptr, &end);
-                floatValues.push_back(value);
-                if (fieldCount == 10) {
-                    fieldCount = -1; // Reset field count for next row
-                }
-            }
-            ptr = end;
-            fieldCount++;
-        }
-    }
-
-    // Memória térkép eltávolítása és fájl bezárása
-    UnmapViewOfFile(addr);
-    CloseHandle(hMap);
-    CloseHandle(hFile);
-
-    for (size_t i=0; i<intValues.size()/6;i++){
-        int intChange=i*6, floatChange=i*5;
-        if (intValues[intChange+0]<2100 && intValues[intChange+1]<13 && intValues[intChange+2]<32 &&
-            intValues[intChange+0]>1990 && intValues[intChange+1]>0 && intValues[intChange+2]>0){}
-        else continue;
-        Nap nap(intValues[intChange+0],intValues[intChange+1],intValues[intChange+2]);
-        set<Nap>::iterator it = osszesNap.find(nap);
-        if (it == osszesNap.end()) {
-            osszesNap.insert(nap);
-            it = osszesNap.find(nap);
-            ///cout<<intValues[intChange+0]<<". "<<intValues[intChange+1]<<". "<<intValues[intChange+2]<<". "<<intValues[intChange+3]<<":"<<intValues[intChange+4]<<endl;
-        }
-
-        Arfolyam arf(intValues[intChange+3],intValues[intChange+4],floatValues[floatChange+0],floatValues[floatChange+1],floatValues[floatChange+2],floatValues[floatChange+3],floatValues[floatChange+4]);
-        set<Arfolyam>::iterator itP = (*it).percek.find(arf);
-        if (itP == (*it).percek.end()) {
-            (*it).percek.insert(arf);
-            itP = (*it).percek.find(arf);
-        }
-        //cout<<intValues[intChange+0]<<". "<<intValues[intChange+1]<<". "<<intValues[intChange+2]<<". "<<intValues[intChange+3]<<":"<<intValues[intChange+4]<<endl;
-        //cout<<floatValues[floatChange+0]<<". "<<floatValues[floatChange+1]<<". "<<floatValues[floatChange+2]<<". "<<floatValues[floatChange+3]<<":"<<floatValues[floatChange+4]<<endl;
-    }
-
 
     return 0;
 }
 
 void loadStock(string name, Stock &stock){
     clock_t t = clock();
-    stock.adatokBetoltese2(name);
+    stock.adatokBetoltese(name);
     cout<<name<<" betoltve: "<<(clock()-t)<<"ms"<<endl;
     t=clock();
     cout<<stock.mindenNap.size()<<endl;
@@ -194,26 +130,14 @@ void loadStock(string name, Stock &stock){
     t=clock();
 }
 
-void loadStock2(string name, Stock &stock){
+void loadStockOld(string name, Stock &stock){
     clock_t t = clock();
     cout<<name<<" elkezdve: "<<(clock()-t)<<"ms"<<endl;
-    stock.adatokBetoltese2(name);
+    stock.adatokBetolteseOld(name);
     cout<<name<<" betoltve: "<<(clock()-t)<<"ms"<<endl;
     t=clock();
     cout<<stock.mindenNap.size()<<endl;
     stock.adatokFeldolgozasa();
-    cout<<name<<" feldolgozva: "<<(clock()-t)<<"ms"<<endl;
-    t=clock();
-}
-
-void loadStock3(string name, Stock &stock){
-    clock_t t = clock();
-    cout<<name<<" elkezdve: "<<(clock()-t)<<"ms"<<endl;
-    stock.adatokBetoltese2(name);
-    cout<<name<<" betoltve: "<<(clock()-t)<<"ms"<<endl;
-    t=clock();
-    cout<<stock.mindenNap.size()<<endl;
-    //stock.adatokFeldolgozasa();
     cout<<name<<" feldolgozva: "<<(clock()-t)<<"ms"<<endl;
     t=clock();
 }
@@ -336,7 +260,7 @@ bool bevetelBetoltes(string path, set<Negyed> &negyedevek, bool reset=true){
     return true;
 }
 
-bool napiBetoltes(string path, set<Nap> &osszesNap, bool reset=true){
+bool napiBetoltesOld(string path, set<Nap> &osszesNap, bool reset=true){
     string honapokPath=path+"\\months";
     vector<string> fajlok = getFiles(honapokPath);
     if (reset)
@@ -388,18 +312,29 @@ bool napiBetoltes(string path, set<Nap> &osszesNap, bool reset=true){
     return true;
 }
 
-bool napiBetoltes2(string path, set<Nap> &osszesNap, bool reset=true){
+bool napiBetoltes(string path, set<Nap> &osszesNap, bool reset=true){
     string honapokPath=path+"\\months";
     vector<string> fajlok = getFiles(honapokPath);
     if (reset)
         osszesNap.clear();
 
-
     for (size_t i=0; i<fajlok.size(); i++){
-        npB2(honapokPath+"\\"+fajlok[i],osszesNap,false);
+        npB(honapokPath+"\\"+fajlok[i],osszesNap,false);
     }
 
-    //npB("AMDminutes.txt",osszesNap,false);
+    return true;
+}
+
+bool Stock::adatokBetolteseOld(string stock){
+    name=stock;
+    string path = Config.getRootDirectory() + "stocks";
+    if (!elemeAzStr(getSubdirectories(path),stock))
+        return false;
+    path = Config.getRootDirectory() + "stocks\\"+stock;
+
+    if (!jelentesBetoltes(path,negyedevek)) return false;
+    if (!bevetelBetoltes(path,negyedevek,false)) return false;
+    if (!napiBetoltesOld(path,mindenNap,true)) return false;
 
     return true;
 }
@@ -414,41 +349,6 @@ bool Stock::adatokBetoltese(string stock){
     if (!jelentesBetoltes(path,negyedevek)) return false;
     if (!bevetelBetoltes(path,negyedevek,false)) return false;
     if (!napiBetoltes(path,mindenNap,true)) return false;
-
-    return true;
-}
-
-bool Stock::adatokBetoltese2(string stock){
-    name=stock;
-    string path = Config.getRootDirectory() + "stocks";
-    if (!elemeAzStr(getSubdirectories(path),stock))
-        return false;
-    path = Config.getRootDirectory() + "stocks\\"+stock;
-
-    if (!jelentesBetoltes(path,negyedevek)) return false;
-    if (!bevetelBetoltes(path,negyedevek,false)) return false;
-    if (!napiBetoltes2(path,mindenNap,true)) return false;
-
-    return true;
-}
-
-bool Stock::adatokBetoltese2Teszt(string stock){
-    name=stock;
-    string path = Config.getRootDirectory() + "\\stocks";
-    if (!elemeAzStr(getSubdirectories(path),stock))
-        return false;
-    path = Config.getRootDirectory() + "\\stocks\\"+stock;
-
-    clock_t t = clock();
-    if (!jelentesBetoltes(path,negyedevek)) return false;
-    cout<<(clock()-t)<<endl;
-    t=clock();
-    if (!bevetelBetoltes(path,negyedevek,false)) return false;
-    cout<<(clock()-t)<<endl;
-    t=clock();
-    if (napiBetoltes2(path,mindenNap,true)) return false;
-    cout<<(clock()-t)<<endl;
-    t=clock();
 
     return true;
 }
