@@ -25,6 +25,7 @@ struct Arfolyam {
 
 float arfolyamGetMaxErtek(vector<Arfolyam> &v);
 float arfolyamGetMinErtek(vector<Arfolyam> &v);
+float getPrecFloat(float f, int prec);
 
 struct Nap{
     mutable bool valid=false;
@@ -44,6 +45,12 @@ struct Nap{
         idoZaras=Idopont(15,59);
     }
 
+    Nap(Datum d){
+        datum=d;
+        idoNyitas=Idopont(9,30);
+        idoZaras=Idopont(15,59);
+    }
+
     bool operator<(const Nap& other) const {
         return datum < other.datum;
     }
@@ -56,10 +63,13 @@ struct Nap{
 struct Negyed{
     Datum idoszakVege;
     mutable Datum tenylegesJelentes;
+    mutable Datum korrigaltTenylegesJelentes;
     mutable Datum negyedevVege;
     mutable float jelentettEPS=0, becsultEPS=0;
     mutable float meglepetes=0, meglepetesSzazalek=0;
     mutable long long earn=0, income=0;
+
+    mutable bool nyitasElotti = true;
 
     Negyed(int y=-1, int m=-1, int d=-1){idoszakVege=Datum(y,m,d);}
 
@@ -76,9 +86,11 @@ struct Stock{
 
     void adatokKiirasaFajlba (string fajlNev);
     bool adatokBetoltese(string stock);
+    bool adatokBetoltese2(string stock);
     bool adatokBetoltese2Teszt(string stock);
 
     void adatokFeldolgozasa();
+    void negyedevekKorrigalasa();
 };
 
 

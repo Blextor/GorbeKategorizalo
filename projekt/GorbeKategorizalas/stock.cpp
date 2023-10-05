@@ -6,9 +6,9 @@
 #include <cctype> // isdigit, isspace
 #include <cstdlib> // strtol, strtof
 
-int npB(string path, set<Nap> &osszesNap, bool reset=true){
+int npB2(string path, set<Nap> &osszesNap, bool reset=true){
     // Fájl megnyitása CHAT GPT
-    cout<<path<<endl;
+    ///cout<<path<<endl;
     HANDLE hFile = CreateFile(path.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
         std::cerr << "Nem sikerült megnyitni a fájlt" << std::endl;
@@ -42,20 +42,107 @@ int npB(string path, set<Nap> &osszesNap, bool reset=true){
     // Beolvasott értékek tárolása
     std::vector<int> intValues;
     std::vector<float> floatValues;
+    // Fájl tartalmának feldolgozása és értékek kinyerése
+    char* ende;
+    int fieldCount = 0;
+    for (char* ptr = addr; ptr < addr + fileSize; ++ptr) {
+        // Szám elejének keresése
+        if (std::isdigit(*ptr) || *ptr == '-' || *ptr == '+') {
+            if (fieldCount < 6) {
+                int value = std::strtol(ptr, &ende, 10);
+                intValues.push_back(value);
+            } else {
+                float value = std::strtof(ptr, &ende);
+                floatValues.push_back(value);
+                if (fieldCount == 10) {
+                    fieldCount = -1; // Reset field count for next row
+                }
+            }
+            ptr = ende;
+            fieldCount++;
+        }
+    }
 
+    // Memória térkép eltávolítása és fájl bezárása
+    UnmapViewOfFile(addr);
+    CloseHandle(hMap);
+    CloseHandle(hFile);
+
+    for (size_t i=0; i<intValues.size()/6;i++){
+        int intChange=i*6, floatChange=i*5;
+        if (intValues[intChange+0]<2100 && intValues[intChange+1]<13 && intValues[intChange+2]<32 &&
+            intValues[intChange+0]>1990 && intValues[intChange+1]>0 && intValues[intChange+2]>0){}
+        else continue;
+        Nap nap(intValues[intChange+0],intValues[intChange+1],intValues[intChange+2]);
+        set<Nap>::iterator it = osszesNap.find(nap);
+        if (it == osszesNap.end()) {
+            osszesNap.insert(nap);
+            it = osszesNap.find(nap);
+            ///cout<<intValues[intChange+0]<<". "<<intValues[intChange+1]<<". "<<intValues[intChange+2]<<". "<<intValues[intChange+3]<<":"<<intValues[intChange+4]<<endl;
+        }
+
+        Arfolyam arf(intValues[intChange+3],intValues[intChange+4],0,0,0,0,0);
+        set<Arfolyam>::iterator itP = (*it).percek.find(arf);
+        if (itP == (*it).percek.end()) {
+            (*it).percek.insert(arf);
+            itP = (*it).percek.find(arf);
+        }
+        //cout<<intValues[intChange+0]<<". "<<intValues[intChange+1]<<". "<<intValues[intChange+2]<<". "<<intValues[intChange+3]<<":"<<intValues[intChange+4]<<endl;
+        //cout<<floatValues[floatChange+0]<<". "<<floatValues[floatChange+1]<<". "<<floatValues[floatChange+2]<<". "<<floatValues[floatChange+3]<<":"<<floatValues[floatChange+4]<<endl;
+    }
+
+    return 0;
+}
+
+int npB(string path, set<Nap> &osszesNap, bool reset=true){
+    // Fájl megnyitása CHAT GPT
+    ///cout<<path<<endl;
+    HANDLE hFile = CreateFile(path.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) {
+        std::cerr << "Nem sikerült megnyitni a fájlt" << std::endl;
+        return 1;
+    }
+
+    // Fájl méretének lekérdezése
+    DWORD fileSize = GetFileSize(hFile, NULL);
+    if (fileSize == INVALID_FILE_SIZE) {
+        std::cerr << "Nem sikerült lekérdezni a fájl méretét" << std::endl;
+        CloseHandle(hFile);
+        return 1;
+    }
+
+    // Fájl memóriába mappelése
+    HANDLE hMap = CreateFileMapping(hFile, NULL, PAGE_READONLY, 0, 0, NULL);
+    if (hMap == NULL) {
+        std::cerr << "Nem sikerült létrehozni a memóriatérképet" << std::endl;
+        CloseHandle(hFile);
+        return 1;
+    }
+
+    char* addr = static_cast<char*>(MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, 0));
+    if (addr == NULL) {
+        std::cerr << "Nem sikerült betölteni a fájlt a memóriába" << std::endl;
+        CloseHandle(hMap);
+        CloseHandle(hFile);
+        return 1;
+    }
+
+    // Beolvasott értékek tárolása
+    std::vector<int> intValues;
+    std::vector<float> floatValues;
     // Fájl tartalmának feldolgozása és értékek kinyerése
     char* end;
     int fieldCount = 0;
     for (char* ptr = addr; ptr < addr + fileSize; ++ptr) {
         // Szám elejének keresése
         if (std::isdigit(*ptr) || *ptr == '-' || *ptr == '+') {
-            if (fieldCount < 5) {
+            if (fieldCount < 6) {
                 int value = std::strtol(ptr, &end, 10);
                 intValues.push_back(value);
             } else {
                 float value = std::strtof(ptr, &end);
                 floatValues.push_back(value);
-                if (fieldCount == 9) {
+                if (fieldCount == 10) {
                     fieldCount = -1; // Reset field count for next row
                 }
             }
@@ -69,14 +156,17 @@ int npB(string path, set<Nap> &osszesNap, bool reset=true){
     CloseHandle(hMap);
     CloseHandle(hFile);
 
-    for (size_t i=0; i<intValues.size()/5;i++){
-        int intChange=i*5, floatChange=i*5;
-
+    for (size_t i=0; i<intValues.size()/6;i++){
+        int intChange=i*6, floatChange=i*5;
+        if (intValues[intChange+0]<2100 && intValues[intChange+1]<13 && intValues[intChange+2]<32 &&
+            intValues[intChange+0]>1990 && intValues[intChange+1]>0 && intValues[intChange+2]>0){}
+        else continue;
         Nap nap(intValues[intChange+0],intValues[intChange+1],intValues[intChange+2]);
         set<Nap>::iterator it = osszesNap.find(nap);
         if (it == osszesNap.end()) {
             osszesNap.insert(nap);
             it = osszesNap.find(nap);
+            ///cout<<intValues[intChange+0]<<". "<<intValues[intChange+1]<<". "<<intValues[intChange+2]<<". "<<intValues[intChange+3]<<":"<<intValues[intChange+4]<<endl;
         }
 
         Arfolyam arf(intValues[intChange+3],intValues[intChange+4],floatValues[floatChange+0],floatValues[floatChange+1],floatValues[floatChange+2],floatValues[floatChange+3],floatValues[floatChange+4]);
@@ -85,6 +175,8 @@ int npB(string path, set<Nap> &osszesNap, bool reset=true){
             (*it).percek.insert(arf);
             itP = (*it).percek.find(arf);
         }
+        //cout<<intValues[intChange+0]<<". "<<intValues[intChange+1]<<". "<<intValues[intChange+2]<<". "<<intValues[intChange+3]<<":"<<intValues[intChange+4]<<endl;
+        //cout<<floatValues[floatChange+0]<<". "<<floatValues[floatChange+1]<<". "<<floatValues[floatChange+2]<<". "<<floatValues[floatChange+3]<<":"<<floatValues[floatChange+4]<<endl;
     }
 
 
@@ -92,8 +184,38 @@ int npB(string path, set<Nap> &osszesNap, bool reset=true){
 }
 
 void loadStock(string name, Stock &stock){
-    stock.adatokBetoltese(name);
+    clock_t t = clock();
+    stock.adatokBetoltese2(name);
+    cout<<name<<" betoltve: "<<(clock()-t)<<"ms"<<endl;
+    t=clock();
+    cout<<stock.mindenNap.size()<<endl;
     stock.adatokFeldolgozasa();
+    cout<<name<<" feldolgozva: "<<(clock()-t)<<"ms"<<endl;
+    t=clock();
+}
+
+void loadStock2(string name, Stock &stock){
+    clock_t t = clock();
+    cout<<name<<" elkezdve: "<<(clock()-t)<<"ms"<<endl;
+    stock.adatokBetoltese2(name);
+    cout<<name<<" betoltve: "<<(clock()-t)<<"ms"<<endl;
+    t=clock();
+    cout<<stock.mindenNap.size()<<endl;
+    stock.adatokFeldolgozasa();
+    cout<<name<<" feldolgozva: "<<(clock()-t)<<"ms"<<endl;
+    t=clock();
+}
+
+void loadStock3(string name, Stock &stock){
+    clock_t t = clock();
+    cout<<name<<" elkezdve: "<<(clock()-t)<<"ms"<<endl;
+    stock.adatokBetoltese2(name);
+    cout<<name<<" betoltve: "<<(clock()-t)<<"ms"<<endl;
+    t=clock();
+    cout<<stock.mindenNap.size()<<endl;
+    //stock.adatokFeldolgozasa();
+    cout<<name<<" feldolgozva: "<<(clock()-t)<<"ms"<<endl;
+    t=clock();
 }
 
 bool jelentesBetoltes(string path, set<Negyed> &negyedevek, bool reset=true){
@@ -272,12 +394,12 @@ bool napiBetoltes2(string path, set<Nap> &osszesNap, bool reset=true){
     if (reset)
         osszesNap.clear();
 
-    /*
-    for (int i=0; i<fajlok.size(); i++){
-        npB(honapokPath+"\\"+fajlok[i],osszesNap,false);
+
+    for (size_t i=0; i<fajlok.size(); i++){
+        npB2(honapokPath+"\\"+fajlok[i],osszesNap,false);
     }
-    */
-    npB("AMDminutes.txt",osszesNap,false);
+
+    //npB("AMDminutes.txt",osszesNap,false);
 
     return true;
 }
@@ -289,16 +411,23 @@ bool Stock::adatokBetoltese(string stock){
         return false;
     path = Config.getRootDirectory() + "stocks\\"+stock;
 
-    clock_t t = clock();
     if (!jelentesBetoltes(path,negyedevek)) return false;
-    cout<<(clock()-t)<<endl;
-    t=clock();
     if (!bevetelBetoltes(path,negyedevek,false)) return false;
-    cout<<(clock()-t)<<endl;
-    t=clock();
     if (!napiBetoltes(path,mindenNap,true)) return false;
-    cout<<(clock()-t)<<endl;
-    t=clock();
+
+    return true;
+}
+
+bool Stock::adatokBetoltese2(string stock){
+    name=stock;
+    string path = Config.getRootDirectory() + "stocks";
+    if (!elemeAzStr(getSubdirectories(path),stock))
+        return false;
+    path = Config.getRootDirectory() + "stocks\\"+stock;
+
+    if (!jelentesBetoltes(path,negyedevek)) return false;
+    if (!bevetelBetoltes(path,negyedevek,false)) return false;
+    if (!napiBetoltes2(path,mindenNap,true)) return false;
 
     return true;
 }
@@ -366,7 +495,6 @@ void Stock::adatokKiirasaFajlba (string fajlNev){
     }
     file2.close();
 }
-
 
 void Stock::adatokFeldolgozasa(){
 
@@ -520,6 +648,49 @@ void Stock::adatokFeldolgozasa(){
     for (size_t i=0; i<ujNegyedek.size(); i++){ /// új negyedek beillesztése
         negyedevek.insert(ujNegyedek[i]);
     }
+
+    /// negyedéves jelentések korrigálása, hogy nyitás előtt, vagy zárás után jött ki
+    negyedevekKorrigalasa();
+}
+
+void Stock::negyedevekKorrigalasa(){
+
+    vector<Negyed> hibasNegyedek; /// kigyűjtöm a hibás negyedéveket
+    /// meg korrigálom is mindegyiket
+    for (const Negyed negyed: negyedevek){
+        Nap temp(negyed.tenylegesJelentes);
+        set<Nap>::iterator it = mindenNap.find(temp); /// kikeresem melyik napra esett a jelentés
+        //cout<<mindenNap.size()<<endl;
+        if (it==mindenNap.end()) { /// ha nincs ilyen nap, akkor baj van
+            //cout<<"Hibas negyed "<<temp.datum.year<<" "<<temp.datum.month<<" "<<temp.datum.day<<endl;
+            //cout<<negyed.jelentettEPS<<" "<<negyed.earn<<endl;
+            hibasNegyedek.push_back(negyed);
+        } else { /// különben foglalkozom tovább a dologgal
+            /// megkeresem az azt követő napot
+            //set<Nap>::iterator before = mindenNap.find(Nap((*it).elozoNap));
+            set<Nap>::iterator after = mindenNap.find(Nap((*it).kovetkezoNap));
+            if (after!=mindenNap.end()){ /// ha létezik (ami szokott azért), akkor foglalkozom tovább a dologgal
+                long long V1 = (*it).volumen, V2 = (*after).volumen;
+                if (V1>V2){ /// aznap volt nagyobb mozgás => aznap volt a jelentés
+                    negyed.korrigaltTenylegesJelentes=(*it).datum;
+                    negyed.nyitasElotti=true;
+                } else { /// másnap volt a jelentés
+                    negyed.korrigaltTenylegesJelentes=(*after).datum;
+                    negyed.nyitasElotti=false;
+                }
+                //cout<<temp.datum.year<<" "<<temp.datum.month<<" "<<temp.datum.day<<" "<<negyed.nyitasElotti<<endl;
+            }
+            else { /// különben baj van (az utolsó eltárolt nap egy pénzügyi jelentés napja is pl)
+                cout<<"Hibas negyed 2 "<<(*it).kovetkezoNap.year<<" "<<(*it).kovetkezoNap.month<<" "<<(*it).kovetkezoNap.day<<endl;
+            }
+        }
+    }
+
+    /// törlöm a hibás negyedéveket (túl koraik, vagy nem teljes jelentések)
+    for (size_t i=0; i<hibasNegyedek.size(); i++){
+        set<Negyed>::iterator it = negyedevek.find(hibasNegyedek[i]);
+        negyedevek.erase(it);
+    }
 }
 
 float arfolyamGetMaxErtek(vector<Arfolyam> &v){
@@ -538,3 +709,12 @@ float arfolyamGetMinErtek(vector<Arfolyam> &v){
     return ret;
 }
 
+float getPrecFloat(float f, int prec){
+    int x = max(log10(f)+1,1.0f);
+    int fi = f;
+    if (prec<x) return f;
+    int y = prec-x;
+    int z = (f-fi)*pow(10,y);
+    float m = z; m/=pow(10,y); m+=fi;
+    return m;
+}

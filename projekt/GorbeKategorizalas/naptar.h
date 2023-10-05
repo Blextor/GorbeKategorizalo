@@ -73,7 +73,6 @@ struct Idopillanat{
     Idopont idopont;
 };
 
-
 int hetNapja(Datum d);
 
 int hetNapja(int y, int m, int d);

@@ -102,11 +102,31 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
     /// adatokat kell beolvasnom
     clock_t t = clock();
-    Stock stock;
+    Stock stock1,stock2,stock3,stock4,stock5,stock;
 
+    loadStock2("TSLA",stock1);
+    cout<<"z"<<endl;
+    loadStock2("NVDA",stock2);
+    cout<<"zz"<<endl;
+    loadStock2("PEP",stock3);
+    cout<<"zzz"<<endl;
+    loadStock2("MCD",stock4);
+    cout<<"zzzz"<<endl;
+    loadStock2("WMT",stock5);
 
     cout<<"a1: "<<(clock()-t)<<endl;
     t=clock();
+
+    Stock stock11,stock22,stock33,stock44,stock55;
+    //stock11.adatokBetoltese2Teszt("TSLA");
+    //loadStock2("TSLA",stock11);
+    thread th1(loadStock2,"TSLA",ref(stock11));
+    thread th2(loadStock2,"NVDA",ref(stock22));
+    thread th3(loadStock2,"PEP",ref(stock33));
+    thread th4(loadStock2,"MCD",ref(stock44));
+    thread th5(loadStock2,"WMT",ref(stock55));
+    th1.join();th2.join();th3.join();th4.join();th5.join();
+
     //stock.adatokBetoltese("NVDA");
     cout<<"a2: "<<(clock()-t)<<endl;
     t=clock();

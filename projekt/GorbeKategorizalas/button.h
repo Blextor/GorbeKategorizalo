@@ -64,6 +64,8 @@ struct Gorgetheto {
     int w, h; /// méret
     int gridX=-1, gridY=-1; /// milyen formába legyenek rendezve
 
+    bool relative = false;
+
     Gorgetheto(){}
     Gorgetheto(vector<string> e,int vx, int vy, int vw, int vh, int vgx=-1, int vgy=-1){
         elemek=e; x=vx; y=vy; h=vh; w=vw; gridX=vgx; gridY=vgy;
@@ -103,6 +105,7 @@ struct Gorgetheto {
     }
 
     void draw(SDL_Renderer *renderer, int wa, int wb){
+        if (relative) {x = wa, y=wb;}
         int radius = 25;
         int gorgStart = y+13, gorgH = 10, gorgAlsoEnd = y+h-8; // y+h-8
         int gridx = max(1,gridX);//, gridy = max(1,gridY);
@@ -312,6 +315,17 @@ struct KeziGorbe{
     Negyed valasztottNegyed; /// a választott negyed
     vector<Arfolyam> gorbe; /// maguk az értékek
 
+    /// napi nézet
+    Button napiB, negyedeviB; /// hogy napról, vagy negyedévről beszélünk
+    Button evB, honapB; /// ide lehet beírni, hogy melyik év, melyik hónap
+    Button napB; /// hogy melyik nap
+    vector<string> joDatumok; /// hogy mik lehetnek a napok
+    Gorgetheto napok; /// ezeket a jó napokat jelenítsem is meg
+
+    /// negyedéves nézet
+    Button negyedevListaB; /// negyedévnek a dátumát kell megadni
+    Gorgetheto negyedevListaG; /// lehetséges negyedévek listája
+
     void setLastDay(){
         setGorbeDay((*(stock->mindenNap.rbegin())).datum);
         maxVal=arfolyamGetMaxErtek(gorbe);
@@ -340,9 +354,16 @@ struct KeziGorbe{
     KeziGorbe(Stock *s){
         stock=s;
         setLastDay();
+
+        joDatumok.push_back("01"); joDatumok.push_back("02"); joDatumok.push_back("03"); joDatumok.push_back("04");
+        napok = Gorgetheto(joDatumok,0,0,55,100); napok.relative=true;
+
     }
 
     void draw (SDL_Renderer *renderer, int wa, int wb){
+
+        napok.draw(renderer,wa+205,wb+180);
+
         /// nagy keret
         rectangleRGBA(renderer,wa,wb,wa+398,wb+180,0,0,0,255);
 
@@ -364,14 +385,38 @@ struct KeziGorbe{
 
 
         /// plusz dátum
+        rectangleRGBA(renderer,wa+150,wb+161,wa+187,wb+180,0,0,0,255);
+        stringRGBA(renderer,wa+153,wb+167,"2023",0,0,0,255);
 
+        rectangleRGBA(renderer,wa+187,wb+161,wa+209,wb+180,0,0,0,255);
+        stringRGBA(renderer,wa+190,wb+167,"10",0,0,0,255);
+
+        rectangleRGBA(renderer,wa+209,wb+161,wa+264,wb+180,0,0,0,255);
+        stringRGBA(renderer,wa+213,wb+167,"04",0,0,0,255);
 
         /// görbe
-        stringRGBA(renderer,wa+2,wb+150,"09:30",0,0,0,255);
-        stringRGBA(renderer,wa+42,wb+150,"10:00",0,0,0,255);
-        stringRGBA(renderer,wa+82,wb+150,"10:30",0,0,0,255);
+        stringRGBA(renderer,wa+3,wb+150,"09:30",0,0,0,255);
+        stringRGBA(renderer,wa+95,wb+150,"11:00",255,255,255,60);
+        stringRGBA(renderer,wa+155,wb+150,"12:00",255,255,255,60);
+        stringRGBA(renderer,wa+215,wb+150,"13:00",255,255,255,60);
+        stringRGBA(renderer,wa+275,wb+150,"14:00",255,255,255,60);
+        stringRGBA(renderer,wa+355,wb+150,"16:00",0,0,0,255);
         rectangleRGBA(renderer,wa,wb+17,wa+398,wb+145,0,0,0,255);
         int yT = 20, yL = 142;
+
+        for (int i=0; i<=4; i++){
+            if (i%4!=0){
+                stringstream ss; ss<<getPrecFloat((maxVal*(4-i)+minVal*i)/4,4);
+                stringRGBA(renderer,wa+2,wb+20+(yL-yT)*i/4-2,ss.str().c_str(),255,255,100,50);
+            }
+            lineRGBA(renderer,wa+2,wb+20+(yL-yT)*i/4,wa+396,wb+20+(yL-yT)*i/4,255,255,255,50);
+        }
+
+        stringstream ss1; ss1<<getPrecFloat(maxVal,4);
+        stringstream ss2; ss2<<getPrecFloat(minVal,4);
+        stringRGBA(renderer,wa+2,wb+23,ss1.str().c_str(),255,255,100,50);
+        stringRGBA(renderer,wa+2,wb+135,ss2.str().c_str(),255,255,100,50);
+
         for (int i=0; i<gorbe.size(); i++){
             if (gorbe.size()==390){
                 int y1 = yL-((gorbe[i].open-minVal)*(yL-yT)/(maxVal-minVal));
@@ -379,21 +424,22 @@ struct KeziGorbe{
                 if (y2<y1) lineRGBA(renderer,wa+5+i,wb+y1,wa+5+i,wb+y2,0,255,0,255);
                 else lineRGBA(renderer,wa+5+i,wb+y1,wa+5+i,wb+y2,255,0,0,255);
             }
-            if (i%30==0){
-                lineRGBA(renderer,wa+5+i,wb+yT,wa+5+i,wb+yL,255,255,255,50);
-            }
+            if (i%60==0) lineRGBA(renderer,wa+5+i,wb+yT,wa+5+i,wb+yL,255,255,255,30);
+            else if (i%30==0) lineRGBA(renderer,wa+5+i,wb+yT,wa+5+i,wb+yL,255,255,255,60);
+
         }
 
-        stringRGBA(renderer,wa+2,wb+23,"123.2",255,255,255,50);
-        stringRGBA(renderer,wa+2,wb+135,"122.1",255,255,255,50);
     }
 
     bool inClick(int bx, int by){
 
+        return false;
     }
 };
 
 void loadStock(string name, Stock &stock);
+void loadStock2(string name, Stock &stock);
+void loadStock3(string name, Stock &stock);
 
 struct ReszvenySor{
     vector<KeziGorbe> gorbek;
