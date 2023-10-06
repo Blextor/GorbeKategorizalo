@@ -3,8 +3,8 @@
 
 void CsoportEditorMenu::gombokKialakitasa(){
     /// Menü gombok
-    FMB = Button("FoMenube",15,40,70,13,false,true);
-    AFMB = Button("Adatok frissitese",110,40,141,13,false,true);
+    FMB = Button("FoMenube",15,-40,70,13,false,true);
+    AFMB = Button("Adatok frissitese",110,-40,141,13,false,true);
     /// Új elem megadása
     MegCimTxt = Text("Uj reszveny vagy csoport letrehozasa", 20,42);
     ReszMegB = Button("uj reszveny",40,60,124,13,false,false);

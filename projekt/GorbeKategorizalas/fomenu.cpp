@@ -9,7 +9,7 @@ void FoMenu::gombokKialakitasa(){
     RCSMB = Button("Csoportositas",300,200,112,13,false,false);
     GorbeMB = Button("Reszvenyek",100,150,82,13,false,false);
     ElemzesMB = Button("Elemzes",300,150,58,13,false,false);
-    KilepB = Button("Kilepes",80,50,62,13,true,true);
+    KilepB = Button("Kilepes",-80,-50,62,13,true,true);
 
 
     szalakKiv = Text("Hany szalon fusson maximum:",50,400);

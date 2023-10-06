@@ -9,12 +9,20 @@ using namespace std;
 
 struct Text {
     int x=0, y=0;
+    bool relative = false;
     string str="";
 
+    int r=0, g=0, b=0;
+
+    void setRed(){r=255;g=100;b=100;}
+    void setGreen(){g=255;r=100;b=100;}
+    void setBlack(){g=0;r=0;b=0;}
+
     Text(){}
-    Text(string s,int vx, int vy){str=s; x=vx; y=vy;}
+    Text(string s,int vx, int vy, bool rel = false){str=s; x=vx; y=vy; relative=rel;}
     void draw(SDL_Renderer *renderer, int wa, int wb){
-        stringRGBA(renderer,x,y,str.c_str(),0,0,0,255);
+        if (!relative)  stringRGBA(renderer,x,y,str.c_str(),r,g,b,255);
+        else            stringRGBA(renderer,x+wa,y+wb,str.c_str(),r,g,b,255);
     }
 };
 
@@ -24,6 +32,8 @@ struct Button {
     bool wx=0, wy=0;
 
     bool afk = false;
+    bool selectable = false;
+    bool selected = false;
 
     string str="";
 
@@ -36,13 +46,17 @@ struct Button {
     }
 
     void draw (SDL_Renderer *renderer, int wa, int wb){
-        if (wx) X = wa - x;
+        if (wx) X = wa + x;
         else X = x;
-        if (wy) Y = wb - y;
+        if (wy) Y = wb + y;
         else Y = y;
 
         stringRGBA(renderer,X+5,Y+5,str.c_str(),0,0,0,255);
         rectangleRGBA(renderer,X,Y,X+w+5,Y+h+5,0,0,0,255);
+        if (selectable && selected)
+            filledCircleRGBA(renderer,X+w-4,Y+h-5,5,100,255,100,255);
+        if (selectable)
+            circleRGBA(renderer,X+w-4,Y+h-5,5,0,0,0,255);
     }
 
     bool inClick(int bx, int by){
@@ -315,10 +329,14 @@ struct KeziGorbe{
     Negyed valasztottNegyed; /// a választott negyed
     vector<Arfolyam> gorbe; /// maguk az értékek
 
+    /// kigurás
+    Button kiugrasB; /// a kerethez és a "kiugras:" hoz
+    Text kiugrasT; /// a kigras mértékéhez
+
     /// napi nézet
     Button napiB, negyedeviB; /// hogy napról, vagy negyedévről beszélünk
     Button evB, honapB; /// ide lehet beírni, hogy melyik év, melyik hónap
-    Button napB; /// hogy melyik nap
+    Button napB; Text napT; /// hogy melyik nap
     vector<string> joDatumok; /// hogy mik lehetnek a napok
     Gorgetheto napok; /// ezeket a jó napokat jelenítsem is meg
 
@@ -326,10 +344,23 @@ struct KeziGorbe{
     Button negyedevListaB; /// negyedévnek a dátumát kell megadni
     Gorgetheto negyedevListaG; /// lehetséges negyedévek listája
 
+
+    void gombokElhelyezese(){
+        /// kiugrás
+        kiugrasB = Button("kiugras:",0,0,125,13,true,true);
+        kiugrasT = Text("+41,23%",69,5,true); kiugrasT.setGreen();
+        /// napi / negyedév és dátum
+        napiB = Button("napi",0,161,51,14,true,true); napiB.selectable=true; napiB.selected=true;
+        negyedeviB = Button("negyedev",55,161,81,14,true,true); negyedeviB.selectable=true;
+        evB = Button("2023",150,161,36,14,true,true); honapB = Button("10",191,161,21,14,true,true);
+        napB = Button("05",217,161,52,14,true,true); napT = Text("V",260,166,true);
+    }
+
     void setLastDay(){
         setGorbeDay((*(stock->mindenNap.rbegin())).datum);
         maxVal=arfolyamGetMaxErtek(gorbe);
         minVal=arfolyamGetMinErtek(gorbe);
+        gombokElhelyezese();
     }
 
     bool setGorbeDay(Datum datum){
@@ -361,38 +392,25 @@ struct KeziGorbe{
     }
 
     void draw (SDL_Renderer *renderer, int wa, int wb){
-
-        napok.draw(renderer,wa+205,wb+180);
+        if (true){
+        napok.draw(renderer,wa+214,wb+180);
 
         /// nagy keret
         rectangleRGBA(renderer,wa,wb,wa+398,wb+180,0,0,0,255);
 
         /// kiugrás
-        rectangleRGBA(renderer,wa,wb,wa+130,wb+18,0,0,0,255);
-        stringRGBA(renderer,wa+5,wb+5,"kiugras:",0,0,0,255);
-        stringRGBA(renderer,wa+69,wb+5,"-41,23%",100,255,100,255);
+        kiugrasB.draw(renderer,wa,wb);
+        kiugrasT.draw(renderer,wa,wb);
 
         /// napi/negyed plusz dátum
-        rectangleRGBA(renderer,wa,wb+161,wa+56,wb+180,0,0,0,255);
-        stringRGBA(renderer,wa+5,wb+167,"napi",0,0,0,255);
-        if (type==0) filledCircleRGBA(renderer,wa+45,wb+170,4,0,255,0,255);
-        circleRGBA(renderer,wa+45,wb+170,5,0,0,0,255);
-
-        rectangleRGBA(renderer,wa+56,wb+161,wa+150,wb+180,0,0,0,255);
-        stringRGBA(renderer,wa+61,wb+167,"negyed ev",0,0,0,255);
-        if (type==1) filledCircleRGBA(renderer,wa+140,wb+170,4,0,255,0,255);
-        circleRGBA(renderer,wa+140,wb+170,5,0,0,0,255);
-
+        napiB.draw(renderer,wa,wb);
+        negyedeviB.draw(renderer,wa,wb);
 
         /// plusz dátum
-        rectangleRGBA(renderer,wa+150,wb+161,wa+187,wb+180,0,0,0,255);
-        stringRGBA(renderer,wa+153,wb+167,"2023",0,0,0,255);
-
-        rectangleRGBA(renderer,wa+187,wb+161,wa+209,wb+180,0,0,0,255);
-        stringRGBA(renderer,wa+190,wb+167,"10",0,0,0,255);
-
-        rectangleRGBA(renderer,wa+209,wb+161,wa+264,wb+180,0,0,0,255);
-        stringRGBA(renderer,wa+213,wb+167,"04",0,0,0,255);
+        evB.draw(renderer,wa,wb);
+        honapB.draw(renderer,wa,wb);
+        napB.draw(renderer,wa,wb); napT.draw(renderer,wa,wb);
+        }
 
         /// görbe
         stringRGBA(renderer,wa+3,wb+150,"09:30",0,0,0,255);

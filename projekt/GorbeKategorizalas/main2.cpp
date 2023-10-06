@@ -104,7 +104,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     clock_t t = clock();
     Stock stock1,stock2,stock3,stock4,stock5,stock;
 
-    loadStock("TSLA",stock1);
+    ///loadStock("TSLA",stock1);
     /*
     cout<<"z"<<endl;
     loadStock2("TSLA",stock2);
@@ -122,13 +122,13 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
     /*
     Stock stock11,stock22,stock33,stock44,stock55;
-    thread th1(loadStock,"AA",ref(stock11));th1.join();
-    thread th2(loadStock,"V",ref(stock22));th2.join();
-    thread th3(loadStock,"VZ",ref(stock33));th3.join();
-    thread th4(loadStock,"INTC",ref(stock44));th4.join();
-    thread th5(loadStock,"EA",ref(stock55));th5.join();
+    thread th1(loadStock,"NVDA",ref(stock11));
+    thread th2(loadStock,"AMD",ref(stock22));
+    thread th3(loadStock,"NFLX",ref(stock33));
+    thread th4(loadStock,"AA",ref(stock44));
+    thread th5(loadStock,"MCD",ref(stock55));
+    th1.join();th2.join();th3.join();th4.join();th5.join();
     */
-
 
     vector<string> reszvenyekNeve = osszesReszveny();
     vector<thread> szalak; szalak.resize(32);

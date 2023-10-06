@@ -6,8 +6,8 @@ void FrissitoMenu::gombokKialakitasa(){
     kisLeiras = Text("Letoltes nullarol kezd, a frissites felhasznalja ami van.",15,30);
 
     /// menü váltó gombok
-    FMB = Button("FoMenu",15,35,52,13,false,true);
-    RCSMB = Button("Csoportosito",90,35,100,13,false,true);
+    FMB = Button("FoMenu",15,-35,52,13,false,true);
+    RCSMB = Button("Csoportosito",90,-35,100,13,false,true);
 
     /// Részvény letöltése
     ReszBevB = Button("reszveny neve V",20,70,124,13,false,false);
