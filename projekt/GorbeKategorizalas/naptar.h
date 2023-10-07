@@ -77,4 +77,5 @@ int hetNapja(Datum d);
 
 int hetNapja(int y, int m, int d);
 
+Datum maiDatum();
 #endif // NAPTAR_H_INCLUDED

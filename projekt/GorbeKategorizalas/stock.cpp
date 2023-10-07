@@ -557,7 +557,7 @@ void Stock::negyedevekKorrigalasa(){
 
     vector<Negyed> hibasNegyedek; /// kigyűjtöm a hibás negyedéveket
     /// meg korrigálom is mindegyiket
-    for (const Negyed negyed: negyedevek){
+    for (const Negyed &negyed: negyedevek){
         Nap temp(negyed.tenylegesJelentes);
         set<Nap>::iterator it = mindenNap.find(temp); /// kikeresem melyik napra esett a jelentés
         //cout<<mindenNap.size()<<endl;
@@ -591,6 +591,18 @@ void Stock::negyedevekKorrigalasa(){
         set<Negyed>::iterator it = negyedevek.find(hibasNegyedek[i]);
         negyedevek.erase(it);
     }
+
+    /// következő negyedév napját is eltárolom
+    const Negyed *elozoNegyed;
+    bool first = true;
+    for (const Negyed &negyed: negyedevek){
+        if (first) first=false;
+        else {
+            elozoNegyed->negyedevVege=negyed.korrigaltTenylegesJelentes;
+        }
+        elozoNegyed=&negyed;
+    }
+    elozoNegyed->negyedevVege = maiDatum();
 }
 
 float arfolyamGetMaxErtek(vector<Arfolyam> &v){

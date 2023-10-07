@@ -34,7 +34,7 @@ void ReszvenyMenu::draw() {
 
     for (int i=0; i<reszvenyek.size(); i++)
         if (boolR[i])
-            reszvenyek[i].draw(renderer,50,100+220*i);
+            reszvenyek[i].draw(renderer,30,100+220*i);
 
 
     if (state == 1)

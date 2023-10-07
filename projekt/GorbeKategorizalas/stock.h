@@ -76,6 +76,10 @@ struct Negyed{
     bool operator<(const Negyed& other) const {
         return idoszakVege < other.idoszakVege;
     }
+
+    bool operator==(const Negyed& other) const {
+        return idoszakVege == other.idoszakVege;
+    }
 };
 
 struct Stock{

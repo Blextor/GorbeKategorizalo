@@ -1,8 +1,8 @@
 #include "naptar.h"
 
 int hetNapja(Datum d){
-    std::tm time_in = { 0, 0, 0, // m醩odperc, perc, 髍a
-                        d.day, d.month, d.year - 1900 }; // nap, h髇ap, 関
+    std::tm time_in = { 0, 0, 0, // m谩sodperc, perc, 贸ra
+                        d.day, d.month, d.year - 1900 }; // nap, h贸nap, 茅v
 
     std::mktime(&time_in);
     return time_in.tm_wday;
@@ -10,4 +10,16 @@ int hetNapja(Datum d){
 
 int hetNapja(int y, int m, int d){
     return hetNapja(Datum(y,m,d));
+}
+
+Datum maiDatum(){
+    auto now = std::chrono::system_clock::now();
+    std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
+    std::tm* now_tm = std::localtime(&now_time_t);
+
+    int year = now_tm->tm_year + 1900; // Az 茅v (1900-t贸l sz谩molva)
+    int month = now_tm->tm_mon + 1;   // A h贸nap (0-t贸l 11-ig van)
+    int day = now_tm->tm_mday;        // A nap (1-t艖l 31-ig)
+
+    return Datum(year,month,day);
 }
