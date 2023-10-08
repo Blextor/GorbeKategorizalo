@@ -111,7 +111,6 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     cout<<"zz"<<endl;
     loadStock3("TSLA",stock3);
     cout<<"zzz"<<endl;
-    /*
     loadStock2("MCD",stock4);
     cout<<"zzzz"<<endl;
     loadStock2("WMT",stock5);
@@ -133,7 +132,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     vector<string> reszvenyekNeve = osszesReszveny();
     vector<thread> szalak; szalak.resize(32);
     vector<Stock> stocks; stocks.resize(32);
-    for (int i=1000; i<reszvenyekNeve.size(); i++){
+    for (size_t i=1000; i<reszvenyekNeve.size(); i++){
         for (int j=0; j<32; j++){
             szalak[j] = thread(loadStock,reszvenyekNeve[i],ref(stocks[j]));
             i++;

@@ -55,7 +55,7 @@ void FoMenu::inputHandle(){
     int MX=-1, MY=-1; /// kurzor pozíciója, ha -1 marad, nem történt változás
     //bool leftButton = true; /// külön kígyûjtöm, hogy lenyomták-e a bal egérgombot
     bool keyDown = false; /// vagy bármelyt a billentyûzeten
-    bool mouseWheel = false; /// vagy görgettek-e
+    //bool mouseWheel = false; /// vagy görgettek-e
 
     if (SDL_PollEvent(ev)){ /// lekérem az eseményt és kigyûjtöm, hogy mi történt
         if (ev->type==SDL_MOUSEBUTTONDOWN){ /// csak kattintáskor kérem le az egér pozíciót
@@ -68,7 +68,7 @@ void FoMenu::inputHandle(){
             //MY = ev->motion.y;
         }
         if (ev->type==SDL_MOUSEWHEEL){ /// görgtés
-            mouseWheel=true;
+            ///mouseWheel=true;
         }
         if (ev->type==SDL_KEYDOWN){ /// billentyû
             keyDown=true;

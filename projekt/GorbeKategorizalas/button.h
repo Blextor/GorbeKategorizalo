@@ -644,7 +644,7 @@ struct KeziGorbe{
         }
 
         /// a részvény értékei, ez a saját megvalósítás, így meghagyom így
-        for (int i=0; i<gorbe.size(); i++){
+        for (size_t i=0; i<gorbe.size(); i++){
             if (gorbe.size()==390){ /// egy napról van szó
                 int y1 = yL-((gorbe[i].open-minVal)*(yL-yT)/(maxVal-minVal));
                 int y2 = yL-((gorbe[i].close-minVal)*(yL-yT)/(maxVal-minVal));
@@ -733,17 +733,17 @@ struct KeziGorbe{
             }
         }
         if (state==2) {
-            if (isalnum(c) && !isalpha(c) && evB.str.size()<2){
+            if (isalnum(c) && !isalpha(c) && honapB.str.size()<2){
                 honapB.str+=c;
             }
         }
         if (state==3) {
-            if (isalnum(c) && !isalpha(c) && evB.str.size()<2){
+            if (isalnum(c) && !isalpha(c) && napB.str.size()<2){
                 napB.str+=c;
             }
         }
         if (state==4) {
-            if ((isalnum(c) && !isalpha(c) || c==' ')  && evB.str.size()<10){
+            if (((isalnum(c) && !isalpha(c)) || c==' ')  && negyedevB.str.size()<10){
                 negyedevB.str+=c;
             }
         }
@@ -820,7 +820,7 @@ struct ReszvenySor{
     }
 
     bool inClickGorbek(int bx ,int by){
-        for (int i=0; i<gorbek.size(); i++)
+        for (size_t i=0; i<gorbek.size(); i++)
             if (gorbek[i].inClick(bx,by))
                 return true;
         return false;
@@ -842,7 +842,7 @@ struct ReszvenySor{
         ElemzesB.draw(renderer,wa+5,wb+60);
         if (!isLocked(mfs))
             stringRGBA(renderer,wa+5,wb+5,stock.name.c_str(),0,0,0,255);
-        for (int i=0; i<gorbek.size(); i++){
+        for (size_t i=0; i<gorbek.size(); i++){
             gorbek[i].draw(renderer,wa+80+410*i,wb+10);
         }
     }
@@ -863,14 +863,14 @@ struct ReszvenySor{
     }
 
     bool inInput(char c){
-        for (int i=0; i<gorbek.size(); i++) {
+        for (size_t i=0; i<gorbek.size(); i++) {
             gorbek[i].inInput(c);
         }
         return true;
     }
 
     bool inDeleteButton(){
-        for (int i=0; i<gorbek.size(); i++) {
+        for (size_t i=0; i<gorbek.size(); i++) {
             gorbek[i].inDeleteButton();
         }
         return true;

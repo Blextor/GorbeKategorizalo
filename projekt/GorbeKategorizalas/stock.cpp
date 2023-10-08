@@ -605,7 +605,8 @@ void Stock::negyedevekKorrigalasa(){
         }
         elozoNegyed=&negyed;
     }
-    elozoNegyed->negyedevVege = maiDatum();
+    if (negyedevek.size()!=0)
+        elozoNegyed->negyedevVege = maiDatum();
 }
 
 float arfolyamGetMaxErtek(vector<Arfolyam> &v){

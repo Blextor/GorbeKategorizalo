@@ -443,7 +443,8 @@ void csoportAPILetoltes(string group, bool &stopped, bool &inProc, function<void
     vector<string> reszvenyek = csoportReszvenyei(group);
     for (size_t i=0; i<reszvenyek.size(); i++){
         if (letezoReszveny(reszvenyek[i])){
-            bool sS = false, iPS = true;
+            //bool sS = false,
+            bool iPS = true;
             bool s = false, iP = false; /// iP azért false, hogy jelezze a rAPIL-nek, hogy csak részfolyamat
             thread thr(reszvenyAPILetoltes,ref(reszvenyek[i]),ref(s),ref(iP),func);
             Sleep(500);
@@ -456,7 +457,7 @@ void csoportAPILetoltes(string group, bool &stopped, bool &inProc, function<void
                 iP=inProc;
                 iPS=inProc;
                 s=stopped;
-                sS=stopped;
+                //sS=stopped;
                 if (!inProc) {iPS=false; thr.join(); return;}
             }
         } else {
@@ -472,7 +473,8 @@ void csoportAPIFrissites(string group, bool &stopped, bool &inProc, function<voi
     vector<string> reszvenyek = csoportReszvenyei(group);
     for (size_t i=0; i<reszvenyek.size(); i++){
         if (letezoReszveny(reszvenyek[i])){
-            bool sS = false, iPS = true;
+            //bool sS = false,
+            bool iPS = true;
             bool s = false, iP = false;
             thread thr(reszvenyAPIFrissites,ref(reszvenyek[i]),ref(s),ref(iP),func);
             Sleep(500);
@@ -486,7 +488,7 @@ void csoportAPIFrissites(string group, bool &stopped, bool &inProc, function<voi
                 iP=inProc;
                 iPS=inProc;
                 s=stopped;
-                sS=stopped;
+                //sS=stopped;
                 if (!inProc) {iPS=false; thr.join(); return;}
             }
         } else {

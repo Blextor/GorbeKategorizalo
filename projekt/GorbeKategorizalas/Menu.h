@@ -107,74 +107,74 @@ struct FrissitoMenu : public Menu {
     bool stopped = true;
     bool inProc = false;
 
-    bool startStop(){
-        if (!inProc){
-            if (letoltoSzal.joinable()){
+    bool startStop(){ /// start stop gomb fő függvénye
+        if (!inProc){ /// ha nincs folyamatban épp egy letöltés
+            if (letoltoSzal.joinable()){ /// a meglévő szálat bevárjuk (biztos ami biztos)
                 letoltoSzal.join();
             }
-            if (adatokLetoltese()){
-                stopped=false;
-                inProc=true;
-                PSSB.str="stop";
-                progBar.start();
-            } else {
+            if (adatokLetoltese()){ /// majd ha sikerül az adatokat letölteni
+                stopped=false; /// akkor nem áll a folyamat
+                inProc=true; /// és van is folyamat
+                PSSB.str="stop"; /// a start gomb stop lesz
+                progBar.start(); /// és a progressBar elkezdi számolni az időt
+            } else { /// ha nem sikerül, akkor nicns kiválasztva részvény
                 kivalasztottDologT.str="Nincs kivalasztva reszveny vagy csoport!";
             }
-        } else {
-            if (stopped){
-                progBar.start();
-                stopped=false;
-                PSSB.str="stop";
-            } else {
-                progBar.stop();
-                stopped=true;
-                PSSB.str="start";
+        } else {    /// ha van folyamat
+            if (stopped){ /// akkor ha áll folytassuk
+                progBar.start(); /// inditsuk újra el az időt számlálót
+                stopped=false; /// nem fog tovább állni a folyamat
+                PSSB.str="stop"; /// és majd stop-oljuk max
+            } else { /// ha nem áll
+                progBar.stop(); /// akkor megállítjuk a stoppert
+                stopped=true; /// áll a folyamat
+                PSSB.str="start"; /// és majd elindítjuk
             }
 
         }
-        return false;
+        return false; /// felesleges
     }
 
-    bool cancel(){
-        progBar.cancel();
-        if (!inProc){
-            if (kivCsop!="" || kivResz!=""){
-                kivCsop="";
-                kivResz="";
-                kivalasztottDologT.str="Torolve a kivalasztott!";
-                stopped=true;
+    bool cancel(){ /// megszakítás gomb függvénye
+        progBar.cancel(); /// progressBar reseteli magát
+        if (!inProc){ /// ha nem volt folyamat
+            if (kivCsop!="" || kivResz!=""){ /// akkor max kiválasztva volt csak valami
+                kivCsop=""; /// mind a csoportot törlöm
+                kivResz=""; /// mind a részvényt is
+                kivalasztottDologT.str="Torolve a kivalasztott!"; /// visszajelzést kiírok
+                stopped=true; /// és biztos ami biztos megállítom a folyamatot
             }
-        } else {
-            stopped=true;
-            PSSB.str="start";
-            inProc=false;
-            kivalasztottDologT.str="Megszakitva!";
-            kivCsop="";
-            kivResz="";
+        } else { /// ha volt folyamatban valami
+            stopped=true; /// akkor először álljon meg
+            PSSB.str="start"; /// legközeleb biztos el kell indítani majd valamit
+            inProc=false; /// a folyamat is álljon le
+            kivalasztottDologT.str="Megszakitva!"; /// adjunk visszajelzést
+            kivCsop=""; /// és törlöm a kiválasztott csoportot
+            kivResz=""; /// és a kiválasztott részvényt is
         }
-        return false;
+        return false; /// felesleges
     }
 
-    void kivReszSet(string str){
-        cancel();
+    void kivReszSet(string str){ /// részvény kiválasztása
+        cancel(); /// resetel
         transform(str.begin(), str.end(), str.begin(), [](unsigned char c){ return toupper(c); });
-        kivResz=str;
-        kivCsop="";
+        kivResz=str; /// nagybetűsít, illetve beállítja kiválasztottként
+        kivCsop=""; /// a csoportot törli
     }
 
-    void kivCsopSet(string str){
-        cancel();
-        kivCsop=str;
-        kivResz="";
+    void kivCsopSet(string str){ /// csoport kiválasztása
+        cancel(); /// resetel
+        kivCsop=str; /// nagybetűsít, illetve beállítja kiválasztottként
+        kivResz=""; /// a részvényt törli
     }
 
-    void gombokKialakitasa();
+    void gombokKialakitasa(); /// a gombok elrendezését ide szerveztem ki init-ből
 
-    void ujElemFeldolgozva(int x){
-        progBar.elemFeldolgozva(x);
+    void ujElemFeldolgozva(int x){ /// progressBar-nak egy átadható függvénye
+        progBar.elemFeldolgozva(x); /// hogy hány elemet dolgozott fel a szál
     }
 
-    int elemszamKiszamolasa(int reszvenyekSzama=1){
+    int elemszamKiszamolasa(int reszvenyekSzama=1){ /// becsléshez, hogy hány elem van hátra még
         int y = getActYear();
         int m = getActMonth();
         int Y=2000, M=1;
@@ -183,25 +183,25 @@ struct FrissitoMenu : public Menu {
         return (1+2+monthCnt)*reszvenyekSzama;
     }
 
-    bool adatokLetoltese(){
+    bool adatokLetoltese(){ /// adatok letöltését megkezdi
         int x=0;
-        if (kivResz!=""){
-            if (letoltoSzal.joinable()){
-                cout<<"JoinBajAdatLetol"<<endl;
+        if (kivResz!=""){ /// ha van kiválaszott részvény
+            if (letoltoSzal.joinable()){ /// létező szálat bevárom
+                cout<<"JoinBajAdatLetol"<<endl; /// elvileg ilyen nincs
                 letoltoSzal.join();
             }
-            if (letoltesValasztva) {
-                progBar.prepare(elemszamKiszamolasa());
-                progBar.start();
+            if (letoltesValasztva) { /// majd ha letöletni kívánom
+                progBar.prepare(elemszamKiszamolasa()); /// akkor a progressBar-t felkészítem
+                progBar.start(); /// és el is indítom, ugyanis külön szálban elindítom a letöltést
                 letoltoSzal = move(thread(reszvenyAPILetoltes,ref(kivResz),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this,std::placeholders::_1)));// reszvenyAPILetoltes(kivResz);
             }
-            else {
+            else { /// ha csak frissítésről van szó
                 progBar.prepare(elemszamKiszamolasa());
-                progBar.start();
+                progBar.start(); /// akkor ugyan az történik, másik, a frissítő függvénnyel
                 letoltoSzal = move(thread(reszvenyAPIFrissites,ref(kivResz),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this,std::placeholders::_1)));
             }
         }
-        else if (kivCsop!=""){
+        else if (kivCsop!=""){ /// ha csoport van kijelölve, az akkor nagyon hasonló a részvényhez
             if (letoltoSzal.joinable()){
                 letoltoSzal.join();
             }
@@ -216,9 +216,9 @@ struct FrissitoMenu : public Menu {
                 letoltoSzal = move(thread(csoportAPIFrissites,ref(kivCsop),ref(stopped),ref(inProc),bind(ujElemFeldolgozva,this,std::placeholders::_1)));
             }
         } else {
-            return false;
+            return false; /// ha nincs se csoport se részvény kiválasztva
         }
-        return true;
+        return true; /// egyébként elindult egy szál
     }
 
     FrissitoMenu(){}

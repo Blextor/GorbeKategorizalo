@@ -32,7 +32,7 @@ void ReszvenyMenu::draw() {
     CimMB.draw(renderer,x,y);
 
 
-    for (int i=0; i<reszvenyek.size(); i++)
+    for (size_t i=0; i<reszvenyek.size(); i++)
         if (boolR[i])
             reszvenyek[i].draw(renderer,30,100+220*i);
 
@@ -46,7 +46,7 @@ void ReszvenyMenu::draw() {
 }
 
 bool ReszvenyMenu::reszvenyekClick(int bx, int by){
-    for (int i=0; i<boolR.size(); i++){
+    for (size_t i=0; i<boolR.size(); i++){
         if (boolR[i]){
             if (reszvenyek[i].inClick(bx,by))
                 return true;
@@ -102,7 +102,7 @@ void ReszvenyMenu::inputHandle(){
             }
         }
         else if (reszOKB.inClick(MX,MY)) {
-            for (int i=0; i<boolR.size(); i++){
+            for (size_t i=0; i<boolR.size(); i++){
                 if (!boolR[i]){
                     boolR[i]=true;
                     if (!reszvenyek[i].setStock(ujReszInp.str))
@@ -142,7 +142,7 @@ void ReszvenyMenu::inputHandle(){
             }
         }
         else {
-            for (int i=0; i<reszvenyek.size(); i++){
+            for (size_t i=0; i<reszvenyek.size(); i++){
                 reszvenyek[i].inInput(ev->text.text[0]);
             }
         }
@@ -159,7 +159,7 @@ void ReszvenyMenu::inputHandle(){
                     reszvenyLista.elemekKeresese(ujReszInp.str);
                 }
             } else {
-                for (int i=0; i<reszvenyek.size(); i++){
+                for (size_t i=0; i<reszvenyek.size(); i++){
                     reszvenyek[i].inDeleteButton();
                 }
             }
