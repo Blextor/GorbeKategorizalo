@@ -622,10 +622,13 @@ float arfolyamGetMinErtek(vector<Arfolyam> &v){
 }
 
 float getPrecFloat(float f, int prec){
+    int negativ = 0;
+    if (f<0) {negativ=1; f=-f;}
     int x = max(log10(f)+1,1.0f);
+    if (negativ) f=-f;
     int fi = f;
-    if (prec<x) return f;
-    int y = prec-x;
+    if (prec<x+negativ) return f;
+    int y = prec-x-negativ;
     int z = (f-fi)*pow(10,y);
     float m = z; m/=pow(10,y); m+=fi;
     return m;

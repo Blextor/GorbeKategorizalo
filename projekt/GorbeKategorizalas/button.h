@@ -327,7 +327,7 @@ struct KeziGorbe{
     int type = 0; /// 0 egy nap - perc bontásban, 1 egy negyedév - nap bontásban
     Datum kezdoNap; /// az a nap, vagy a pénzügyi jelentést követő nyitás napja
     Nap egyetlenNap;    /// a kért nap
-    float maxVal = 0, minVal=0;
+    float maxVal = 0, minVal=0, nullVal=0, elozoZarVal = 0;
     Negyed valasztottNegyed; /// a választott negyed
     vector<Arfolyam> gorbe; /// maguk az értékek
 
@@ -351,6 +351,9 @@ struct KeziGorbe{
     /// kiválaszott dátum OK gomb
     Button datumOKB;
 
+    /// százalékos eltérés gomb, és előző nap/negyedévi záráshoz képest
+    Button szazalekB, elozohozB;
+
     /// kiírt értékek
     vector<Text> reszvenyErtekek;
     vector<Text> reszvenyDatumok;
@@ -359,18 +362,20 @@ struct KeziGorbe{
 
     void gombokElhelyezese(){
         /// kiugrás
-        kiugrasB = Button("kiugras:",0,0,125,13,true,true);
+        kiugrasB = Button("kiugras:",0,0,117,13,true,true);
         kiugrasT = Text("+41,23%",69,5,true); kiugrasT.setGreen();
         /// napi / negyedév és dátum
         napiB = Button("napi",0,161,51,13,true,true); napiB.selectable=true; napiB.selected=true;
         negyedeviB = Button("negyedev",55,161,81,13,true,true); negyedeviB.selectable=true;
-        evB = Button("2023",150,161,36,13,true,true); honapB = Button("10",191,161,21,13,true,true);
-        napB = Button("05",217,161,52,13,true,true); napT = Text("V",260,166,true);
+        evB = Button("2023",150,161,36,13,true,true); honapB = Button("06",191,161,21,13,true,true);
+        napB = Button("30",217,161,52,13,true,true); napT = Text("V",260,166,true);
         napok = Gorgetheto(joDatumok,214,180,55,50); napok.relative=true;
 
         negyedevB = Button("2023 10 04",150,161,110,13,true,true);
         negyedevT = Text("V",251,166,true);
         negyedevG = Gorgetheto(joDatumok2,150,179,113,50); negyedevG.relative=true;
+
+        datumOKB = Button("OK", 290,161,20,13,true,true);
 
         if (true){ /// reszvenyErtekek
         reszvenyErtekek.resize(5);
@@ -390,7 +395,8 @@ struct KeziGorbe{
             reszvenyIdopontok[5] = Text("16:00",355,150,true); reszvenyIdopontok[5].setBlack();
         }
 
-
+        szazalekB = Button("%",282,0,25,13,true,true); szazalekB.selectable=true;
+        elozohozB = Button("elozohoz",312,0,81,13,true,true); elozohozB.selectable=true;
     }
 
     void setLastNap(){
@@ -415,12 +421,17 @@ struct KeziGorbe{
         if (it==stock->negyedevek.end()) return false;
         valasztottNegyed = *it;
         std::vector<Arfolyam> napErtekek; //(egyetlenNap.percek.begin(), egyetlenNap.percek.end());
-        for (const Nap nap: stock->mindenNap){
-            if (nap.datum<valasztottNegyed.korrigaltTenylegesJelentes ||
-                !(nap.datum<valasztottNegyed.negyedevVege))
-                continue;
-            napErtekek.push_back(Arfolyam(0,0,nap.nyitas,nap.zaras,nap.minimum,nap.maximum,nap.volumen));
+        gorbe.clear();
+
+        Nap kezdoNap(valasztottNegyed.korrigaltTenylegesJelentes);
+        auto it2 = stock->mindenNap.find(kezdoNap);
+        while ((*it2).datum<valasztottNegyed.negyedevVege){
+            Nap nap = *it2;
+            napErtekek.push_back(Arfolyam(nap.datum.month,nap.datum.day,nap.nyitas,nap.zaras,nap.minimum,nap.maximum,nap.volumen));
+            ++it2;
+            if (it2 == stock->mindenNap.end()) break;
         }
+
         gorbe = napErtekek;
         return true;
     }
@@ -432,6 +443,7 @@ struct KeziGorbe{
         if (it==stock->mindenNap.end()) return false;
         egyetlenNap = *it;
         std::vector<Arfolyam> napiErtekek(egyetlenNap.percek.begin(), egyetlenNap.percek.end());
+        gorbe.clear();
         gorbe.resize(390);
         int j = 0;
         for (int i=0; i<390; i++){
@@ -442,6 +454,88 @@ struct KeziGorbe{
             }
         }
         return true;
+    }
+
+    void pushGorbeElozoNap(Datum most){
+        Nap peldaNap(most.year,most.month,most.day);
+        set<Nap>::iterator it = find(stock->mindenNap.begin(),stock->mindenNap.end(),peldaNap);
+        if (it==stock->mindenNap.end()) return;
+        Nap elozoNap((*it).elozoNap);
+        set<Nap>::iterator it2 = find(stock->mindenNap.begin(),stock->mindenNap.end(),elozoNap);
+        if (it2==stock->mindenNap.end()) return;
+        Arfolyam temp(1,1,(*it2).zaras,(*it2).zaras,(*it2).zaras,(*it2).zaras,(*it2).volumen);
+        gorbe.push_back(temp);
+    }
+
+    void setGorbeErtekek(){
+        bool szazalek = szazalekB.selected;
+        /// reszvenyErtekek
+        float maxValV=max(maxVal,nullVal);
+        float minValV=min(minVal,nullVal);
+        if (szazalek){
+            maxValV=(maxValV/nullVal-1.0f)*100;
+            minValV=(1.0f-nullVal/minValV)*100;
+            cout<<maxValV<<endl;
+            cout<<minValV<<endl;
+        }
+        for (size_t i=0; i<reszvenyErtekek.size(); i++){
+            float ertek=(maxValV*(reszvenyErtekek.size()-i-1)+
+                                minValV*i)/(reszvenyErtekek.size()-1);
+            ertek = getPrecFloat(ertek,4);
+            stringstream ss; ss<<ertek; if (szazalek) ss<<"%";
+            string temp; ss>>temp;
+            reszvenyErtekek[i].str=temp;
+        }
+
+        /// kiugrás értékét és színét beállítja
+        float kiugras;
+        if (elozoZarVal<gorbe[0].open)  kiugras = gorbe[0].open/elozoZarVal - 1.0f;
+        else                            kiugras = 1.0f - elozoZarVal/gorbe[0].open;
+        kiugras=getPrecFloat(kiugras*100,3);
+        stringstream ss; if (kiugras>=0) ss<<"+";
+        ss<<kiugras<<"%";
+        kiugrasT.str=ss.str();
+        if (kiugras>=0) kiugrasT.setGreen();
+        else kiugrasT.setRed();
+    }
+
+    void gorbeFrissitese(){
+        bool elozohoz = elozohozB.selected;
+        bool napi = napiB.selected;
+        Datum datum;
+        if (napi) {
+            stringstream ss; ss<<evB.str<<" "<<honapB.str<<" "<<napB.str;
+            int tempE, tempH, tempN;
+            ss>>tempE>>tempH>>tempN;
+            datum=Datum(tempE,tempH,tempN);
+            cout<<tempE<<" "<<tempH<<" "<<tempN<<endl;
+            setGorbeNap(datum);
+            pushGorbeElozoNap(datum);
+        } else {
+            stringstream ss(negyedevB.str);
+            int tempE, tempH, tempN;
+            ss>>tempE>>tempH>>tempN;
+            datum=Datum(tempE,tempH,tempN);
+            cout<<tempE<<" "<<tempH<<" "<<tempN<<endl;
+            setGorbeNegyed(datum);
+            pushGorbeElozoNap(valasztottNegyed.korrigaltTenylegesJelentes);
+        }
+        elozoZarVal = gorbe[gorbe.size()-1].close;
+        if (!elozohoz){
+            nullVal=gorbe[0].open;
+            gorbe.pop_back();
+        }
+        maxVal=arfolyamGetMaxErtek(gorbe);
+        minVal=arfolyamGetMinErtek(gorbe);
+        cout<<elozohoz<<" "<<maxVal<<" "<<minVal<<endl;
+        cout<<elozohoz<<" "<<maxVal<<" "<<minVal<<endl;
+        cout<<gorbe[gorbe.size()-1].close<<endl;
+        if (elozohoz) {
+            nullVal=gorbe[gorbe.size()-1].close;
+            gorbe.pop_back();
+        }
+
+        setGorbeErtekek();
     }
 
     KeziGorbe(Stock *s){
@@ -468,7 +562,7 @@ struct KeziGorbe{
         napiB.draw(renderer,wa,wb);
         negyedeviB.draw(renderer,wa,wb);
 
-        /// plusz dátum
+        /// plusz dátum és OK
         if (type==0){
             evB.draw(renderer,wa,wb);
             honapB.draw(renderer,wa,wb);
@@ -479,7 +573,12 @@ struct KeziGorbe{
             negyedevB.draw(renderer,wa,wb);
             negyedevT.draw(renderer,wa,wb);
         }
+        datumOKB.draw(renderer,wa,wb);
         }
+
+        /// előző napot figyelembe véve, és százalékos megjelenítés
+        elozohozB.draw(renderer,wa,wb);
+        szazalekB.draw(renderer,wa,wb);
 
         /// görbe időpontok / dátumok
         for (int i=0; i<6; i++){ reszvenyIdopontok[i].draw(renderer,wa,wb); }
@@ -497,7 +596,8 @@ struct KeziGorbe{
             if (gorbe.size()==390){ /// egy napról van szó
                 int y1 = yL-((gorbe[i].open-minVal)*(yL-yT)/(maxVal-minVal));
                 int y2 = yL-((gorbe[i].close-minVal)*(yL-yT)/(maxVal-minVal));
-                if (y2<y1) lineRGBA(renderer,wa+5+i,wb+y1,wa+5+i,wb+y2,0,255,0,255);
+                if (gorbe[i].open<gorbe[i].close)
+                    lineRGBA(renderer,wa+5+i,wb+y1,wa+5+i,wb+y2,0,255,0,255);
                 else lineRGBA(renderer,wa+5+i,wb+y1,wa+5+i,wb+y2,255,0,0,255);
                 /// függőleges válaszfalak napi bontáshoz
                 if (i%60==0) lineRGBA(renderer,wa+5+i,wb+yT,wa+5+i,wb+yL,255,255,255,30);
@@ -506,7 +606,7 @@ struct KeziGorbe{
             else { /// egy negyedévről van szó
                 int y1 = yL-((gorbe[i].open-minVal)*(yL-yT)/(maxVal-minVal));
                 int y2 = yL-((gorbe[i].close-minVal)*(yL-yT)/(maxVal-minVal));
-                if (y2<y1) lineRGBA(renderer,wa+5+i,wb+y1,wa+5+i,wb+y2,0,255,0,255);
+                if (gorbe[i].open<gorbe[i].close) lineRGBA(renderer,wa+5+i,wb+y1,wa+5+i,wb+y2,0,255,0,255);
                 else lineRGBA(renderer,wa+5+i,wb+y1,wa+5+i,wb+y2,255,0,0,255);
                 /// függőleges válaszfalak napi bontáshoz
                 if (i%60==0) lineRGBA(renderer,wa+5+i,wb+yT,wa+5+i,wb+yL,255,255,255,30);
@@ -529,6 +629,20 @@ struct KeziGorbe{
             napiB.selected=false; negyedeviB.selected=true;
             setLastNegyed();
             cout<<"type=1"<<endl;
+        }
+        else if (elozohozB.inClick(bx,by)){
+            elozohozB.selected=!elozohozB.selected;
+            gorbeFrissitese();
+            cout<<"elozohoz"<<endl;
+        }
+        else if (szazalekB.inClick(bx,by)){
+            szazalekB.selected=!szazalekB.selected;
+            gorbeFrissitese();
+            cout<<"szazalek"<<endl;
+        }
+        else if (datumOKB.inClick(bx,by)){
+            gorbeFrissitese();
+            cout<<"datumOK"<<endl;
         }
         return false;
     }
