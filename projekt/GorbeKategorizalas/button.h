@@ -351,6 +351,9 @@ struct KeziGorbe{
     /// kiválaszott dátum OK gomb
     Button datumOKB;
 
+    /// következő és előző dátum gomb a léptetéshez
+    Button kovetkezoDatumB, elozoDatumB;
+
     /// százalékos eltérés gomb, és előző nap/negyedévi záráshoz képest
     Button szazalekB, elozohozB;
 
@@ -397,6 +400,48 @@ struct KeziGorbe{
 
         szazalekB = Button("%",282,0,25,13,true,true); szazalekB.selectable=true;
         elozohozB = Button("elozohoz",312,0,81,13,true,true); elozohozB.selectable=true;
+
+        kovetkezoDatumB = Button("->",365,161,20,13,true,true);
+        elozoDatumB = Button("<-",340,161,20,13,true,true);
+    }
+
+    void setNextNap(){
+        Datum datum = egyetlenNap.kovetkezoNap;
+        if (datum.year==-1) return;
+        Nap kovetkezoNap(datum);
+        vector<string> strT = datum.toString();
+        evB.str=strT[0]; honapB.str=strT[1]; napB.str=strT[2];
+        egyetlenNap = (*(stock->mindenNap.find(kovetkezoNap)));
+    }
+
+    void setNextNegyed(){
+        cout<<"setNextNegyed"<<endl;
+        set<Negyed>::iterator it = stock->negyedevek.find(valasztottNegyed);
+        if (++it==stock->negyedevek.end()) return;
+        Datum d = it->idoszakVege;
+        vector<string> strT = d.toString();
+        negyedevB.str = (strT[0]+" "+strT[1]+" "+strT[2]);
+        valasztottNegyed = *it;
+    }
+
+    void setBeforeNap(){
+        Datum datum = egyetlenNap.elozoNap;
+        if (datum.year==-1) return;
+        Nap elozoNap(datum);
+        vector<string> strT = datum.toString();
+        evB.str=strT[0]; honapB.str=strT[1]; napB.str=strT[2];
+        egyetlenNap = (*(stock->mindenNap.find(elozoNap)));
+    }
+
+    void setBeforeNegyed(){
+        cout<<"setBeforeNegyed"<<endl;
+        set<Negyed>::iterator it = stock->negyedevek.find(valasztottNegyed);
+        if (it==stock->negyedevek.begin()) return;
+        --it;
+        Datum d = it->idoszakVege;
+        vector<string> strT = d.toString();
+        negyedevB.str = (strT[0]+" "+strT[1]+" "+strT[2]);
+        valasztottNegyed = *it;
     }
 
     void setLastNap(){
@@ -592,6 +637,9 @@ struct KeziGorbe{
             negyedevT.draw(renderer,wa,wb);
         }
         datumOKB.draw(renderer,wa,wb);
+        /// léptető gombok
+        kovetkezoDatumB.draw(renderer,wa,wb);
+        elozoDatumB.draw(renderer,wa,wb);
         }
 
         /// előző napot figyelembe véve, és százalékos megjelenítés
@@ -643,12 +691,14 @@ struct KeziGorbe{
             type=0;
             napiB.selected=true; negyedeviB.selected=false;
             setLastNap();
+            gorbeFrissitese();
             cout<<"type=0"<<endl;
         }
         else if (negyedeviB.inClick(bx,by)){
             type=1;
             napiB.selected=false; negyedeviB.selected=true;
             setLastNegyed();
+            gorbeFrissitese();
             cout<<"type=1"<<endl;
         }
         else if (elozohozB.inClick(bx,by)){
@@ -680,6 +730,20 @@ struct KeziGorbe{
         else if (type==1 && negyedevB.inClick(bx,by)){
             state=4;
             cout<<"negyedevB"<<endl;
+        }
+        else if (elozoDatumB.inClick(bx,by)){
+            state=0;
+            if (type==0) setBeforeNap();
+            if (type==1) setBeforeNegyed();
+            gorbeFrissitese();
+            cout<<"elozoDatumB "<<type<<endl;
+        }
+        else if (kovetkezoDatumB.inClick(bx,by)){
+            state=0;
+            if (type==0) setNextNap();
+            if (type==1) setNextNegyed();
+            gorbeFrissitese();
+            cout<<"kovetkezoDatumB "<<type<<endl;
         } else {
             state=0;
         }
