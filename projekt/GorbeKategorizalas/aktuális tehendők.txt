@@ -3,12 +3,13 @@ Meglévő elemek:
 Adatfrissítő menü + funkciók			- KÉSZ
 Csoportosító menü + funckiók			- KÉSZ
 Adatok beolvasása memóriába és feldgozásuk 	- KÉSZ
+Főmenü 						- KÉSZ (viszonylag)
+Grafikont kirajzoló menü 			- Folyamatban, nagyrészt megvan. + címkékre még várni kell
+
 
 
 Hiányzó elemek:
 
-Főmenü 				- Nagyban hiányos
-Grafikont kirajzoló menü 	- NINCS
 Elemzés készítő menü	 	- NINCS
 Elemzés eredménye menü		- NINCS
 

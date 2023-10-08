@@ -372,11 +372,11 @@ struct KeziGorbe{
         negyedeviB = Button("negyedev",55,161,81,13,true,true); negyedeviB.selectable=true;
         evB = Button("",150,161,36,13,true,true); honapB = Button("",191,161,21,13,true,true);
         napB = Button("",217,161,52,13,true,true); napT = Text("V",260,166,true);
-        napok = Gorgetheto(joDatumok,214,180,55,50); napok.relative=true;
+        //napok = Gorgetheto(joDatumok,214,180,55,50); napok.relative=true;
 
         negyedevB = Button("",150,161,110,13,true,true);
         negyedevT = Text("V",251,166,true);
-        negyedevG = Gorgetheto(joDatumok2,150,179,113,50); negyedevG.relative=true;
+        //negyedevG = Gorgetheto(joDatumok2,150,179,113,50); negyedevG.relative=true;
 
         datumOKB = Button("OK", 290,161,20,13,true,true);
 
@@ -415,7 +415,6 @@ struct KeziGorbe{
     }
 
     void setNextNegyed(){
-        cout<<"setNextNegyed"<<endl;
         set<Negyed>::iterator it = stock->negyedevek.find(valasztottNegyed);
         if (++it==stock->negyedevek.end()) return;
         Datum d = it->idoszakVege;
@@ -434,7 +433,6 @@ struct KeziGorbe{
     }
 
     void setBeforeNegyed(){
-        cout<<"setBeforeNegyed"<<endl;
         set<Negyed>::iterator it = stock->negyedevek.find(valasztottNegyed);
         if (it==stock->negyedevek.begin()) return;
         --it;
@@ -450,7 +448,6 @@ struct KeziGorbe{
         evB.str=datum[0];
         honapB.str=datum[1];
         napB.str=datum[2];
-        cout<<datum[0]<<" "<<datum[1]<<" "<<datum[2]<<endl;
     }
 
     void setLastNegyed(){
@@ -458,7 +455,6 @@ struct KeziGorbe{
         vector<string> datum = valasztottNegyed.idoszakVege.toString();
         string temp = datum[0] + " " + datum[1] + " " + datum[2];
         negyedevB.str = temp;
-        cout<<datum[0]<<" "<<datum[1]<<" "<<datum[2]<<endl;
     }
 
     bool setGorbeNegyed(Datum datum){
@@ -522,8 +518,6 @@ struct KeziGorbe{
         if (szazalek){
             maxValV=(maxValV/nullVal-1.0f)*100;
             minValV=(1.0f-nullVal/minValV)*100;
-            cout<<maxValV<<endl;
-            cout<<minValV<<endl;
         }
         for (size_t i=0; i<reszvenyErtekek.size(); i++){
             float ertek=(maxValV*(reszvenyErtekek.size()-i-1)+
@@ -536,7 +530,6 @@ struct KeziGorbe{
 
         /// kiugrás értékét és színét beállítja
         float kiugras;
-        cout<<"A: "<<gorbe[0].open<<" "<<elozoZarVal<<endl;
         if (elozoZarVal<gorbe[0].open)  kiugras = gorbe[0].open/elozoZarVal - 1.0f;
         else                            kiugras = 1.0f - elozoZarVal/gorbe[0].open;
         kiugras=getPrecFloat(kiugras*100,3);
@@ -557,7 +550,6 @@ struct KeziGorbe{
             int tempE, tempH, tempN;
             ss>>tempE>>tempH>>tempN;
             datum=Datum(tempE,tempH,tempN);
-            cout<<tempE<<" "<<tempH<<" "<<tempN<<endl;
             ujAdatok=setGorbeNap(datum);
             if (ujAdatok) pushGorbeElozoNap(datum);
         } else {
@@ -565,7 +557,6 @@ struct KeziGorbe{
             int tempE, tempH, tempN;
             ss>>tempE>>tempH>>tempN;
             datum=Datum(tempE,tempH,tempN);
-            cout<<tempE<<" "<<tempH<<" "<<tempN<<endl;
             ujAdatok=setGorbeNegyed(datum);
             if (ujAdatok) pushGorbeElozoNap(valasztottNegyed.korrigaltTenylegesJelentes);
         }
@@ -585,9 +576,6 @@ struct KeziGorbe{
         }
         maxVal=arfolyamGetMaxErtek(gorbe);
         minVal=arfolyamGetMinErtek(gorbe);
-        cout<<elozohoz<<" "<<maxVal<<" "<<minVal<<endl;
-        cout<<elozohoz<<" "<<maxVal<<" "<<minVal<<endl;
-        cout<<gorbe[gorbe.size()-1].close<<endl;
         if (elozohoz) {
             nullVal=gorbe[gorbe.size()-1].close;
             gorbe.pop_back();
@@ -597,22 +585,20 @@ struct KeziGorbe{
     }
 
     KeziGorbe(Stock *s){
-        joDatumok.push_back("01"); joDatumok.push_back("02"); joDatumok.push_back("03"); joDatumok.push_back("04");
-        joDatumok2.push_back("2023 10 04"); joDatumok2.push_back("2023 10 05"); joDatumok2.push_back("2023 10 06"); joDatumok2.push_back("2023 10 07");
+        //joDatumok.push_back("01"); joDatumok.push_back("02"); joDatumok.push_back("03"); joDatumok.push_back("04");
+        //joDatumok2.push_back("2023 10 04"); joDatumok2.push_back("2023 10 05"); joDatumok2.push_back("2023 10 06"); joDatumok2.push_back("2023 10 07");
         gombokElhelyezese();
         stock=s;
         setLastNap();
-        cout<<"A"<<endl;
-        cout<<"B"<<endl;
         gorbeFrissitese();
-        cout<<"C"<<endl;
 
     }
 
     void draw (SDL_Renderer *renderer, int wa, int wb){
         if (true){
-        if (type==0) napok.draw(renderer,wa+214,wb+180);
-        if (type==1) negyedevG.draw(renderer,wa+147,wb+179);
+        /// jelenleg nem kellenek a görgethető dátumok
+        //if (type==0) napok.draw(renderer,wa+214,wb+180);
+        //if (type==1) negyedevG.draw(renderer,wa+147,wb+179);
 
         /// nagy keret
         rectangleRGBA(renderer,wa,wb,wa+398,wb+179,0,0,0,255);
@@ -692,59 +678,49 @@ struct KeziGorbe{
             napiB.selected=true; negyedeviB.selected=false;
             setLastNap();
             gorbeFrissitese();
-            cout<<"type=0"<<endl;
         }
         else if (negyedeviB.inClick(bx,by)){
             type=1;
             napiB.selected=false; negyedeviB.selected=true;
             setLastNegyed();
             gorbeFrissitese();
-            cout<<"type=1"<<endl;
         }
         else if (elozohozB.inClick(bx,by)){
             elozohozB.selected=!elozohozB.selected;
             gorbeFrissitese();
-            cout<<"elozohoz"<<endl;
         }
         else if (szazalekB.inClick(bx,by)){
             szazalekB.selected=!szazalekB.selected;
             gorbeFrissitese();
-            cout<<"szazalek"<<endl;
         }
         else if (datumOKB.inClick(bx,by)){
             gorbeFrissitese();
-            cout<<"datumOK"<<endl;
         }
         else if (type==0 && evB.inClick(bx,by)){
             state=1;
-            cout<<"evB"<<endl;
         }
         else if (type==0 && honapB.inClick(bx,by)){
             state=2;
-            cout<<"honapB"<<endl;
         }
         else if (type==0 && napB.inClick(bx,by)){
             state=3;
-            cout<<"honapB"<<endl;
         }
         else if (type==1 && negyedevB.inClick(bx,by)){
             state=4;
-            cout<<"negyedevB"<<endl;
         }
         else if (elozoDatumB.inClick(bx,by)){
             state=0;
             if (type==0) setBeforeNap();
             if (type==1) setBeforeNegyed();
             gorbeFrissitese();
-            cout<<"elozoDatumB "<<type<<endl;
         }
         else if (kovetkezoDatumB.inClick(bx,by)){
             state=0;
             if (type==0) setNextNap();
             if (type==1) setNextNegyed();
             gorbeFrissitese();
-            cout<<"kovetkezoDatumB "<<type<<endl;
-        } else {
+        }
+        else {
             state=0;
         }
         return false;
