@@ -421,6 +421,9 @@ void Stock::adatokFeldolgozasa(){
         bool ny=false, z=false;
         vector<Arfolyam> pluszPercek;
 
+        /// minimum és maximum érték reset
+        nap.minimum=1000000.0f;
+        nap.maximum=0.0f;
         for (const Arfolyam& perc : nap.percek){
             /// amennyiben van előző perc
             if (legutobbiPerc->idopont.ora>2){
@@ -614,7 +617,7 @@ float arfolyamGetMaxErtek(vector<Arfolyam> &v){
 }
 
 float arfolyamGetMinErtek(vector<Arfolyam> &v){
-    float ret = 10000000;
+    float ret = 1000000;
     for (size_t i=0; i<v.size(); i++){
         ret=min(v[i].minimum,ret);
     }

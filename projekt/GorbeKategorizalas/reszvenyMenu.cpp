@@ -141,6 +141,11 @@ void ReszvenyMenu::inputHandle(){
                 reszvenyLista.elemekKeresese(ujReszInp.str);
             }
         }
+        else {
+            for (int i=0; i<reszvenyek.size(); i++){
+                reszvenyek[i].inInput(ev->text.text[0]);
+            }
+        }
 
     }
 
@@ -152,6 +157,10 @@ void ReszvenyMenu::inputHandle(){
                 if (ujReszInp.str.size()>0) {
                     ujReszInp.str.pop_back();
                     reszvenyLista.elemekKeresese(ujReszInp.str);
+                }
+            } else {
+                for (int i=0; i<reszvenyek.size(); i++){
+                    reszvenyek[i].inDeleteButton();
                 }
             }
 

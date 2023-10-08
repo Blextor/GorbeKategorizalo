@@ -65,7 +65,15 @@ struct Datum{
         return abs(days);
     }
 
-
+    std::vector<std::string> toString(){
+        std::vector<std::string> ret;
+        std::stringstream ss; ss<<year<<" "<<month<<" "<<day;
+        std::string temp;
+        ss>>temp; ret.push_back(temp);
+        ss>>temp; ret.push_back(temp);
+        ss>>temp; ret.push_back(temp);
+        return ret;
+    }
 };
 
 struct Idopillanat{
