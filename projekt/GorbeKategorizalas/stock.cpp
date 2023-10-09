@@ -124,7 +124,7 @@ void loadStock(string name, Stock &stock){
     stock.adatokBetoltese(name);
     cout<<name<<" betoltve: "<<(clock()-t)<<"ms"<<endl;
     t=clock();
-    cout<<stock.mindenNap.size()<<endl;
+    cout<<"napok szama: "<<stock.mindenNap.size()<<endl;
     stock.adatokFeldolgozasa();
     cout<<name<<" feldolgozva: "<<(clock()-t)<<"ms"<<endl;
     t=clock();
@@ -563,14 +563,10 @@ void Stock::negyedevekKorrigalasa(){
     for (const Negyed &negyed: negyedevek){
         Nap temp(negyed.tenylegesJelentes);
         set<Nap>::iterator it = mindenNap.find(temp); /// kikeresem melyik napra esett a jelentés
-        //cout<<mindenNap.size()<<endl;
         if (it==mindenNap.end()) { /// ha nincs ilyen nap, akkor baj van
-            //cout<<"Hibas negyed "<<temp.datum.year<<" "<<temp.datum.month<<" "<<temp.datum.day<<endl;
-            //cout<<negyed.jelentettEPS<<" "<<negyed.earn<<endl;
             hibasNegyedek.push_back(negyed);
         } else { /// különben foglalkozom tovább a dologgal
             /// megkeresem az azt követő napot
-            //set<Nap>::iterator before = mindenNap.find(Nap((*it).elozoNap));
             set<Nap>::iterator after = mindenNap.find(Nap((*it).kovetkezoNap));
             if (after!=mindenNap.end()){ /// ha létezik (ami szokott azért), akkor foglalkozom tovább a dologgal
                 long long V1 = (*it).volumen, V2 = (*after).volumen;
@@ -581,7 +577,6 @@ void Stock::negyedevekKorrigalasa(){
                     negyed.korrigaltTenylegesJelentes=(*after).datum;
                     negyed.nyitasElotti=false;
                 }
-                //cout<<temp.datum.year<<" "<<temp.datum.month<<" "<<temp.datum.day<<" "<<negyed.nyitasElotti<<endl;
             }
             else { /// különben baj van (az utolsó eltárolt nap egy pénzügyi jelentés napja is pl)
                 cout<<"Hibas negyed 2 "<<(*it).kovetkezoNap.year<<" "<<(*it).kovetkezoNap.month<<" "<<(*it).kovetkezoNap.day<<endl;

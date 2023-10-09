@@ -319,6 +319,7 @@ struct ReszvenyMenu : public Menu {
     vector<bool> boolR;
     vector<ReszvenySor> reszvenyek; /// a részvények sorai
 
+    int panX=0, panY=0; /// a vízszintes és függőleges mozgatásért
 
     bool reszvenyekClick(int bx, int by);
 

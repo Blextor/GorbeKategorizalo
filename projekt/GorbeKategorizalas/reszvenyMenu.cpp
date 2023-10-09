@@ -26,16 +26,20 @@ void ReszvenyMenu::draw() {
     SDL_SetRenderDrawColor(renderer,100,100,100,255);
     SDL_RenderClear(renderer);
 
-    FoCim.draw(renderer,x,y);
-    FoMB.draw(renderer,x,y);
-    ElmMB.draw(renderer,x,y);
-    CimMB.draw(renderer,x,y);
 
 
     for (size_t i=0; i<reszvenyek.size(); i++)
         if (boolR[i])
-            reszvenyek[i].draw(renderer,30,100+220*i);
+            reszvenyek[i].draw(renderer,30+panX,100+220*i+panY);
 
+    /// elfedő réteg
+    boxRGBA(renderer,0,0,500,80,100,100,100,230);
+    rectangleRGBA(renderer,0,0,500,80,0,0,0,255);
+
+    FoCim.draw(renderer,x,y);
+    FoMB.draw(renderer,x,y);
+    ElmMB.draw(renderer,x,y);
+    CimMB.draw(renderer,x,y);
 
     if (state == 1)
         reszvenyLista.draw(renderer,x,y);
@@ -58,7 +62,8 @@ bool ReszvenyMenu::reszvenyekClick(int bx, int by){
 void ReszvenyMenu::inputHandle(){
     int oldState=state;
     int MX=-1, MY=-1; /// kurzor pozíciója, ha -1 marad, nem történt változás
-    //bool leftButton = true; /// külön kígyûjtöm, hogy lenyomták-e a bal egérgombot
+    int MoveX=0, MoveY=0; /// kurzor pozíciója, ha -1 marad, nem történt változás
+    bool leftButton = false; /// külön kígyûjtöm, hogy lenyomták-e a bal egérgombot
     bool keyDown = false; /// vagy bármelyt a billentyûzeten
     bool mouseWheel = false; /// vagy görgettek-e
 
@@ -66,11 +71,14 @@ void ReszvenyMenu::inputHandle(){
         if (ev->type==SDL_MOUSEBUTTONDOWN){ /// csak kattintáskor kérem le az egér pozíciót
             MX=ev->button.x;
             MY=ev->button.y;
-            //leftButton=ev->button.button==SDL_BUTTON_LEFT; /// bal gomb
+            leftButton=ev->button.button==SDL_BUTTON_LEFT; /// bal gomb
+            //middleButton=ev->button.button==SDL_BUTTON_MIDDLE; /// bal gomb
         } else if (ev->type==SDL_MOUSEBUTTONUP){
         } else if (ev->type==SDL_MOUSEMOTION){
-            //MX = ev->motion.x;
-            //MY = ev->motion.y;
+            if (ev->motion.state!=-1){
+                MoveX = ev->motion.xrel;
+                MoveY = ev->motion.yrel;
+            }
         }
         if (ev->type==SDL_MOUSEWHEEL){ /// görgtés
             mouseWheel=true;
@@ -84,52 +92,51 @@ void ReszvenyMenu::inputHandle(){
     }
 
     if (MX!=-1){ /// azaz az egérrel kattintottunk
-        /// kérdés, hogy eltaláltunk-e valami kattinthatót
-        if (FoMB.inClick(MX,MY)) *menu = foMenu;
-        else if (ujReszInp.inClick(MX,MY)){
-            state = 1;
-            ujReszInp.str="";
-            reszvenyLista.elemekKeresese(ujReszInp.str);
-        }
-        else if (state == 1 && reszvenyLista.inClick(MX,MY)){
-            /// görgető-be kattintva kérdéses még, hogy hova is érkezett a kattintás
-            string btStr = reszvenyLista.whichButton(MX,MY);
-            if (btStr!=""){ /// ha siker, akkor szövegét használjuk
-                ujReszInp.str=btStr;
+        if (leftButton){
+            /// kérdés, hogy eltaláltunk-e valami kattinthatót
+            if (FoMB.inClick(MX,MY)) *menu = foMenu;
+            else if (ujReszInp.inClick(MX,MY)){
+                state = 1;
+                ujReszInp.str="";
                 reszvenyLista.elemekKeresese(ujReszInp.str);
-            } else {/// csúszka használatra fenntartva
-
             }
-        }
-        else if (reszOKB.inClick(MX,MY)) {
-            for (size_t i=0; i<boolR.size(); i++){
-                if (!boolR[i]){
-                    boolR[i]=true;
-                    if (!reszvenyek[i].setStock(ujReszInp.str))
-                        boolR[i]=false;
-                    break;
+            else if (state == 1 && reszvenyLista.inClick(MX,MY)){
+                /// görgető-be kattintva kérdéses még, hogy hova is érkezett a kattintás
+                string btStr = reszvenyLista.whichButton(MX,MY);
+                if (btStr!=""){ /// ha siker, akkor szövegét használjuk
+                    ujReszInp.str=btStr;
+                    reszvenyLista.elemekKeresese(ujReszInp.str);
+                } else {/// csúszka használatra fenntartva
+
                 }
             }
-            state=0;
-        }
-        else if (reszvenyekClick(MX,MY)){
+            else if (reszOKB.inClick(MX,MY)) {
+                for (size_t i=0; i<boolR.size(); i++){
+                    if (!boolR[i]){
+                        boolR[i]=true;
+                        if (!reszvenyek[i].setStock(ujReszInp.str))
+                            boolR[i]=false;
+                        break;
+                    }
+                }
+                state=0;
+            }
+            else if (reszvenyekClick(MX,MY)){
 
+            }
+            else { /// ha kikattintunk a semmibe
+                state=0; /// akkor térjünk vissza a kezdõ állapotba
+            }
         }
-        else { /// ha kikattintunk a semmibe
-            state=0; /// akkor térjünk vissza a kezdõ állapotba
-        }
-        /*
-        if (FrissMB.inClick(MX,MY)) *menu = frissitoMenu; /// fõmenübe írányító gombot
-        else if (RCSMB.inClick(MX,MY)) *menu = csoportEditormenu; /// csoport szerksztõ menü gombot
-        else if (KilepB.inClick(MX,MY)) exit(3); /// csoport szerksztõ menü gombot
-        else if (szalMennyisegB.inClick(MX,MY)) {
-            state=1;
-        }
+    }
 
-        else { /// ha kikattintunk a semmibe
-            state=0; /// akkor térjünk vissza a kezdõ állapotba
-        }
-        */
+    int tx, ty;
+    Uint32 mouseState = SDL_GetMouseState(&tx, &ty);
+    if (ev->type==SDL_MOUSEMOTION && 0<(mouseState & SDL_BUTTON(SDL_BUTTON_MIDDLE))){
+        panX+=MoveX;
+        panY+=MoveY;
+        //if (panX<0) panX=0;
+        //if (panY<0) panY=0;
     }
 
     if (ev->type == SDL_TEXTINPUT && ev->text.timestamp!=timestampText){ /// bevitel
@@ -171,6 +178,9 @@ void ReszvenyMenu::inputHandle(){
         }
         if (ev->key.keysym.sym==SDLK_DOWN){ /// lassítása
             if (state==1) {reszvenyLista.speedDownRoll();}
+        }
+        if (ev->key.keysym.sym==SDLK_LEFT){ /// lassítása
+            panX=0; panY=0;
         }
     }
 
