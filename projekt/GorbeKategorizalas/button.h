@@ -224,6 +224,7 @@ struct ProgressBar{
     void elemFeldolgozva(int cnt=1){
 
         if (cnt<0){
+            if (cnt<-1 && cnt>-288) return;
             osszesElem+=cnt;
             if(osszesElem<1) osszesElem=1;
             forDeltaTime=clock();

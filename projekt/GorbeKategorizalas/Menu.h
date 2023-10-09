@@ -178,13 +178,38 @@ struct FrissitoMenu : public Menu {
         int y = getActYear();
         int m = getActMonth();
         int Y=2000, M=1;
+        char c;
         int monthCnt = (y-2000)*12+m;
+        if (letoltesValasztva ) return (1+2+monthCnt)*reszvenyekSzama;
+        string path = Config.getRootDirectory() + "stocks\\";
+        if (kivResz!="") {
+            string reszPath = path+kivResz+"\\months";
+            vector<string> fajlok = getFiles(reszPath);
+            if (fajlok.size()==0) return (1+2+monthCnt)*reszvenyekSzama;
+            stringstream ss; ss<<fajlok[fajlok.size()-1];
+            ss>>Y>>c>>M;
+            return (y-Y)*12+m-M +1+2+1; /// a különbség (+1 az utolsót újra letöltöm) + 3
+        } else {
+            int szum=0;
+            vector<string> elemek = csoportReszvenyei(kivCsop);
+            for (size_t i=0; i<elemek.size();i++){
+                string reszPath = path+elemek[i]+"\\months";
+                cout<<reszPath<<endl;
+                vector<string> fajlok = getFiles(reszPath);
+                if (fajlok.size()==0) {szum+=(1+2+monthCnt); continue;}
+                stringstream ss; ss<<fajlok[fajlok.size()-1];
+                ss>>Y>>c>>M;
+                szum+=(y-Y)*12+m-M +1+2+1; /// a különbség (+1 az utolsót újra letöltöm) + 3
+                cout<<szum<<endl;
+            }
+            cout<<"Return :"<<szum<<endl;
+            return szum;
+        }
         //cout<<y<<" "<<m<<" "<<Y<<" "<<M<<" "<<monthCnt<<endl;
-        return (1+2+monthCnt)*reszvenyekSzama;
+        //return (1+2+monthCnt)*reszvenyekSzama;
     }
 
     bool adatokLetoltese(){ /// adatok letöltését megkezdi
-        int x=0;
         if (kivResz!=""){ /// ha van kiválaszott részvény
             if (letoltoSzal.joinable()){ /// létező szálat bevárom
                 cout<<"JoinBajAdatLetol"<<endl; /// elvileg ilyen nincs

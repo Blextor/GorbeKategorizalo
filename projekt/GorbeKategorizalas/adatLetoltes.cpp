@@ -366,11 +366,15 @@ void reszvenyAPIFrissites(string stock, bool &stopped, bool &inProc, function<vo
     int year = YYYYMM/100, month = YYYYMM%100;
     if (true){
         int y = 2000, m=1;
+        int temp = -((year-y)*12+month-m);
+        func(temp);
+        /*
         while (year!=y || m!=month){
             func(-1);
             m++;
             if (m>12) {m=1; y++;}
         }
+        */
     }
     int celY = getActYear(), celM=getActMonth();
     string path = Config.getRootDirectory()+"\\stocks\\"+stock;
