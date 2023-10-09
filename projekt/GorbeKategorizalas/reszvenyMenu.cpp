@@ -33,7 +33,7 @@ void ReszvenyMenu::draw() {
             reszvenyek[i].draw(renderer,30+panX,100+220*i+panY);
 
     /// elfedő réteg
-    boxRGBA(renderer,0,0,500,80,100,100,100,230);
+    boxRGBA(renderer,0,0,500,80,100,100,100,255);
     rectangleRGBA(renderer,0,0,500,80,0,0,0,255);
 
     FoCim.draw(renderer,x,y);

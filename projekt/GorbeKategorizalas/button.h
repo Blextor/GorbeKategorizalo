@@ -17,7 +17,7 @@ struct Text {
     void setRed(){r=255;g=100;b=100;a=255;}
     void setGreen(){g=255;r=100;b=100;a=255;}
     void setBlack(){g=0;r=0;b=0;a=255;}
-    void setGold(){r=255;g=255;b=100;a=50;}
+    void setGold(){r=255;g=255;b=100;a=150;}
     void setGray(){r=255;g=255;b=255;a=60;}
 
     Text(){}
@@ -362,7 +362,7 @@ struct KeziGorbe{
 
     /// kiírt értékek
     vector<Text> reszvenyErtekek;
-    vector<Text> reszvenyDatumok;
+    vector<string> reszvenyDatumok;
     vector<Text> reszvenyIdopontok;
 
 
@@ -543,6 +543,25 @@ struct KeziGorbe{
         else kiugrasT.setRed();
     }
 
+    void setDatumok(){
+        int len = gorbe.size();
+        Datum elsoNap = valasztottNegyed.korrigaltTenylegesJelentes;
+        Arfolyam temp = gorbe[gorbe.size()-1];
+        Datum utolsoNap(0,temp.idopont.ora,temp.idopont.perc);
+        vector<string> datumok; datumok.resize(2);
+        vector<string> vtemp = elsoNap.toString();
+        string str = ""; if (vtemp[1].size()==1) str="0";
+        str+=vtemp[1]; str+="."; if (vtemp[2].size()==1) str+="0";
+        str+=vtemp[2]; str+=".";
+        datumok[0]=str;
+        vtemp = utolsoNap.toString(); str="";
+        if (vtemp[1].size()==1) str="0";
+        str+=vtemp[1]; str+="."; if (vtemp[2].size()==1) str+="0";
+        str+=vtemp[2]; str+=".";
+        datumok[1]=str;
+        reszvenyDatumok=datumok;
+    }
+
     void gorbeFrissitese(){
         bool elozohoz = elozohozB.selected;
         bool napi = napiB.selected;
@@ -583,8 +602,9 @@ struct KeziGorbe{
             nullVal=gorbe[gorbe.size()-1].close;
             gorbe.pop_back();
         }
-
+        cout<<gorbe.size()<<endl;
         setGorbeErtekek();
+        if (!napi) setDatumok();
     }
 
     KeziGorbe(Stock *s){
@@ -636,13 +656,24 @@ struct KeziGorbe{
         szazalekB.draw(renderer,wa,wb);
 
         /// görbe időpontok / dátumok
-        for (int i=0; i<6; i++){ reszvenyIdopontok[i].draw(renderer,wa,wb); }
+        if (napiB.selected){
+            for (int i=0; i<6; i++){
+                reszvenyIdopontok[i].draw(renderer,wa,wb);
+            }
+        }
+        else {
+            stringRGBA(renderer,wa+3,wb+150,reszvenyDatumok[0].c_str(),0,0,0,255);
+            stringRGBA(renderer,wa+347,wb+150,reszvenyDatumok[1].c_str(),0,0,0,255);
+        }
         rectangleRGBA(renderer,wa,wb+17,wa+398,wb+145,0,0,0,255);
 
         /// vízszintes vonalak és értékek
         int yT = 20, yL = 142;
+        //int xL = wa+5, xT=wa+5+389;
+        float xV = 390.0f/gorbe.size();
+        int negyedOszto = 4;
+        int hanyadikNegyed = 1;
         for (int i=0; i<=4; i++){
-            reszvenyErtekek[i].draw(renderer,wa,wb);
             lineRGBA(renderer,wa+2,wb+20+(yL-yT)*i/4,wa+396,wb+20+(yL-yT)*i/4,255,255,255,50);
         }
 
@@ -661,14 +692,35 @@ struct KeziGorbe{
             else { /// egy negyedévről van szó
                 int y1 = yL-((gorbe[i].open-minVal)*(yL-yT)/(maxVal-minVal));
                 int y2 = yL-((gorbe[i].close-minVal)*(yL-yT)/(maxVal-minVal));
-                if (gorbe[i].open<gorbe[i].close)
-                    lineRGBA(renderer,wa+5+i,wb+y1,wa+5+i,wb+y2,0,255,0,255);
-                else lineRGBA(renderer,wa+5+i,wb+y1,wa+5+i,wb+y2,255,0,0,255);
+                int y3 = yL-((gorbe[i].maximum-minVal)*(yL-yT)/(maxVal-minVal));
+                int y4 = yL-((gorbe[i].minimum-minVal)*(yL-yT)/(maxVal-minVal));
+                int x1 = wa+5+xV*i+1;
+                int x2 = wa+5+xV*(i+1);
+                if (gorbe[i].open<gorbe[i].close){
+                    lineRGBA(renderer,(x1+x2+1)/2,wb+y3,(x1+x2+1)/2,wb+y4,0,255,0,150);
+                    boxRGBA(renderer,x1,wb+y1,x2,wb+y2,0,255,0,255);
+                }
+                else {
+                    lineRGBA(renderer,(x1+x2)/2,wb+y3,(x1+x2)/2,wb+y4,255,0,0,150);
+                    boxRGBA(renderer,x1,wb+y1,x2,wb+y2,255,0,0,255);
+                }
                 /// függőleges válaszfalak napi bontáshoz
-                if (i%60==0) lineRGBA(renderer,wa+5+i,wb+yT,wa+5+i,wb+yL,255,255,255,30);
-                else if (i%30==0) lineRGBA(renderer,wa+5+i,wb+yT,wa+5+i,wb+yL,255,255,255,60);
+                if (i*xV+16 >= (390-2*8*6)*hanyadikNegyed/negyedOszto &&
+                    hanyadikNegyed<negyedOszto+1) {
+                    lineRGBA(renderer,x1,wb+yT,x1,wb+yL,255,255,255,30);
+                    stringstream ss; if (gorbe[i].idopont.ora<10) ss<<"0";
+                    ss<<gorbe[i].idopont.ora<<"."; if (gorbe[i].idopont.perc<10) ss<<"0";
+                    ss<<gorbe[i].idopont.perc<<".";
+                    stringRGBA(renderer,x1,wb+150,ss.str().c_str(),255,255,255,30);
+                    hanyadikNegyed++;
+                }
             }
 
+        }
+
+
+        for (int i=0; i<=4; i++){
+            reszvenyErtekek[i].draw(renderer,wa,wb);
         }
 
     }

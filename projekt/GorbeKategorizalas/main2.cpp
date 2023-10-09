@@ -220,7 +220,15 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     //thread frame(megjelenites,ref(actualMenu));   /// megjelenítás
     //thread esemeny(esemenyKezel,ref(actualMenu)); /// SDL input feldolgozás
     //thread konzol(konzolKezel);                             /// konzol input feldolgozás
+    int frameCnt = 0;
+    t = clock();
     while(true){
+        frameCnt++;
+        if (t+1000<=clock()){
+            cout<<"FPS: "<<frameCnt<<endl;
+            frameCnt=0;
+            t=clock();
+        }
         //SDL_PollEvent(&ev);
         //cout<<"a";
         actualMenu->inputHandle();
