@@ -7,6 +7,11 @@
 using namespace std;
 
 bool isLocked(const std::mutex& mtx);
+int egyReszvenyhezAPIMax();
+
+int getActMin();
+int getActMonth();
+int getActYear();
 
 vector<string> osszesReszveny();
 vector<string> osszesCsoport();

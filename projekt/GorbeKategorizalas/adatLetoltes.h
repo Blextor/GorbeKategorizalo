@@ -12,10 +12,6 @@ struct Letolto {
 
 };
 
-int getActMin();
-int getActMonth();
-int getActYear();
-
 string reszvenyLetoltesChk(string stock);
 string reszvenyFrissitesChk(string stock);
 string csoportLetoltesChk(string group);

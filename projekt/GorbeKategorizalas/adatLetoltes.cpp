@@ -15,30 +15,6 @@ clock_t t = clock();
 string errorMsg = "";
 
 
-int getActMin(){
-    /// CGPT
-    auto now = chrono::system_clock::now();
-    time_t now_t = chrono::system_clock::to_time_t(now); /// Időpont átalakítása time_t típusra
-    tm* now_tm = localtime(&now_t); /// Időpont átalakítása tm struktúrává
-    return now_tm->tm_min;
-}
-
-int getActYear(){
-    /// CGPT
-    auto now = chrono::system_clock::now();
-    time_t now_t = chrono::system_clock::to_time_t(now); /// Időpont átalakítása time_t típusra
-    tm* now_tm = localtime(&now_t); /// Időpont átalakítása tm struktúrává
-    return now_tm->tm_year+1900;
-}
-
-int getActMonth(){
-    /// CGPT
-    auto now = chrono::system_clock::now();
-    time_t now_t = chrono::system_clock::to_time_t(now); /// Időpont átalakítása time_t típusra
-    tm* now_tm = localtime(&now_t); /// Időpont átalakítása tm struktúrává
-    return now_tm->tm_mon+1;
-}
-
 void waitForAPI(){
     AppConfig& config = AppConfig::getInstance();
     if (!(downloadCnt++<config.getMaxAPICalls())){
@@ -465,7 +441,7 @@ void csoportAPILetoltes(string group, bool &stopped, bool &inProc, function<void
                 if (!inProc) {iPS=false; thr.join(); return;}
             }
         } else {
-            func(-288);
+            func(-egyReszvenyhezAPIMax());
         }
     }
     func(0);
@@ -496,7 +472,7 @@ void csoportAPIFrissites(string group, bool &stopped, bool &inProc, function<voi
                 if (!inProc) {iPS=false; thr.join(); return;}
             }
         } else {
-            func(-288);
+            func(-egyReszvenyhezAPIMax());
         }
     }
     func(0);

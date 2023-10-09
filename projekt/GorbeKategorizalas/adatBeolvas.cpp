@@ -7,13 +7,13 @@ vector<string> getSubdirectories(const string& directoryPath) {
     HANDLE hFind = FindFirstFile((directoryPath + "/*").c_str(), &findFileData);
 
     if (hFind == INVALID_HANDLE_VALUE) {
-        return subdirectories; // Ha a mappa nem létezik, vagy hiba történik, üres listát adunk vissza
+        return subdirectories; // Ha a mappa nem lÃ©tezik, vagy hiba tÃ¶rtÃ©nik, Ã¼res listÃ¡t adunk vissza
     }
 
     do {
         const string fileOrDirName = findFileData.cFileName;
         if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-            // Kihagyjuk a "." és ".." mappaneveket
+            // Kihagyjuk a "." Ã©s ".." mappaneveket
             if (fileOrDirName != "." && fileOrDirName != "..") {
                 subdirectories.push_back(fileOrDirName);
             }
@@ -31,13 +31,13 @@ vector<string> getFiles(const string& directoryPath) {
     HANDLE hFind = FindFirstFile((directoryPath + "/*").c_str(), &findFileData);
 
     if (hFind == INVALID_HANDLE_VALUE) {
-        return files; // Ha a mappa nem létezik, vagy hiba történik, üres listát adunk vissza
+        return files; // Ha a mappa nem lÃ©tezik, vagy hiba tÃ¶rtÃ©nik, Ã¼res listÃ¡t adunk vissza
     }
 
     do {
         const string fileOrDirName = findFileData.cFileName;
         if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-            // Ha nem mappa, hozzáadjuk a listához
+            // Ha nem mappa, hozzÃ¡adjuk a listÃ¡hoz
             files.push_back(fileOrDirName);
         }
     } while (FindNextFile(hFind, &findFileData) != 0);
@@ -91,23 +91,23 @@ bool benneVanAzStr (string miben, string mi){
     string str = miben;
     string toFind = mi;
 
-    // Mindkét stringet kisbetûssé alakítjuk
+    // MindkÃ©t stringet kisbetÃ»ssÃ© alakÃ­tjuk
     transform(str.begin(), str.end(), str.begin(), [](unsigned char c){ return tolower(c); });
     transform(toFind.begin(), toFind.end(), toFind.begin(), [](unsigned char c){ return tolower(c); });
 
-    // Megkeressük a substringet
+    // MegkeressÃ¼k a substringet
     size_t found = str.find(toFind);
     if (found != string::npos) {
         return true;
-        //cout << "A substring megtalálható az indexen: " << found << endl;
+        //cout << "A substring megtalÃ¡lhatÃ³ az indexen: " << found << endl;
     } else {
         return false;
-        //cout << "A substring nem található meg." << endl;
+        //cout << "A substring nem talÃ¡lhatÃ³ meg." << endl;
     }
 }
 
 bool DeleteDirectory(const std::string &directoryPath) {
-    // Rekurzívan töröljük a könyvtár tartalmát
+    // RekurzÃ­van tÃ¶rÃ¶ljÃ¼k a kÃ¶nyvtÃ¡r tartalmÃ¡t
     WIN32_FIND_DATAA findFileData;
     HANDLE hFind = FindFirstFileA((directoryPath + "\\*").c_str(), &findFileData);
 
@@ -120,18 +120,18 @@ bool DeleteDirectory(const std::string &directoryPath) {
 
         if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
             if (fileOrDirName != "." && fileOrDirName != "..") {
-                // Rekurzívan töröljük az almappákat
+                // RekurzÃ­van tÃ¶rÃ¶ljÃ¼k az almappÃ¡kat
                 DeleteDirectory(directoryPath + "\\" + fileOrDirName);
             }
         } else {
-            // Töröljük a fájlokat
+            // TÃ¶rÃ¶ljÃ¼k a fÃ¡jlokat
             DeleteFileA((directoryPath + "\\" + fileOrDirName).c_str());
         }
     } while (FindNextFileA(hFind, &findFileData) != 0);
 
     FindClose(hFind);
 
-    // Töröljük az üres könyvtárat
+    // TÃ¶rÃ¶ljÃ¼k az Ã¼res kÃ¶nyvtÃ¡rat
     return RemoveDirectoryA(directoryPath.c_str()) != 0;
 }
 
@@ -145,7 +145,7 @@ string deleteReszveny(string str){
 }
 
 string deleteCsoport(string str){
-    string filePath = Config.getRootDirectory()+"\\groups\\"+str; // Változtassa meg a saját útvonalára
+    string filePath = Config.getRootDirectory()+"\\groups\\"+str; // VÃ¡ltoztassa meg a sajÃ¡t ÃºtvonalÃ¡ra
 
     if (std::remove(filePath.c_str()) == 0) {
         return "Siker!";
@@ -192,9 +192,39 @@ bool isLocked(const std::mutex& mtx) {
     std::mutex& non_const_mtx = const_cast<std::mutex&>(mtx);
     if (non_const_mtx.try_lock()) {
         non_const_mtx.unlock();
-        return false;  // A mutex nem volt zár alatt, mivel sikerült megszerezni a zárat
+        return false;  // A mutex nem volt zÃ¡r alatt, mivel sikerÃ¼lt megszerezni a zÃ¡rat
     }
-    return true;  // A mutex zár alatt volt
+    return true;  // A mutex zÃ¡r alatt volt
 }
 
+int getActMin(){
+    /// CGPT
+    auto now = chrono::system_clock::now();
+    time_t now_t = chrono::system_clock::to_time_t(now); /// IdÅ‘pont Ã¡talakÃ­tÃ¡sa time_t tÃ­pusra
+    tm* now_tm = localtime(&now_t); /// IdÅ‘pont Ã¡talakÃ­tÃ¡sa tm struktÃºrÃ¡vÃ¡
+    return now_tm->tm_min;
+}
+
+int getActYear(){
+    /// CGPT
+    auto now = chrono::system_clock::now();
+    time_t now_t = chrono::system_clock::to_time_t(now); /// IdÅ‘pont Ã¡talakÃ­tÃ¡sa time_t tÃ­pusra
+    tm* now_tm = localtime(&now_t); /// IdÅ‘pont Ã¡talakÃ­tÃ¡sa tm struktÃºrÃ¡vÃ¡
+    return now_tm->tm_year+1900;
+}
+
+int getActMonth(){
+    /// CGPT
+    auto now = chrono::system_clock::now();
+    time_t now_t = chrono::system_clock::to_time_t(now); /// IdÅ‘pont Ã¡talakÃ­tÃ¡sa time_t tÃ­pusra
+    tm* now_tm = localtime(&now_t); /// IdÅ‘pont Ã¡talakÃ­tÃ¡sa tm struktÃºrÃ¡vÃ¡
+    return now_tm->tm_mon+1;
+}
+
+
+int egyReszvenyhezAPIMax(){
+    int y = getActYear();
+    int m = getActMonth();
+    return (y-2000)*12+m +3;
+}
 

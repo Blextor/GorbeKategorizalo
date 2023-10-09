@@ -224,7 +224,9 @@ struct ProgressBar{
     void elemFeldolgozva(int cnt=1){
 
         if (cnt<0){
-            if (cnt<-1 && cnt>-288) return;
+            /// hogy ki legyen szűrve a hónap skippelés
+            /// csak a teljes részvény hibás, és az egy épp még nem szükséges marad így meg
+            if (cnt<-1 && cnt>-egyReszvenyhezAPIMax()) return;
             osszesElem+=cnt;
             if(osszesElem<1) osszesElem=1;
             forDeltaTime=clock();
