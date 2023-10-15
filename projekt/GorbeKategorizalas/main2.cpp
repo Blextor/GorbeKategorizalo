@@ -24,6 +24,8 @@ using namespace std;
 #include <utility>
 
 #include "cimke.h"
+#include "cimkeSrc/OsszesCimke.h"
+
 #include "Menu.h"
 
 
@@ -130,18 +132,72 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     */
 
     vector<string> reszvenyekNeve = osszesReszveny();
-    vector<thread> szalak; szalak.resize(32);
-    vector<Stock> stocks; stocks.resize(32);
-    for (size_t i=1000; i<reszvenyekNeve.size(); i++){
-        for (int j=0; j<32; j++){
+    int thCnt = 10;
+    vector<thread> szalak; szalak.resize(thCnt);
+    vector<Stock> stocks; stocks.resize(thCnt);
+    long long osszesNyitas = 0, osszesNyitasPozitiv = 0;
+    long long osszesZaras = 0, osszesZarasPozitiv = 0;
+    long long osszesNyitasEsZaras = 0;
+    long long osszesZarasPozitivHaNyitasNem = 0, osszesZarasPozitivHaNyitasIs = 0;
+    long long osszesNyitasPozitivHaZarasNem = 0, osszesNyitasPozitivHaZarasIs = 0;
+    for (size_t i=0; i<reszvenyekNeve.size(); i++){
+        for (int j=0; j<thCnt; j++){
             szalak[j] = thread(loadStock,reszvenyekNeve[i],ref(stocks[j]));
             i++;
             cout<<i<<endl;
+            if (i>=reszvenyekNeve.size()) break;
         }
-        for (int j=0; j<32; j++){
-            szalak[j].join();
+
+        CmerreZart Czaras;
+        CmerreNyitott Cnyitas;
+        for (int j=0; j<thCnt; j++){
+            if (szalak[j].joinable())
+                szalak[j].join();
+
+            for (const Nap &nap: stocks[j].mindenNap){
+                int temp = Czaras.check(&stocks[j],nap.datum);
+                if (temp==1){
+                    osszesZaras++;
+                    osszesZarasPozitiv++;
+                } else if (temp==-1){
+                    osszesZaras++;
+                }
+
+                int temp2 = Cnyitas.check(&stocks[j],nap.datum);
+                 if (temp2==1){
+                    osszesNyitas++;
+                    osszesNyitasPozitiv++;
+                } else if (temp2==-1){
+                    osszesNyitas++;
+                }
+                if (temp!=0 && temp2!=0){
+                    osszesNyitasEsZaras++;
+                    if (temp==1 && temp2==1){
+                        osszesNyitasPozitivHaZarasIs++;
+                        osszesZarasPozitivHaNyitasIs++;
+                    }
+                    if (temp==1 && temp2==-1){
+                        osszesZarasPozitivHaNyitasNem++;
+                    }
+                    if (temp==-1 && temp2==1){
+                        osszesNyitasPozitivHaZarasNem++;
+                    }
+                }
+            }
+
+
         }
+        cout<<osszesNyitas<<" "<<osszesNyitasPozitiv<<" "<<(float)osszesNyitasPozitiv/osszesNyitas<<endl;
+        cout<<osszesZaras<<" "<<osszesZarasPozitiv<<" "<<(float)osszesZarasPozitiv/osszesZaras<<endl;
+        cout<<osszesNyitasPozitivHaZarasIs<<" "<<osszesNyitasPozitivHaZarasNem<<endl;
+        cout<<(float)osszesNyitasPozitivHaZarasIs/osszesZarasPozitiv<<" "<<(float)osszesNyitasPozitivHaZarasNem/(osszesNyitasEsZaras-osszesZarasPozitiv)<<endl;
+        cout<<osszesZarasPozitivHaNyitasIs<<" "<<osszesZarasPozitivHaNyitasNem<<endl;
+        cout<<(float)osszesZarasPozitivHaNyitasIs/osszesNyitasPozitiv<<" "<<(float)osszesZarasPozitivHaNyitasNem/(osszesNyitasEsZaras-osszesNyitasPozitiv)<<endl;
+        cout<<(float)osszesZarasPozitivHaNyitasIs/osszesNyitasPozitiv<<" "<<(float)(osszesZarasPozitivHaNyitasNem)/(osszesNyitasEsZaras-osszesNyitasPozitiv)<<endl;
+
     }
+    cout<<osszesNyitas<<" "<<osszesNyitasPozitiv<<" "<<(float)osszesNyitasPozitiv/osszesNyitas<<endl;
+    cout<<osszesZaras<<" "<<osszesZarasPozitiv<<" "<<(float)osszesZarasPozitiv/osszesZaras<<endl;
 
 
 

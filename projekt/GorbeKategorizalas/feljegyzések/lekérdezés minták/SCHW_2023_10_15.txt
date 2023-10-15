@@ -1,0 +1,13 @@
+SCHW lekérdezés tervezete 2023. 10. 15.
+0. negyed max > 2. negyed max			Total plusz
+0. negyed min < 2. negyed nyit			Total plusz
+++ 0. negyed zar ~ 2. negyed zar (+/-3%)	Total plusz
+1. negyed zar > 1. negyed nyit			OKs
+2. negyed nyit > 1. negyed zar			OKs	
+2. negyed zar < 1. negyed zar			Plusz
+
+
+Kérdés:
+
+
+2. negyed zar > 3. negyed nyit			OKs

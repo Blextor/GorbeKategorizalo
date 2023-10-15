@@ -43,6 +43,10 @@ struct Datum{
         return (year == other.year && month == other.month && day == other.day);
     }
 
+    bool operator!=(const Datum& other) const {
+        return !(*this==other);
+    }
+
     int tavolsag(const Datum other){
         // Létrehozza a kezdeti dátumot: 1990. január 1.
         std::tm start_date = {};

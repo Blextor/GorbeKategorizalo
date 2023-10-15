@@ -47,6 +47,8 @@
 		<Unit filename="button.h" />
 		<Unit filename="cimke.cpp" />
 		<Unit filename="cimke.h" />
+		<Unit filename="cimkeSrc/CmerreNyitott.h" />
+		<Unit filename="cimkeSrc/CmerreZart.h" />
 		<Unit filename="common.h" />
 		<Unit filename="config.cpp" />
 		<Unit filename="config.h" />

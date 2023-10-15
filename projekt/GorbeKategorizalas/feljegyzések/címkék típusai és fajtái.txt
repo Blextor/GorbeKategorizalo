@@ -1,0 +1,67 @@
+Mit szeretnénk és mit lehetne vizsgálni?
+Ezek milyen értékeket vehetnek fel?
+Milyen adatokat igényelnek, és mennyit?
+
+
+Egyszerűbb, könnyen kiolvasható adatok:
+	-	kiugrás mértéke zárás és nyitás között			A1/2, B1, C-,
+	-	aznapi mozgás mértéke nyitás és zárás között	A1/2, B2, C1,
+		- ezen értékek előjele							A1,	  B2, C1,
+	- 	össz mozgás abszolút mértéke (csak százalékban)	~
+	-	a hét melyik napja								A1,   B2, C1,
+	-	volumen mértéke (ezt hogy lehet kezelni???)		A1/2, B1/2, C-
+	
+	
+Ha van egy érték, akkor azt az előző naphoz hasonlítani sok féle képpen lehet sajnos:
+	kiugrás mértéke nagyobb / kisebb
+	kellhet, hogy a zárás értéke is magasabb mint, az előző zárás
+	
+		
+
+A: Igaz/hamis - százalékos(flaot) érték
+B: Két alkalom összehasonlítása - "önmagában" eldönthető
+C: Csak azon alkalom számít - más alkalmak is számítanak
+
+
+Egy címke:
+
+struct Cimke {
+	string name;   /// kell egy elnevezés
+	bool comperator = false; /// hogy lehet-e két alkalom összehasonlítására használni
+	bool only390 = false; /// hogy csak a napi 390 percre lehet használni (mert pl pontos)
+	bool onlyDaily = false; // valamiért csak a napi mozgásokra lehet csak használni
+	
+	int categoryID = 0; /// ha egy kategóriába esik egy címke, akkor azokat lehessen együtt kezelni
+	
+	bool lowerLimitB = false; 	/// van valami alsó határa
+	float lowerLimit = 0; 		/// és mi az
+	bool upperLimitB = false;	/// és fölső
+	float upperLimit = 0;		/// és mi az
+	
+	
+	bool check(Stock* stock, Datum datum);		/// nézzük meg, hogy igaz-e az adott dátumra
+	float getValue(Stock* stock, Datum datum);	/// mi az aznapra az értéke
+	float getDiffValue(Stock* stock, Datum from, Datum to); /// mi a két nap közötti érték különöbzet
+}
+
+
+A részévnyek elemzésekor a napokon /negyedéveken végigmegyek, azon belül a címkékek.
+Minden alkalomhoz eltárolom, hogy a címkék miként tértek vissza. Az igaz/hamis és a mért értéket is.
+	Ezt a vizsgálati résznél teszem csak meg. A feltételeknek mind teljesülniük kell.
+	Vector<Return> peldak;
+	Return: részvény, dátum, címkénként:{milyen címke?, igaz/hamis, érték}
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -70,11 +70,12 @@
 1695301737 source:c:\users\bobo\documents\stockanal\gorbekategorizalas\menuk.cpp
 	"Menu.h"
 
-1695733257 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimke.cpp
+1697325300 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimke.cpp
 	"cimke.h"
 
-1695733250 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimke.h
+1697325613 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimke.h
 	"common.h"
+	"stock.h"
 
 1696548734 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\common.h
 	<vector>
@@ -132,7 +133,7 @@
 1695370899 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\main.cpp
 	"common.h"
 
-1696805538 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\main2.cpp
+1697232920 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\main2.cpp
 	"common.h"
 	<list>
 	<utility>
@@ -151,6 +152,7 @@
 	<string>
 	<utility>
 	"cimke.h"
+	"cimkeSrc/OsszesCimke.h"
 	"Menu.h"
 
 1695369940 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\menu.cpp
@@ -190,12 +192,12 @@
 	<cctype>
 	<cstdlib>
 
-1696663355 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\stock.h
+1697365545 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\stock.h
 	"common.h"
 	"adatBeolvas.h"
 	"naptar.h"
 
-1696799548 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\naptar.h
+1697365428 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\naptar.h
 	"common.h"
 
 1696662909 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\naptar.cpp
@@ -209,4 +211,20 @@
 
 1696845280 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\reszvenymenu.cpp
 	"Menu.h"
+
+1697326211 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\cmerrenyitott.cpp
+	"CmerreNyitott.h"
+
+1697325637 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\cmerrenyitott.h
+	"../cimke.h"
+
+1697187653 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\osszescimke.h
+	"CmerreNyitott.h"
+	"CmerreZart.h"
+
+1697325635 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\cmerrezart.h
+	"../cimke.h"
+
+1697325919 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\cmerrezart.cpp
+	"CmerreZart.h"
 

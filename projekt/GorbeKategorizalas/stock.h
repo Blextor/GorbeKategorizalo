@@ -62,9 +62,13 @@ struct Nap{
 
 struct Negyed{
     Datum idoszakVege;
+    /// közöklt dátum
     mutable Datum tenylegesJelentes;
+    /// amelyik nap nyitása elõtt jött ki
     mutable Datum korrigaltTenylegesJelentes;
+    /// következõ negyedév korrigaltTenylegesJelentes -e
     mutable Datum negyedevVege;
+
     mutable float jelentettEPS=0, becsultEPS=0;
     mutable float meglepetes=0, meglepetesSzazalek=0;
     mutable long long earn=0, income=0;
@@ -72,6 +76,7 @@ struct Negyed{
     mutable bool nyitasElotti = true;
 
     Negyed(int y=-1, int m=-1, int d=-1){idoszakVege=Datum(y,m,d);}
+    Negyed(Datum d){idoszakVege=d;}
 
     bool operator<(const Negyed& other) const {
         return idoszakVege < other.idoszakVege;
@@ -94,6 +99,27 @@ struct Stock{
 
     void adatokFeldolgozasa();
     void negyedevekKorrigalasa();
+
+
+
+
+    bool getNap(Nap &ret, Datum datum );
+    bool getNegyed(Negyed &ret, Datum datum );
+
+    bool getMin(float &ret, Nap &nap, bool valid = false);
+    bool getMin(float &ret, Negyed &negyed, bool valid = false);
+
+    bool getMax(float &ret, Nap &nap, bool valid = false);
+    bool getMax(float &ret, Negyed &negyed, bool valid = false);
+
+    bool getNyit(float &ret, Nap &nap, bool valid = false);
+    bool getNyit(float &ret, Negyed &negyed, bool valid = false);
+
+    bool getZar(float &ret, Nap &nap, bool valid = false);
+    bool getZar(float &ret, Negyed &negyed, bool valid = false);
+
+    bool getNapOdebb(Nap &ret, Nap &nap, int mennyivelOdebb);
+    bool getNegyedOdebb(Negyed &ret, Negyed &nap, int mennyivelOdebb);
 };
 
 
