@@ -636,7 +636,7 @@ float getPrecFloat(float f, int prec){
 
 
 
-bool Stock::getNap(Nap &ret, Datum datum ){
+bool Stock::getNap(Nap &ret, Datum datum ){ /// KÉSZ, TESZTELVE
     Nap nap(datum);
     set<Nap>::iterator it = mindenNap.find(nap);
     if (it==mindenNap.end()) return false;
@@ -644,7 +644,7 @@ bool Stock::getNap(Nap &ret, Datum datum ){
     return true;
 }
 
-bool Stock::getNegyed(Negyed &ret, Datum datum ){
+bool Stock::getNegyed(Negyed &ret, Datum datum ){ /// KÉSZ, TESZTELVE
     Negyed negyed(datum);
     set<Negyed>::iterator it = negyedevek.find(negyed);
     if (it==negyedevek.end()) return false;
@@ -653,7 +653,7 @@ bool Stock::getNegyed(Negyed &ret, Datum datum ){
 }
 
 
-bool Stock::getMin(float &ret, Nap &nap, bool valid){
+bool Stock::getMin(float &ret, Nap &nap, bool valid){ /// KÉSZ, TESZTELVE
     if (!valid){
         if (!getNap(nap,nap.datum))
             return false;
@@ -662,12 +662,13 @@ bool Stock::getMin(float &ret, Nap &nap, bool valid){
     return true;
 }
 
-bool Stock::getMin(float &ret, Negyed &negyed, bool valid){
+bool Stock::getMin(float &ret, Negyed &negyed, bool valid){ /// KÉSZ, TESZTELVE
     if (!valid){
         if (!getNegyed(negyed,negyed.idoszakVege))
             return false;
     }
     Nap nap(negyed.korrigaltTenylegesJelentes);
+    if(!getNap(nap,nap.datum)) return false;
     float minF = 100000.0f;
     while (nap.datum<negyed.negyedevVege){
         minF=min(nap.minimum,minF);
@@ -679,57 +680,119 @@ bool Stock::getMin(float &ret, Negyed &negyed, bool valid){
 }
 
 
-bool Stock::getMax(float &ret, Nap &nap, bool valid){
+bool Stock::getMax(float &ret, Nap &nap, bool valid){ /// KÉSZ, TESZTELVE
+    if (!valid){
+        if (!getNap(nap,nap.datum))
+            return false;
+    }
+    ret=nap.maximum;
     return true;
 }
 
-bool Stock::getMax(float &ret, Negyed &negyed, bool valid){
+bool Stock::getMax(float &ret, Negyed &negyed, bool valid){ /// KÉSZ, TESZTELVE
+    if (!valid){
+        if (!getNegyed(negyed,negyed.idoszakVege))
+            return false;
+    }
+    Nap nap(negyed.korrigaltTenylegesJelentes);
+    if(!getNap(nap,nap.datum)) return false;
+    float maxF = 0.0f;
+    while (nap.datum<negyed.negyedevVege){
+        maxF=max(nap.maximum,maxF);
+        if (!getNapOdebb(nap,nap,1))
+            break;
+    }
+    ret=maxF;
     return true;
 }
 
 
-bool Stock::getNyit(float &ret, Nap &nap, bool valid){
+bool Stock::getNyit(float &ret, Nap &nap, bool valid){ /// KÉSZ, TESZTELVE
+    if (!valid){
+        if (!getNap(nap,nap.datum))
+            return false;
+    }
+    ret=nap.nyitas;
     return true;
 }
 
-bool Stock::getNyit(float &ret, Negyed &negyed, bool valid){
+bool Stock::getNyit(float &ret, Negyed &negyed, bool valid){ /// KÉSZ, TESZTELVE
+    if (!valid){
+        if (!getNegyed(negyed,negyed.idoszakVege))
+            return false;
+    }
+    Nap nap(negyed.korrigaltTenylegesJelentes);
+    if(!getNap(nap,nap.datum)) return false;
+    ret=nap.nyitas;
     return true;
 }
 
 
-bool Stock::getZar(float &ret, Nap &nap, bool valid){
+bool Stock::getZar(float &ret, Nap &nap, bool valid){ /// KÉSZ, TESZTELVE
+    if (!valid){
+        if (!getNap(nap,nap.datum))
+            return false;
+    }
+    ret=nap.zaras;
     return true;
 }
 
-bool Stock::getZar(float &ret, Negyed &negyed, bool valid){
+bool Stock::getZar(float &ret, Negyed &negyed, bool valid){ /// KÉSZ, TESZTELVE
+    if (!valid){
+        if (!getNegyed(negyed,negyed.idoszakVege))
+            return false;
+    }
+    Nap nap(negyed.korrigaltTenylegesJelentes);
+    if(!getNap(nap,nap.datum)) return false;
+    float zarF = 0.0f;
+    while (nap.datum<negyed.negyedevVege){
+        zarF=nap.zaras;
+        if (!getNapOdebb(nap,nap,1))
+            break;
+    }
+    ret=zarF;
     return true;
 }
 
-bool Stock::getNapOdebb(Nap &ret, Nap &nap, int mennyivelOdebb){
+bool Stock::getNapOdebb(Nap &ret, Nap &nap, int mennyivelOdebb){ /// KÉSZ, TESZTELVE
     set<Nap>::iterator it = mindenNap.find(nap);
     if (it==mindenNap.end()) return false;
     ret = *it;
-    if (mennyivelOdebb==0) {ret=nap;}
-    else if (mennyivelOdebb<0){
+    if (mennyivelOdebb<0){
         for (int i=mennyivelOdebb; i<0; i++){
-            if (ret.elozoNap==-1) return false;
-            set<Nap>::iterator it = mindenNap.find(Nap(ret.elozoNap));
-            if (it==mindenNap.end()) return false;
-            ret=*it;
+            if (it==mindenNap.begin()) return false;
+            --it;
         }
     }
-    else if (mennyivelOdebb<0){
-        for (int i=mennyivelOdebb; i<0; i++){
-            if (ret.elozoNap==-1) return false;
-            set<Nap>::iterator it = mindenNap.find(Nap(ret.elozoNap));
+    else if (mennyivelOdebb>0){
+        for (int i=0; i<mennyivelOdebb; i++){
+            ++it;
             if (it==mindenNap.end()) return false;
-            ret=*it;
         }
     }
+    ret=*it;
     return true;
 }
 
-bool Stock::getNegyedOdebb(Negyed &ret, Negyed &nap, int mennyivelOdebb){
+bool Stock::getNegyedOdebb(Negyed &ret, Negyed &negyed, int mennyivelOdebb){ /// KÉSZ, TESZTELVE
+    set<Negyed>::iterator it = negyedevek.find(negyed);
+    if (it==negyedevek.end()) return false;
+    ret = *it;
+    if (mennyivelOdebb==0) {ret=negyed;}
+    else if (mennyivelOdebb<0){
+        for (int i=mennyivelOdebb; i<0; i++){
+            if (it==negyedevek.begin()) return false;
+            --it;
+        }
+        ret=*it;
+    }
+    else if (mennyivelOdebb>0){
+        for (int i=0; i<mennyivelOdebb; i++){
+            ++it;
+            if (it==negyedevek.end()) return false;
+        }
+        ret=*it;
+    }
     return true;
 }
 

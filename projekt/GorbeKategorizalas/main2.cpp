@@ -140,7 +140,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     long long osszesNyitasEsZaras = 0;
     long long osszesZarasPozitivHaNyitasNem = 0, osszesZarasPozitivHaNyitasIs = 0;
     long long osszesNyitasPozitivHaZarasNem = 0, osszesNyitasPozitivHaZarasIs = 0;
-    for (size_t i=0; i<reszvenyekNeve.size(); i++){
+    for (size_t i=1000; i<reszvenyekNeve.size(); i++){
         for (int j=0; j<thCnt; j++){
             szalak[j] = thread(loadStock,reszvenyekNeve[i],ref(stocks[j]));
             i++;
@@ -199,6 +199,68 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     cout<<osszesNyitas<<" "<<osszesNyitasPozitiv<<" "<<(float)osszesNyitasPozitiv/osszesNyitas<<endl;
     cout<<osszesZaras<<" "<<osszesZarasPozitiv<<" "<<(float)osszesZarasPozitiv/osszesZaras<<endl;
 
+
+    cout<<"Reszveny napi es negyedeves adatok lekerdezesenek tesztelese:"<<endl;
+    Stock alma;
+    loadStock("AAPL",alma);
+    t=clock();
+    Nap nap(2023,10,14);
+    { /// sikertelen a nap megtalÃ¡lÃ¡sa
+    cout<<true<<alma.getNap(nap,nap.datum)<<endl;
+    nap = Nap(2023,10,15);
+    cout<<true<<alma.getNap(nap,nap.datum)<<endl;
+    }
+    nap = Nap(2023,10,11); /// sikeres a nap megtalÃ¡lÃ¡sa
+    float ertek = 0;
+    cout<<true<<alma.getNap(nap,nap.datum)<<endl;
+    Nap mentettNap = nap; /// sokszoros
+    cout<<nap.datum.year<<" "<<nap.datum.month<<" "<<nap.datum.day<<endl;
+    cout<<alma.getNapOdebb(nap,nap,3)<<endl; /// sikerÃ¼l- e tÃºlindexelni
+    alma.getMin(ertek,nap,true);
+    cout<<"Ertek: "<<ertek<<endl;
+    cout<<nap.datum.year<<" "<<nap.datum.month<<" "<<nap.datum.day<<endl;
+    cout<<alma.getNapOdebb(nap,nap,-10000)<<endl; /// sikerÃ¼l- e alulindexelni
+    cout<<nap.datum.year<<" "<<nap.datum.month<<" "<<nap.datum.day<<endl;
+    cout<<alma.getNapOdebb(nap,nap,2)<<endl; /// sikerÃ¼l-e elÅ‘rÃ©bb menni
+    alma.getMin(ertek,nap,true);
+    cout<<"Ertek: "<<ertek<<endl;
+    alma.getMax(ertek,nap,true);
+    cout<<"Ertek: "<<ertek<<endl;
+    alma.getNyit(ertek,nap,true);
+    cout<<"Ertek: "<<ertek<<endl;
+    alma.getZar(ertek,nap,true);
+    cout<<"Ertek: "<<ertek<<endl;
+    cout<<nap.datum.year<<" "<<nap.datum.month<<" "<<nap.datum.day<<endl;
+    cout<<alma.getNapOdebb(nap,nap,-4)<<endl; /// sikerÃ¼l-e hÃ¡trÃ©bb menni
+    cout<<nap.datum.year<<" "<<nap.datum.month<<" "<<nap.datum.day<<endl;
+
+    cout<<"NEGYED TESZT"<<endl;
+    Negyed negyed(2023,06,30);
+    cout<<true<<alma.getNegyed(negyed,negyed.idoszakVege)<<endl;
+    cout<<true<<alma.getNegyedOdebb(negyed,negyed,2)<<endl;
+    alma.getMin(ertek,negyed,true);
+    cout<<"Ertek: "<<ertek<<endl;
+    alma.getMax(ertek,negyed,true);
+    cout<<"Ertek: "<<ertek<<endl;
+    alma.getNyit(ertek,negyed,true);
+    cout<<"Ertek: "<<ertek<<endl;
+    alma.getZar(ertek,negyed,true);
+    cout<<"Ertek: "<<ertek<<endl;
+    cout<<negyed.idoszakVege.year<<" "<<negyed.idoszakVege.month<<" "<<negyed.idoszakVege.day<<endl;
+    cout<<true<<alma.getNegyedOdebb(negyed,negyed,-2)<<endl;
+    alma.getMin(ertek,negyed,true);
+    cout<<"Ertek: "<<ertek<<endl;
+    alma.getMax(ertek,negyed,true);
+    cout<<"Ertek: "<<ertek<<endl;
+    alma.getNyit(ertek,negyed,true);
+    cout<<"Ertek: "<<ertek<<endl;
+    alma.getZar(ertek,negyed,true);
+    cout<<"Ertek: "<<ertek<<endl;
+    cout<<negyed.idoszakVege.year<<" "<<negyed.idoszakVege.month<<" "<<negyed.idoszakVege.day<<endl;
+    cout<<true<<alma.getNegyedOdebb(negyed,negyed,-2)<<endl;
+
+
+    cout<<"TESZT VÃ‰GE"<<endl;
 
 
 
@@ -272,10 +334,10 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     MenuK menuk(sdlp,&actualMenu);
     //cout<<actualMenu<< " "<<&actualMenu <<endl;
 
-    /// megjelenítés még kicsit hibás, nem tudom külön szálon futtatni
-    //thread frame(megjelenites,ref(actualMenu));   /// megjelenítás
-    //thread esemeny(esemenyKezel,ref(actualMenu)); /// SDL input feldolgozás
-    //thread konzol(konzolKezel);                             /// konzol input feldolgozás
+    /// megjelenÃ­tÃ©s mÃ©g kicsit hibÃ¡s, nem tudom kÃ¼lÃ¶n szÃ¡lon futtatni
+    //thread frame(megjelenites,ref(actualMenu));   /// megjelenÃ­tÃ¡s
+    //thread esemeny(esemenyKezel,ref(actualMenu)); /// SDL input feldolgozÃ¡s
+    //thread konzol(konzolKezel);                             /// konzol input feldolgozÃ¡s
     int frameCnt = 0;
     t = clock();
     while(true){
@@ -292,7 +354,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
         actualMenu->process();
         //cout<<"c";
         actualMenu->draw();
-        //SDL_PollEvent(&ev);                                 /// Ez kell az input feldolgozáshoz külön szálon
+        //SDL_PollEvent(&ev);                                 /// Ez kell az input feldolgozÃ¡shoz kÃ¼lÃ¶n szÃ¡lon
         //if (!kirajzol){}
           //  draw(renderer);
         Sleep(1);

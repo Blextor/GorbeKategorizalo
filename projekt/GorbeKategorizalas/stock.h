@@ -119,7 +119,7 @@ struct Stock{
     bool getZar(float &ret, Negyed &negyed, bool valid = false);
 
     bool getNapOdebb(Nap &ret, Nap &nap, int mennyivelOdebb);
-    bool getNegyedOdebb(Negyed &ret, Negyed &nap, int mennyivelOdebb);
+    bool getNegyedOdebb(Negyed &ret, Negyed &negyed, int mennyivelOdebb);
 };
 
 
