@@ -5,6 +5,7 @@ SCHW lekérdezés tervezete 2023. 10. 15.
 1. negyed zar > 1. negyed nyit			OKs
 2. negyed nyit > 1. negyed zar			OKs	
 2. negyed zar < 1. negyed zar			Plusz
+1. negyed nyit < 2. negyed zar
 
 
 Kérdés:

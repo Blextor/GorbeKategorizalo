@@ -135,132 +135,101 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     int thCnt = 10;
     vector<thread> szalak; szalak.resize(thCnt);
     vector<Stock> stocks; stocks.resize(thCnt);
-    long long osszesNyitas = 0, osszesNyitasPozitiv = 0;
-    long long osszesZaras = 0, osszesZarasPozitiv = 0;
-    long long osszesNyitasEsZaras = 0;
-    long long osszesZarasPozitivHaNyitasNem = 0, osszesZarasPozitivHaNyitasIs = 0;
-    long long osszesNyitasPozitivHaZarasNem = 0, osszesNyitasPozitivHaZarasIs = 0;
-    for (size_t i=1000; i<reszvenyekNeve.size(); i++){
+    long long osszesPelda = 0, joPelda = 0;
+    for (size_t i=0; i<reszvenyekNeve.size(); i++){
         for (int j=0; j<thCnt; j++){
             szalak[j] = thread(loadStock,reszvenyekNeve[i],ref(stocks[j]));
             i++;
-            cout<<i<<endl;
+            //cout<<i<<endl;
             if (i>=reszvenyekNeve.size()) break;
         }
 
-        CmerreZart Czaras;
-        CmerreNyitott Cnyitas;
+
         for (int j=0; j<thCnt; j++){
             if (szalak[j].joinable())
                 szalak[j].join();
 
-            for (const Nap &nap: stocks[j].mindenNap){
-                int temp = Czaras.check(&stocks[j],nap.datum);
-                if (temp==1){
-                    osszesZaras++;
-                    osszesZarasPozitiv++;
-                } else if (temp==-1){
-                    osszesZaras++;
+            if (stocks[j].negyedevek.size()<3) continue;
+
+            set<Negyed>::iterator nulladik, elso, masodik,harmadik,negyedik;
+            nulladik = stocks[j].negyedevek.begin();
+            elso = ++nulladik;
+            masodik = ++nulladik;
+            harmadik = ++nulladik;
+            negyedik = ++nulladik;
+            --nulladik; --nulladik; --nulladik; --nulladik;
+            for (;negyedik!=stocks[j].negyedevek.end();++nulladik, ++elso, ++masodik, ++harmadik, ++negyedik){
+                float e1=0, e2=0;
+                Negyed negyed0=(*nulladik);
+                Negyed negyed1=(*elso);
+                Negyed negyed2=(*masodik);
+                Negyed negyed3=(*harmadik);
+                Negyed negyed4=(*negyedik);
+                if (negyed3.korrigaltTenylegesJelentes<Datum(2019,1,1)){
+                    continue;
+                }
+                else {
+                    //break;
                 }
 
-                int temp2 = Cnyitas.check(&stocks[j],nap.datum);
-                 if (temp2==1){
-                    osszesNyitas++;
-                    osszesNyitasPozitiv++;
-                } else if (temp2==-1){
-                    osszesNyitas++;
-                }
-                if (temp!=0 && temp2!=0){
-                    osszesNyitasEsZaras++;
-                    if (temp==1 && temp2==1){
-                        osszesNyitasPozitivHaZarasIs++;
-                        osszesZarasPozitivHaNyitasIs++;
-                    }
-                    if (temp==1 && temp2==-1){
-                        osszesZarasPozitivHaNyitasNem++;
-                    }
-                    if (temp==-1 && temp2==1){
-                        osszesNyitasPozitivHaZarasNem++;
-                    }
-                }
+                stocks[j].getNyit(e1,negyed0,true);
+                stocks[j].getZar(e2,negyed0,true);
+                if (e1>=e2) {cout<<"";continue;} /// 0. negyed nyit < 0. negyed zar
+                stocks[j].getNyit(e1,negyed1,true);
+                stocks[j].getZar(e2,negyed1,true);
+                if (e1>=e2) {cout<<"";continue;} /// 1. negyed nyit < 1. negyed zar
+                stocks[j].getNyit(e1,negyed2,true);
+                stocks[j].getZar(e2,negyed2,true);
+                if (e1>=e2) {cout<<"";continue;} /// 2. negyed nyit < 2. negyed zar
+                stocks[j].getNyit(e1,negyed3,true);
+                stocks[j].getZar(e2,negyed3,true);
+                if (e1<=e2) {cout<<"";continue;} /// 3. negyed nyit > 3. negyed zar
+
+
+
+                stocks[j].getNyit(e1,negyed0,true);
+                stocks[j].getZar(e2,negyed3,true);
+                if (e1>=e2) {cout<<"";continue;} /// 0. negyed nyit > 0. negyed zar
+                stocks[j].getZar(e1,negyed0,true);
+                stocks[j].getZar(e2,negyed2,true);
+                if (e1>=e2) {cout<<"";continue;} /// 0. negyed nyit > 0. negyed zar
+                stocks[j].getNyit(e1,negyed1,true);
+                stocks[j].getZar(e2,negyed3,true);
+                if (e1>=e2) {cout<<"";continue;} /// 0. negyed nyit > 0. negyed zar
+
+                stocks[j].getNyit(e1,negyed2,true);
+                stocks[j].getZar(e2,negyed3,true);
+                if (e1<=e2) {cout<<"";continue;} /// 0. negyed nyit > 0. negyed zar
+                stocks[j].getZar(e1,negyed2,true);
+                stocks[j].getNyit(e2,negyed3,true);
+                if (e1<=e2) {cout<<"";continue;} /// 0. negyed nyit > 0. negyed zar
+
+                stocks[j].getMax(e1,negyed2,true);
+                stocks[j].getMax(e2,negyed3,true);
+                if (e1<=e2) {cout<<"";continue;} /// 0. negyed nyit > 0. negyed zar
+                /*
+
+                /*
+                */
+
+                osszesPelda++;
+
+                cout<<stocks[j].name<<" "<<negyed4.korrigaltTenylegesJelentes.year<<" "<<
+                negyed4.korrigaltTenylegesJelentes.month<<" "<<
+                negyed4.korrigaltTenylegesJelentes.day<<endl;
+
+                stocks[j].getZar(e1,negyed3,true);
+                stocks[j].getNyit(e2,negyed4,true);
+                if (e1>=e2) continue; /// 2. negyed zar > 3. negyed nyit
+                cout<<"siker"<<endl;
+                joPelda++;
             }
-
-
         }
-        cout<<osszesNyitas<<" "<<osszesNyitasPozitiv<<" "<<(float)osszesNyitasPozitiv/osszesNyitas<<endl;
-        cout<<osszesZaras<<" "<<osszesZarasPozitiv<<" "<<(float)osszesZarasPozitiv/osszesZaras<<endl;
-        cout<<osszesNyitasPozitivHaZarasIs<<" "<<osszesNyitasPozitivHaZarasNem<<endl;
-        cout<<(float)osszesNyitasPozitivHaZarasIs/osszesZarasPozitiv<<" "<<(float)osszesNyitasPozitivHaZarasNem/(osszesNyitasEsZaras-osszesZarasPozitiv)<<endl;
-        cout<<osszesZarasPozitivHaNyitasIs<<" "<<osszesZarasPozitivHaNyitasNem<<endl;
-        cout<<(float)osszesZarasPozitivHaNyitasIs/osszesNyitasPozitiv<<" "<<(float)osszesZarasPozitivHaNyitasNem/(osszesNyitasEsZaras-osszesNyitasPozitiv)<<endl;
-        cout<<(float)osszesZarasPozitivHaNyitasIs/osszesNyitasPozitiv<<" "<<(float)(osszesZarasPozitivHaNyitasNem)/(osszesNyitasEsZaras-osszesNyitasPozitiv)<<endl;
+        cout<<"osszes, jo: "<<osszesPelda<<" "<<joPelda<<" "<<(float)joPelda/osszesPelda<<endl;
 
     }
-    cout<<osszesNyitas<<" "<<osszesNyitasPozitiv<<" "<<(float)osszesNyitasPozitiv/osszesNyitas<<endl;
-    cout<<osszesZaras<<" "<<osszesZarasPozitiv<<" "<<(float)osszesZarasPozitiv/osszesZaras<<endl;
+    cout<<"osszes, jo: "<<osszesPelda<<" "<<joPelda<<" "<<(float)joPelda/osszesPelda<<endl;
 
-
-    cout<<"Reszveny napi es negyedeves adatok lekerdezesenek tesztelese:"<<endl;
-    Stock alma;
-    loadStock("AAPL",alma);
-    t=clock();
-    Nap nap(2023,10,14);
-    { /// sikertelen a nap megtalÃ¡lÃ¡sa
-    cout<<true<<alma.getNap(nap,nap.datum)<<endl;
-    nap = Nap(2023,10,15);
-    cout<<true<<alma.getNap(nap,nap.datum)<<endl;
-    }
-    nap = Nap(2023,10,11); /// sikeres a nap megtalÃ¡lÃ¡sa
-    float ertek = 0;
-    cout<<true<<alma.getNap(nap,nap.datum)<<endl;
-    Nap mentettNap = nap; /// sokszoros
-    cout<<nap.datum.year<<" "<<nap.datum.month<<" "<<nap.datum.day<<endl;
-    cout<<alma.getNapOdebb(nap,nap,3)<<endl; /// sikerÃ¼l- e tÃºlindexelni
-    alma.getMin(ertek,nap,true);
-    cout<<"Ertek: "<<ertek<<endl;
-    cout<<nap.datum.year<<" "<<nap.datum.month<<" "<<nap.datum.day<<endl;
-    cout<<alma.getNapOdebb(nap,nap,-10000)<<endl; /// sikerÃ¼l- e alulindexelni
-    cout<<nap.datum.year<<" "<<nap.datum.month<<" "<<nap.datum.day<<endl;
-    cout<<alma.getNapOdebb(nap,nap,2)<<endl; /// sikerÃ¼l-e elÅ‘rÃ©bb menni
-    alma.getMin(ertek,nap,true);
-    cout<<"Ertek: "<<ertek<<endl;
-    alma.getMax(ertek,nap,true);
-    cout<<"Ertek: "<<ertek<<endl;
-    alma.getNyit(ertek,nap,true);
-    cout<<"Ertek: "<<ertek<<endl;
-    alma.getZar(ertek,nap,true);
-    cout<<"Ertek: "<<ertek<<endl;
-    cout<<nap.datum.year<<" "<<nap.datum.month<<" "<<nap.datum.day<<endl;
-    cout<<alma.getNapOdebb(nap,nap,-4)<<endl; /// sikerÃ¼l-e hÃ¡trÃ©bb menni
-    cout<<nap.datum.year<<" "<<nap.datum.month<<" "<<nap.datum.day<<endl;
-
-    cout<<"NEGYED TESZT"<<endl;
-    Negyed negyed(2023,06,30);
-    cout<<true<<alma.getNegyed(negyed,negyed.idoszakVege)<<endl;
-    cout<<true<<alma.getNegyedOdebb(negyed,negyed,2)<<endl;
-    alma.getMin(ertek,negyed,true);
-    cout<<"Ertek: "<<ertek<<endl;
-    alma.getMax(ertek,negyed,true);
-    cout<<"Ertek: "<<ertek<<endl;
-    alma.getNyit(ertek,negyed,true);
-    cout<<"Ertek: "<<ertek<<endl;
-    alma.getZar(ertek,negyed,true);
-    cout<<"Ertek: "<<ertek<<endl;
-    cout<<negyed.idoszakVege.year<<" "<<negyed.idoszakVege.month<<" "<<negyed.idoszakVege.day<<endl;
-    cout<<true<<alma.getNegyedOdebb(negyed,negyed,-2)<<endl;
-    alma.getMin(ertek,negyed,true);
-    cout<<"Ertek: "<<ertek<<endl;
-    alma.getMax(ertek,negyed,true);
-    cout<<"Ertek: "<<ertek<<endl;
-    alma.getNyit(ertek,negyed,true);
-    cout<<"Ertek: "<<ertek<<endl;
-    alma.getZar(ertek,negyed,true);
-    cout<<"Ertek: "<<ertek<<endl;
-    cout<<negyed.idoszakVege.year<<" "<<negyed.idoszakVege.month<<" "<<negyed.idoszakVege.day<<endl;
-    cout<<true<<alma.getNegyedOdebb(negyed,negyed,-2)<<endl;
-
-
-    cout<<"TESZT VÃ‰GE"<<endl;
 
 
 
@@ -334,16 +303,16 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     MenuK menuk(sdlp,&actualMenu);
     //cout<<actualMenu<< " "<<&actualMenu <<endl;
 
-    /// megjelenÃ­tÃ©s mÃ©g kicsit hibÃ¡s, nem tudom kÃ¼lÃ¶n szÃ¡lon futtatni
-    //thread frame(megjelenites,ref(actualMenu));   /// megjelenÃ­tÃ¡s
-    //thread esemeny(esemenyKezel,ref(actualMenu)); /// SDL input feldolgozÃ¡s
-    //thread konzol(konzolKezel);                             /// konzol input feldolgozÃ¡s
+    /// megjelenítés még kicsit hibás, nem tudom külön szálon futtatni
+    //thread frame(megjelenites,ref(actualMenu));   /// megjelenítás
+    //thread esemeny(esemenyKezel,ref(actualMenu)); /// SDL input feldolgozás
+    //thread konzol(konzolKezel);                             /// konzol input feldolgozás
     int frameCnt = 0;
     t = clock();
     while(true){
         frameCnt++;
         if (t+1000<=clock()){
-            cout<<"FPS: "<<frameCnt<<endl;
+            //cout<<"FPS: "<<frameCnt<<endl;
             frameCnt=0;
             t=clock();
         }
@@ -354,7 +323,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
         actualMenu->process();
         //cout<<"c";
         actualMenu->draw();
-        //SDL_PollEvent(&ev);                                 /// Ez kell az input feldolgozÃ¡shoz kÃ¼lÃ¶n szÃ¡lon
+        //SDL_PollEvent(&ev);                                 /// Ez kell az input feldolgozáshoz külön szálon
         //if (!kirajzol){}
           //  draw(renderer);
         Sleep(1);
