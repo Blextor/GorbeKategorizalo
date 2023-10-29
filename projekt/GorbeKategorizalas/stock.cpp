@@ -421,9 +421,7 @@ void Stock::adatokFeldolgozasa(){
         bool ny=false, z=false;
         vector<Arfolyam> pluszPercek;
 
-        /// minimum és maximum érték reset
-        nap.minimum=1000000.0f;
-        nap.maximum=0.0f;
+
         for (const Arfolyam& perc : nap.percek){
             /// amennyiben van előző perc
             if (legutobbiPerc->idopont.ora>2){
@@ -442,13 +440,7 @@ void Stock::adatokFeldolgozasa(){
             }
 
 
-            /// ha nyitva van a piac, a napi adatot tornáztatjuk
-            Idopont zarasP = nap.idoZaras; zarasP.kovetkezoPerc(); /// hoz az 15:59 is benne legyen
-            if (!(perc.idopont<nap.idoNyitas) && (perc.idopont<nap.idoZaras)){
-                nap.minimum=min(nap.minimum,perc.minimum);
-                nap.maximum=max(nap.maximum,perc.maximum);
-                nap.volumen+=perc.volumen;
-            }
+
 
 
             /// hiányzó percek pótlása
@@ -515,6 +507,19 @@ void Stock::adatokFeldolgozasa(){
         }
         else {
             nap.zaras=(*it).close;
+        }
+
+        /// minimum és maximum érték reset
+        nap.minimum=nap.nyitas;
+        nap.maximum=nap.nyitas;
+        for (const Arfolyam& perc : nap.percek){
+            /// ha nyitva van a piac, a napi adatot tornáztatjuk
+            Idopont zarasP = nap.idoZaras; zarasP.kovetkezoPerc(); /// hoz az 15:59 is benne legyen
+            if (!(perc.idopont<nap.idoNyitas) && (perc.idopont<nap.idoZaras)){
+                nap.minimum=min(nap.minimum,perc.minimum);
+                nap.maximum=max(nap.maximum,perc.maximum);
+                nap.volumen+=perc.volumen;
+            }
         }
 
         legutobbiNap=&nap;
