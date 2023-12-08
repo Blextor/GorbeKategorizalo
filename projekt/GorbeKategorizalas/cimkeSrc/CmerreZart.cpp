@@ -1,6 +1,6 @@
 #include "CmerreZart.h"
 
-
+/*
 int CmerreZart::check(Stock* stock, Datum datum){
     Nap azNap(datum);
     set<Nap>::iterator it = stock->mindenNap.find(azNap);
@@ -35,3 +35,4 @@ float CmerreZart::getDiffValue(Stock* stock, Negyed from, Negyed to){
 
     return 0;
 }
+*/

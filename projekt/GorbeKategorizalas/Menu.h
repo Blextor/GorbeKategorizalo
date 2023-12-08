@@ -315,9 +315,12 @@ struct ReszvenyMenu : public Menu {
 
     Button ujReszInp, reszOKB; /// új részvény sor létrehozása
     Gorgetheto reszvenyLista;
+    UjCimkePopUp ujCimkePopUp;
 
     vector<bool> boolR;
     vector<ReszvenySor> reszvenyek; /// a részvények sorai
+
+    bool ujCimkePopUpB = false;
 
     int panX=0, panY=0; /// a vízszintes és függőleges mozgatásért
 

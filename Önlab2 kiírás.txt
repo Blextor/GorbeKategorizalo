@@ -1,0 +1,42 @@
+Részvényadatok Statisztikai Elemzése és Vizualizációja
+
+Téma Leírása:
+A projekt célja egy olyan program fejlesztése, amely lehetővé teszi részvényadatok gyűjtését, tárolását, frissítését, és elemzését,
+hogy a programmal meg lehessen vizsgálni "A múltbéli adatokból nem lehet következtetni a jövőre" tételmondatot.
+A kész program az eltárolt adatokból statisztikai adatokat nyer ki a felhasználó által előkészített lekérdezésekhez.
+Ezen adatokból lehet majd megvizsgálni tételmondatot bizonyos mélységig.
+
+
+Feladatok
+Adatok gyűjtése és tárolása: Tudjon a program naprakész részvényadatokat letölteni (ezt lehet például API hívások segítségével megvalósítani meglévő adatbázisokból) és tudja ezeket megfelelően eltárolni.
+Adattisztítás és Feldolgozás: Nagy mennyiségű adathalmazban hibás vagy hiányzó adatok előfordulhatnak. Ezeket a program kezelje, ha kell javítsa vagy egészítse ki. A letöltött adatokat esetleg formázza, hogy később könnyebb legyen kezelni az őket.
+Vizualizáció: Részvények értékének alakulását legyen képes a program megjeleníteni adott időintervallumon és legyen a célnak megfelelő, könnyen kezelhető grafikus interfésze.
+Statisztikai Elemzés: Tudjon a felhasználó lekérdezéseket előkészíteni majd azt a programmal feldolgozni. A lekérdezés eredményét lehessen megtekinetni és elemezni.
+
+Funkciók: 
+Részvények kategorizálása, csoportosítása: Lekérdezéseket adott részvényekre (részvény csoportra) lehessen szűkíteni, lehessen csoportokat kialakítani.
+Többféle mutató és adat lekérdezésének támogatása: Számtalan adatot lehet kinyerni görbékből. Támogasson lehetőleg minél többet a program, és ezek kombinációját is. (adatok: különböző mutatók (RSI, STOCH, ADX), mozgóátlagok, lokális minimumok és maximumok, és még sok más)
+Optimalizált Teljesítmény: Hatékony adatkezelés, különösen nagy (100+ GB) adatmennyiség esetén.
+Bővíthetőség: Könnyen lehessen új adatok lekérdezésével és elemzésével, feltételekkel és kimeneti adatokkal bővíteni a programot.
+
+
+Részvényadatok Statisztikai Elemzése és Vizualizációja
+
+Téma Leírása:
+A projekt célja egy olyan program fejlesztése, amely lehetővé teszi részvényadatok gyűjtését, tárolását, frissítését, és elemzését,
+hogy a programmal meg lehessen vizsgálni "A múltbéli adatokból nem lehet következtetni a jövőre" tételmondatot.
+A kész program az eltárolt adatokból statisztikai adatokat nyer ki a felhasználó által előkészített lekérdezésekhez.
+Ezen adatokból lehet majd megvizsgálni tételmondatot bizonyos mélységig.
+
+
+Feladatok
+Adatok gyűjtése és tárolása: Tudjon a program naprakész részvényadatokat letölteni (ezt lehet például API hívások segítségével megvalósítani meglévő adatbázisokból) és tudja ezeket megfelelően eltárolni.
+Adattisztítás és Feldolgozás: Nagy mennyiségű adathalmazban hibás vagy hiányzó adatok előfordulhatnak. Ezeket a program kezelje, ha kell javítsa vagy egészítse ki. A letöltött adatokat esetleg formázza, hogy később könnyebb legyen kezelni az őket.
+Vizualizáció: Részvények értékének alakulását legyen képes a program megjeleníteni adott időintervallumon és legyen a célnak megfelelő, könnyen kezelhető grafikus interfésze.
+Statisztikai Elemzés: Tudjon a felhasználó lekérdezéseket előkészíteni majd azt a programmal feldolgozni. A lekérdezés eredményét lehessen megtekinteni és elemezni.
+
+Funkciók: 
+Részvények kategorizálása, csoportosítása: Lekérdezéseket adott részvényekre (részvény csoportra) lehessen szűkíteni, lehessen csoportokat kialakítani.
+Többféle mutató és adat lekérdezésének támogatása: Számtalan adatot lehet kinyerni görbékből. Támogasson lehetőleg minél többet a program, és ezek kombinációját is. (adatok: különböző mutatók (RSI, STOCH, ADX), mozgóátlagok, lokális minimumok és maximumok, és még sok más)
+Optimalizált Teljesítmény: Hatékony adatkezelés, különösen nagy (100+ GB) adatmennyiség esetén.
+Bővíthetőség: Könnyen lehessen új adatok lekérdezésével és elemzésével, feltételekkel és kimeneti adatokkal bővíteni a programot.

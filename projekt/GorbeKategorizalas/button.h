@@ -4,6 +4,7 @@
 #include "common.h"
 #include "adatBeolvas.h"
 #include "stock.h"
+#include "cimke.h"
 
 using namespace std;
 
@@ -928,6 +929,144 @@ struct ReszvenySor{
         for (size_t i=0; i<gorbek.size(); i++) {
             gorbek[i].inDeleteButton();
         }
+        return true;
+    }
+};
+
+struct UjCimkePopUp{
+    int x=0, y=0, w=0, h=0;
+    Button closeB, ujLetrehozas;
+    Button nameInput, typeInput, napNegyedInput;
+    Text nameInputT, typeInputT, napNegyedInputT;
+    Gorgetheto cimkeTipusLista;
+
+    LokMinMax lokMinMax;
+    Cimke cimke;
+
+    vector<Cimke*> cimkek;
+    vector<string> reszvenyTipusok;
+    vector<Button> inputs;
+    vector<Text> inputsT;
+
+    int lastInputField = 0;
+
+    UjCimkePopUp(){ }
+
+    UjCimkePopUp(int X, int Y, int W, int H){
+        cimkek.push_back(new LokMinMax());
+        cimkek.push_back(new Cimke());
+        for (int i=0; i<cimkek.size(); i++) reszvenyTipusok.push_back(cimkek[i]->IDname);
+        x=X,y=Y;w=W;h=H;
+        closeB = Button("X",x+487,y+0,13,13,false,false);
+        ujLetrehozas = Button("Letrehozas",x+180,y+8,85,13,false,false);
+        typeInputT = Text("Cimke tipusa",x+20,y+45,false);
+        typeInput = Button("",x+20,y+60,120,13,false,false);
+        nameInputT = Text("Cimke neve",x+160,y+45,false);
+        nameInput = Button("",x+160,y+60,120,13,false,false);
+        napNegyedInputT = Text("Nap / Negyed",x+300,y+45,false);
+        napNegyedInput = Button("",x+300,y+60,29,13,false,false);
+        cimkeTipusLista = Gorgetheto(reszvenyTipusok,x+20,x+80,120,120);
+    }
+
+    void draw (SDL_Renderer *renderer, int wa, int wb){
+
+        boxRGBA(renderer,x,y,x+w+5,y+h+5,100,100,100,255);
+
+        cimkeTipusLista.draw(renderer,wa,wb);
+
+        stringRGBA(renderer,x+8,y+13,"Uj cimke letrehozasa",0,0,0,255);
+
+        closeB.draw(renderer,wa,wb);
+        ujLetrehozas.draw(renderer,wa,wb);
+        typeInputT.draw(renderer,wa,wb);
+        typeInput.draw(renderer,wa,wb);
+        nameInputT.draw(renderer,wa,wb);
+        nameInput.draw(renderer,wa,wb);
+        napNegyedInputT.draw(renderer,wa,wb);
+        napNegyedInput.draw(renderer,wa,wb);
+
+        for (int i=0; i<inputs.size(); i++){inputsT[i].draw(renderer,wa,wb); inputs[i].draw(renderer,wa,wb);}
+
+        rectangleRGBA(renderer,x,y,x+w+5,y+h+5,0,0,0,255);
+        //stringRGBA(renderer,x+300,y+300,cimkek[0]->IDname.c_str(),0,0,0,255);
+    }
+
+    int lastType = -1;
+    bool generateInputs(){
+        for (int i=0; i<reszvenyTipusok.size(); i++){
+            if (toLower(reszvenyTipusok[i])==toLower(typeInput.str)){
+                if (lastType==i) return true;
+                lastType=i;
+                inputsT.clear(); inputsT.resize(cimkek[i]->inputok.size());
+                inputs.clear(); inputs.resize(cimkek[i]->inputok.size());
+                for (int k=0; k<inputs.size(); k++){
+                    inputsT[k]=Text(cimkek[i]->inputok[k],300-cimkek[i]->inputok[k].size()*8,105+k*20);
+                    inputs[k]=Button("",300,100+k*20,120,13,false,false);
+                }
+                return true;
+            }
+        }
+        lastType=-1;
+        inputsT.clear(); inputs.clear();
+        return false;
+    }
+
+    vector<string> bemenetekGet(){
+        vector<string> ret;
+        ret.push_back(typeInput.str);
+        ret.push_back(nameInput.str);
+        ret.push_back(napNegyedInput.str);
+        for (int i=0; i<inputs.size(); i++) ret.push_back(inputs[i].str);
+        return ret;
+    }
+
+    bool ujCimkeLetrehozasa(){
+        vector<string> param = bemenetekGet();
+        for (int i=0; i<reszvenyTipusok.size(); i++){
+            if (reszvenyTipusok[i]==param[0]){
+                if (cimkek[i]->readIn(param)){
+                    cimkek[i]->writeOut();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    int kotelezoMexoCnt = 3;
+    bool inputText(char c, bool torol=false){
+        if (lastInputField==0) {
+            if (torol){ if (typeInput.str.size()>0) typeInput.str.pop_back();}
+            else typeInput.str+=c;
+            cimkeTipusLista.elemekKeresese(typeInput.str);
+            generateInputs();
+        }
+        else if (lastInputField==1){
+            if (torol){ if (nameInput.str.size()>0) nameInput.str.pop_back();}
+            else nameInput.str+=c;
+        }
+        else if (lastInputField==2){
+            if (torol){ if (napNegyedInput.str.size()>0) napNegyedInput.str.pop_back();}
+            else napNegyedInput.str+=c;
+        }
+        else if (lastInputField>=kotelezoMexoCnt){
+            if (torol){ if (inputs[lastInputField-kotelezoMexoCnt].str.size()>0) inputs[lastInputField-kotelezoMexoCnt].str.pop_back();}
+            else inputs[lastInputField-3].str+=c;
+        }
+
+        return true;
+    }
+
+    bool inClick(int MX, int MY){
+        if (typeInput.inClick(MX,MY)) lastInputField=0;
+        else if (nameInput.inClick(MX,MY)) lastInputField=1;
+        else if (napNegyedInput.inClick(MX,MY)) lastInputField=2;
+        for (int i=0; i<inputs.size(); i++){
+            if (inputs[i].inClick(MX,MY)){
+                lastInputField=i+kotelezoMexoCnt; return true;
+            }
+        }
+        generateInputs();
         return true;
     }
 };

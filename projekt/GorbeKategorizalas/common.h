@@ -47,7 +47,9 @@
 #define MAGAS 520
 
 
+std::string toLower(const std::string& str);
 
+std::string toUpper(const std::string& str);
 
 void main2( SDL_Window &window, SDL_Renderer &renderer);
 

@@ -6,8 +6,12 @@
 struct CmerreNyitott : public Cimke{
 
 
-
     CmerreNyitott(){name="merreNyitott"; comperator=true;}
+
+
+    int getI() override;
+	bool readIn(ifstream ifs) override;
+	bool writeOut(ofstream ofs) override;
 
     int check(Stock* stock, Datum datum) override;
     float getValue(Stock* stock, Datum datum) override;

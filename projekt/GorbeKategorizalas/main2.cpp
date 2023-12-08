@@ -131,14 +131,15 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     th1.join();th2.join();th3.join();th4.join();th5.join();
     */
 
-    vector<string> reszvenyekNeve = osszesReszveny();
+    vector<string> reszvenyekNeve = csoportReszvenyei("estere"); //osszesReszveny();
+    reszvenyekNeve = osszesReszveny();
     int thCnt = 10;
     vector<thread> szalak; szalak.resize(thCnt);
     vector<Stock> stocks; stocks.resize(thCnt);
     long long osszesPelda = 0, joPelda = 0;
     int z1 = 0, z2 = 0, z3 = 0, z4 = 0, z5 = 0, z6 = 0;
     float f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0, f6 = 0;
-    for (size_t i=0; i<reszvenyekNeve.size(); i++){
+    for (size_t i=1000; i<reszvenyekNeve.size(); i++){
         for (int j=0; j<thCnt; j++){
             szalak[j] = thread(loadStock,reszvenyekNeve[i],ref(stocks[j]));
             i++;
@@ -160,54 +161,97 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                 cout<<stocks[j].name<<" "<<n2temp.datum.year<<" "<<n2temp.datum.month<<" "<<n2temp.datum.day<<endl;
 
             }
-            set<Nap>::iterator n0, n1, n2, n3, n4, n5, n6;
-            n0 = stocks[j].mindenNap.begin();
-            n1 = ++n0;
-            n2 = ++n0;
-            n3 = ++n0;
-            n4 = ++n0;
-            n5 = ++n0;
-            n6 = ++n0;
-            --n0; --n0; --n0; --n0; --n0; --n0;
-            for (;n6!=stocks[j].mindenNap.end();++n0,++n1,++n2,++n3,++n4,++n5,++n6){
+            set<Negyed>::iterator n0, n1;
+            n0 = stocks[j].negyedevek.begin();
+            n1=++n0;
+            n0--;
 
-                Nap d0 = *n0, d1 = *n1, d2 = *n2, d3 = *n3, d4 = *n4, d5 = *n5, d6 = *n6;
+            for (;n1!=stocks[j].negyedevek.end();++n0,++n1){
+
+                Nap dv((*n0).negyedevVege);
+                set<Nap>::iterator it = stocks[j].mindenNap.find(dv);
+                if (it==stocks[j].mindenNap.end()) continue;
+                dv = *it;
+
+                Nap d0, d1, d2;
+                d2=*(--it);
+                d1=*(--it);
+                d0=*(--it);
 
                 /// kisebb szűrési feltétel
                 if (d0.datum<Datum(2023,1,1)){
-                    continue;
+                    //continue;
                 }
                 else {
                     //break;
                 }
 
                 float biztossag = 0.8f;
-                float e1=0, e2=0, e3=0, e4=0, e5=0;
+                float e1=0, e2=0, e3=0, e4=0, e5=0, e6=0;
                 /// feltételek
+
                 stocks[j].getNyit(e1,d0,true);
                 stocks[j].getMin(e2,d0,true);
                 stocks[j].getMax(e3,d0,true);
                 stocks[j].getZar(e4,d0,true);
+                if ( (e4-e2)/(e3-e2) < 0.35f ) continue; /// Bullis Pin alja a 80%-nál van
+                if ( e1<e4 ) continue;  /// aznapi elmozdulás pozitív volt
+
+                z1++;
+
+                stocks[j].getNyit(e5,d1,true);
+                if (e1>e5) continue; e1=e5;
+                stocks[j].getMin(e5,d1,true);
+                if (e2<e5) continue; e2=e5;
+                stocks[j].getMax(e3,d1,true);
+                stocks[j].getZar(e4,d1,true);
                 if (e1==0 || e2==0 || e3==0 || e4==0) {//cout<<"BAJ 0"<<endl;
                     cout<<e1<<" "<<e2<<" "<<e3<<" "<<e4<<endl;
                     cout<<stocks[j].name<<" "<<d0.datum.year<<" "<<d0.datum.month<<" "<<d0.datum.day<<endl;
                     cout<<d0.minimum<<" "<<d0.maximum<<" "<<d0.nyitas<<" "<<d0.zaras<<endl;
                 continue;}
-                if ( (e1-e2)/(e3-e2) < biztossag ) continue; /// Bullis Pin alja a 80%-nál van
+
+
+                z2++;
+
+                if ( (e4-e2)/(e3-e2) > 0.1f ) continue; /// Bullis Pin alja a 80%-nál van
+                if ( (e1-e2)/(e3-e2) < 0.6f ) continue; /// Bullis Pin alja a 80%-nál van
+                if ( e1<e4 ) continue;  /// aznapi elmozdulás pozitív volt
+
+                z3++;
+
+                stocks[j].getNyit(e1,d2,true);
+                if (e1<e4) continue;
+                stocks[j].getMin(e5,d2,true);
+                if (e2<e5) continue; e2=e5;
+                stocks[j].getMax(e3,d2,true);
+                stocks[j].getZar(e4,d2,true);
+
+                z4++;
+
+                if ( e4/e1 > 1.004f) continue;
+                if ( (e1-e2)/(e3-e2) > 0.3f ) continue; /// Bullis Pin alja a 80%-nál van
+
+                z5++;
+
+                if ( (e1-e2)/(e3-e2) < 0.2f ) continue; /// Bullis Pin alja a 80%-nál van
                 if ( e4<e1 ) continue;  /// aznapi elmozdulás pozitív volt
 
 
                 /// Tényleges találat
                 osszesPelda++;
-                stocks[j].getMax(e5,d1,true); if (e5>e3) z1++;
-                stocks[j].getMax(e5,d2,true); if (e5>e3) z2++;
-                stocks[j].getMax(e5,d3,true); if (e5>e3) z3++;
-                stocks[j].getMax(e5,d4,true); if (e5>e3) z4++;
-                stocks[j].getMax(e5,d5,true); if (e5>e3) z5++;
-                stocks[j].getMax(e5,d6,true); if (e5>e3) z6++;
 
-
+                /*
+                stocks[j].getZar(e5,d1,true); stocks[j].getZar(e6,d1,true); if (e5>e4) z1++;
+                stocks[j].getZar(e5,d2,true); stocks[j].getZar(e6,d2,true); if (e5>e4) z2++;
+                stocks[j].getZar(e5,d3,true); stocks[j].getZar(e6,d3,true); if (e5>e4) z3++;
+                stocks[j].getZar(e5,d4,true); stocks[j].getZar(e6,d4,true); if (e5>e4) z4++;
+                stocks[j].getZar(e5,d5,true); stocks[j].getZar(e6,d5,true); if (e5>e4) z5++;
+                stocks[j].getZar(e5,d6,true); stocks[j].getZar(e6,d6,true); if (e5>e4) z6++;
+                */
+                cout<<"alma "<<stocks[j].name<<" "<<dv.datum.year<<" "<<dv.datum.month<<" "<<dv.datum.day<<endl;
                 /// Helyes elmozdulás
+                if (dv.nyitas<e4) continue;
                 joPelda++;
                 //cout<<"osszes, jo: "<<osszesPelda<<" "<<joPelda<<" "<<(float)joPelda/osszesPelda<<endl;
 
@@ -217,7 +261,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
     }
     cout<<z1<<" "<<z2<<" "<<z3<<" "<<z4<<" "<<z5<<" "<<z6<<endl;
-    cout<<z1*100/osszesPelda<<" "<<z2*100/osszesPelda<<" "<<z3*100/osszesPelda<<" "<<z4*100/osszesPelda<<" "<<z5*100/osszesPelda<<" "<<z6*100/osszesPelda<<endl;
+    if (osszesPelda>0)cout<<z1*100/osszesPelda<<" "<<z2*100/osszesPelda<<" "<<z3*100/osszesPelda<<" "<<z4*100/osszesPelda<<" "<<z5*100/osszesPelda<<" "<<z6*100/osszesPelda<<endl;
     cout<<"osszes, jo: "<<osszesPelda<<" "<<joPelda<<" "<<(float)joPelda/osszesPelda<<endl;
 
 

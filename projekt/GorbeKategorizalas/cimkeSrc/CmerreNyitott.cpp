@@ -1,5 +1,25 @@
 #include "CmerreNyitott.h"
 
+
+
+int CmerreNyitott::getI(){return 3;};
+
+bool CmerreNyitott::readIn(ifstream ifs){
+    /*
+    int napNegy = 0;
+    ifs>>name>>napNegy>>minimum>>tol>>ig>>hol>>kornyezet;
+    napNegyedSet(napNegy);*/
+    return true;
+}
+bool CmerreNyitott::writeOut(ofstream ofs){
+    /*
+    int napNegy = 0;
+    ifs>>name>>napNegy>>minimum>>tol>>ig>>hol>>kornyezet;
+    napNegyedSet(napNegy);*/
+    return true;
+}
+
+
 int CmerreNyitott::check(Stock* stock, Datum datum){
     Nap azNap(datum);
     set<Nap>::iterator it = stock->mindenNap.find(azNap);

@@ -10,6 +10,8 @@ void ReszvenyMenu::gombokKialakitasa(){
     ujReszInp = Button("reszveny neve",20,50,120,13,false, false);
     reszvenyLista = Gorgetheto(osszesReszveny(),20,70,124,102,false,false);
     reszOKB = Button("OK",150,50,32,13,false, false);
+
+    ujCimkePopUp = UjCimkePopUp(0,0,500,400);
 }
 
 
@@ -45,6 +47,9 @@ void ReszvenyMenu::draw() {
         reszvenyLista.draw(renderer,x,y);
     ujReszInp.draw(renderer,x,y);
     reszOKB.draw(renderer,x,y);
+
+    if (ujCimkePopUpB)
+        ujCimkePopUp.draw(renderer,x,y);
 
     SDL_RenderPresent(renderer);
 }
@@ -93,8 +98,37 @@ void ReszvenyMenu::inputHandle(){
 
     if (MX!=-1){ /// azaz az egérrel kattintottunk
         if (leftButton){
+            /// Új címke popUp
+
+            if (ujCimkePopUpB){ /// Új címke popUp aktív eset
+                ujCimkePopUp.inClick(MX,MY);
+                if (ujCimkePopUp.closeB.inClick(MX,MY)) ujCimkePopUpB=false;
+                else if (ujCimkePopUp.cimkeTipusLista.inClick(MX,MY)){ /// cípketípus kiválasztása
+                    /// görgető-be kattintva kérdéses még, hogy hova is érkezett a kattintás
+                    string btStr = ujCimkePopUp.cimkeTipusLista.whichButton(MX,MY);
+                    if (btStr!=""){ /// ha siker, akkor szövegét használjuk
+                        ujCimkePopUp.typeInput.str=btStr;
+                        ujCimkePopUp.cimkeTipusLista.elemekKeresese(ujReszInp.str);
+                        ujCimkePopUp.generateInputs();
+                    } else {/// csúszka használatra fenntartva
+
+                    }
+                }
+                else if (ujCimkePopUp.ujLetrehozas.inClick(MX,MY)){
+                    if (ujCimkePopUp.ujCimkeLetrehozasa()){
+                        ujCimkePopUp.lastInputField=0;
+                        ujCimkePopUp.lastType=-1;
+                        ujCimkePopUpB=false;
+                    }
+                }
+                //else continue;
+                //break;
+            }
+            else if (CimMB.inClick(MX,MY)) ujCimkePopUpB=true;
+
+
             /// kérdés, hogy eltaláltunk-e valami kattinthatót
-            if (FoMB.inClick(MX,MY)) *menu = foMenu;
+            else if (FoMB.inClick(MX,MY)) *menu = foMenu;
             else if (ujReszInp.inClick(MX,MY)){
                 state = 1;
                 ujReszInp.str="";
@@ -142,7 +176,10 @@ void ReszvenyMenu::inputHandle(){
     if (ev->type == SDL_TEXTINPUT && ev->text.timestamp!=timestampText){ /// bevitel
         timestampText=ev->text.timestamp; /// szövegbevitel esemény végtelen, de idõbélyege nem
 
-        if (state==1){ /// új részvény
+        if (ujCimkePopUpB){
+            ujCimkePopUp.inputText(ev->text.text[0]);
+        }
+        else if (state==1){ /// új részvény
             if (isalpha(ev->text.text[0])){ /// csak karakterek lehetnek
                 ujReszInp.str+=ev->text.text[0];
                 reszvenyLista.elemekKeresese(ujReszInp.str);
@@ -160,7 +197,10 @@ void ReszvenyMenu::inputHandle(){
         if (ev->key.keysym.sym==SDLK_BACKSPACE){ /// pl. törlés miatt
             /// elõzõ beviteli mezõk tartalmának redukálása és szûrések frissítése
 
-            if (state==1){
+            if (ujCimkePopUpB){
+                ujCimkePopUp.inputText(' ',true);
+            }
+            else if (state==1){
                 if (ujReszInp.str.size()>0) {
                     ujReszInp.str.pop_back();
                     reszvenyLista.elemekKeresese(ujReszInp.str);
@@ -186,7 +226,8 @@ void ReszvenyMenu::inputHandle(){
 
     if (mouseWheel){ /// vagy épp görgetnénk?
         /// görgetőknek átadjuk az irányt, többi az ő bajuk
-        if (state==1)reszvenyLista.rollIt(-ev->wheel.y);
+        if (ujCimkePopUpB) ujCimkePopUp.cimkeTipusLista.rollIt(-ev->wheel.y);
+        else if (state==1)reszvenyLista.rollIt(-ev->wheel.y);
     }
 
     if (state!=oldState){
