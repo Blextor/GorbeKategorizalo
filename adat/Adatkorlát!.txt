@@ -1,0 +1,5 @@
+Az összes nekem meglévő adat 65+ GB helyet foglal. (nem Git kompatibilis)
+Egy részvény minden adata akár 220 MB is lehet, a letöltött 840 részvényre nézve átlagosan nekem 78 MB egy részvény midnen adata.
+Lehetne akár 3000 részvényem is letöltve, de már most is feltölteni 10-nél többet nem lenne célszerű.
+
+Az API hívások percenként és naponta is limitáltak. Tesztelés során 100 letöltés lehetséges egy napon, percenként 5.
