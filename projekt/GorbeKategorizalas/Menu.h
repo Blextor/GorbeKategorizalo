@@ -338,6 +338,37 @@ struct ReszvenyMenu : public Menu {
     void process() override;
 };
 
+struct ElemzesMenu : public Menu {
+
+    Text FoCim; /// fejléc
+    Button FoMB, ElmemzésStart; /// menü gombok
+    Menu *foMenu, *elemzesFolyamatMenu;
+
+    Button ujReszInp, reszOKB; /// új részvény sor létrehozása
+    Gorgetheto reszvenyLista;
+    UjCimkePopUp ujCimkePopUp;
+
+    vector<bool> boolR;
+    vector<ReszvenySor> reszvenyek; /// a részvények sorai
+
+    bool ujCimkePopUpB = false;
+
+    int panX=0, panY=0; /// a vízszintes és függőleges mozgatásért
+
+    bool reszvenyekClick(int bx, int by);
+
+    void gombokKialakitasa();
+
+    ReszvenyMenu(){}
+    ReszvenyMenu(SDL_Pack sdlp,Menu **act) : Menu(sdlp,act){}
+
+    void nextMenus(Menu *fomenu);
+
+    void draw() override;
+    void inputHandle() override;
+    void process() override;
+};
+
 
 
 struct MenuK {
