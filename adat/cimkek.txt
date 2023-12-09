@@ -1,0 +1,2 @@
+lokMinMax Lok10 0 0 0 60 5 5
+lokMinMax Lok15 0 0 0 120 15 5
