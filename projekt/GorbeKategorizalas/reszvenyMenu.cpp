@@ -15,8 +15,9 @@ void ReszvenyMenu::gombokKialakitasa(){
 }
 
 
-void ReszvenyMenu::nextMenus(Menu *fomenu){
+void ReszvenyMenu::nextMenus(Menu *fomenu, Menu *elemzes){
     foMenu=fomenu;
+    elemzoMenu=elemzes;
     boolR.resize(10);
     reszvenyek.resize(10);
     gombokKialakitasa();
@@ -129,6 +130,7 @@ void ReszvenyMenu::inputHandle(){
 
             /// kérdés, hogy eltaláltunk-e valami kattinthatót
             else if (FoMB.inClick(MX,MY)) *menu = foMenu;
+            else if (ElmMB.inClick(MX,MY)) *menu = elemzoMenu;
             else if (ujReszInp.inClick(MX,MY)){
                 state = 1;
                 ujReszInp.str="";

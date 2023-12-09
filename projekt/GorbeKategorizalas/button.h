@@ -1071,4 +1071,8 @@ struct UjCimkePopUp{
     }
 };
 
+struct Feltetel {
+
+};
+
 #endif // BUTTON_H_INCLUDED

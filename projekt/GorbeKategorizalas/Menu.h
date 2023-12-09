@@ -50,7 +50,7 @@ struct FoMenu : public Menu {
 
     Menu *frissitoMenu;
     Menu *csoportEditormenu;
-    Menu *gorbeMenu;
+    Menu *gorbeMenu, *elemzoMenu;
 
     Text FoCim;
 
@@ -67,7 +67,7 @@ struct FoMenu : public Menu {
     FoMenu(){}
     FoMenu(SDL_Pack sdlp,Menu **act) : Menu(sdlp,act){}
 
-    void nextMenus(Menu *frissito, Menu *csoport, Menu *gorbe);
+    void nextMenus(Menu *frissito, Menu *csoport, Menu *gorbe, Menu *elemzes);
 
     void draw() override;
     void inputHandle() override;
@@ -331,7 +331,7 @@ struct ReszvenyMenu : public Menu {
     ReszvenyMenu(){}
     ReszvenyMenu(SDL_Pack sdlp,Menu **act) : Menu(sdlp,act){}
 
-    void nextMenus(Menu *fomenu);
+    void nextMenus(Menu *fomenu, Menu *elemzes);
 
     void draw() override;
     void inputHandle() override;
@@ -341,28 +341,35 @@ struct ReszvenyMenu : public Menu {
 struct ElemzesMenu : public Menu {
 
     Text FoCim; /// fejléc
-    Button FoMB, ElmemzésStart; /// menü gombok
-    Menu *foMenu, *elemzesFolyamatMenu;
+    Button fomenubeB, elemzeshezB; /// menük közötti navigáló gomb
+    Menu *foMenu, *elemzesFolyamatMenu; /// vissza a főmenübe, vagy a lekérdezés elindításához
 
-    Button ujReszInp, reszOKB; /// új részvény sor létrehozása
-    Gorgetheto reszvenyLista;
-    UjCimkePopUp ujCimkePopUp;
+    Button reszInp, reszCsopInp; /// részvény vagy csoport kiválasztása
+    Text reszInpT, reszCsopInpT; /// szövegek hozzájuk
+    Gorgetheto reszvenyLista, reszvenyCsoportLista; /// ezekhez görgethető felület
 
-    vector<bool> boolR;
-    vector<ReszvenySor> reszvenyek; /// a részvények sorai
+    Text tolT; /// dátumtól szöveg
+    Button evTol, honapTol, napTol; /// és a három bemenet
+    Text igT; /// dátumig szöveg
+    Button evIg, honapIg, napIg; /// és a három bemenet
+
+    Button ujNap, ujNapKomp, ujNegyed, ujNegyedKomp; /// hogy milyen címkefajtát kívánunk hozzáadni
+    Button ujFeltetel, ujElemezendo; /// hogy feltétel lesz belőle, vagy elemezendő
+
+    Text feltetelT, elemezendoT; /// címkelisták fejléce
+
+    vector<Feltetel> feltetelek, elemezendoek;
 
     bool ujCimkePopUpB = false;
 
-    int panX=0, panY=0; /// a vízszintes és függőleges mozgatásért
-
-    bool reszvenyekClick(int bx, int by);
+    int panYFelt=0, panYElemez=0; /// a vízszintes és függőleges mozgatásért
 
     void gombokKialakitasa();
 
-    ReszvenyMenu(){}
-    ReszvenyMenu(SDL_Pack sdlp,Menu **act) : Menu(sdlp,act){}
+    ElemzesMenu(){}
+    ElemzesMenu(SDL_Pack sdlp,Menu **act) : Menu(sdlp,act){}
 
-    void nextMenus(Menu *fomenu);
+    void nextMenus(Menu *fomenu, Menu *elemzeshez);
 
     void draw() override;
     void inputHandle() override;
@@ -377,6 +384,7 @@ struct MenuK {
     FrissitoMenu frissitomenu;
     CsoportEditorMenu csoportEditormenu;
     ReszvenyMenu reszvenyMenu;
+    ElemzesMenu elemzesMenu;
 
     MenuK(SDL_Pack sdlp, Menu **act);
 };

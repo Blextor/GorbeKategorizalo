@@ -113,10 +113,10 @@
 1694629802 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\idosor.h
 	"common.h"
 
-1696802091 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\fomenu.cpp
+1702091993 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\fomenu.cpp
 	"Menu.h"
 
-1702056767 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\menu.h
+1702091880 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\menu.h
 	"common.h"
 	"button.h"
 	"adatBeolvas.h"
@@ -158,13 +158,13 @@
 1695366340 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\menu.cpp
 	"Menu.h"
 
-1696255651 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\menuk.cpp
+1702091763 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\menuk.cpp
 	"Menu.h"
 
 1696585829 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\csoporteditor.cpp
 	"Menu.h"
 
-1702076544 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\button.h
+1702090952 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\button.h
 	"common.h"
 	"adatBeolvas.h"
 	"stock.h"
@@ -210,7 +210,7 @@
 1696250688 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\config.cpp
 	"config.h"
 
-1702076547 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\reszvenymenu.cpp
+1702091965 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\reszvenymenu.cpp
 	"Menu.h"
 
 1702058500 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\cmerrenyitott.cpp
@@ -231,4 +231,7 @@
 
 1702076473 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkelokminmax.cpp
 	"cimke.h"
+
+1702093884 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\elemzesmenu.cpp
+	"Menu.h"
 

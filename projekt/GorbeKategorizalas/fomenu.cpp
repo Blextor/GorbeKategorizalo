@@ -23,10 +23,11 @@ void FoMenu::gombokKialakitasa(){
 }
 
 
-void FoMenu::nextMenus(Menu *frissito, Menu *csoport, Menu *gorbe){
+void FoMenu::nextMenus(Menu *frissito, Menu *csoport, Menu *gorbe, Menu *elemzes){
     frissitoMenu=frissito;
     csoportEditormenu=csoport;
     gorbeMenu=gorbe;
+    elemzoMenu=elemzes;
     gombokKialakitasa();
 }
 
@@ -83,6 +84,7 @@ void FoMenu::inputHandle(){
         if (FrissMB.inClick(MX,MY)) *menu = frissitoMenu; /// fõmenübe írányító gombot
         else if (RCSMB.inClick(MX,MY)) *menu = csoportEditormenu; /// csoport szerksztõ menü gombot
         else if (GorbeMB.inClick(MX,MY)) *menu = gorbeMenu; /// részvény menü gombot
+        else if (ElemzesMB.inClick(MX,MY)) *menu = elemzoMenu;
         else if (KilepB.inClick(MX,MY)) exit(3); /// csoport szerksztõ menü gombot
         else if (szalMennyisegB.inClick(MX,MY)) {
             state=1;
