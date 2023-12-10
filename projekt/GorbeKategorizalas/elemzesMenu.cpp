@@ -106,7 +106,60 @@ void ElemzesMenu::inputHandle(){
     if (MX!=-1){ /// azaz az egérrel kattintottunk
         if (leftButton){
             /// kérdés, hogy eltaláltunk-e valami kattinthatót
+            if (fomenubeB.inClick(MX,MY)) *menu = foMenu;
+            else if (elemzeshezB.inClick(MX,MY)) *menu = elemzesFolyamatMenu;
 
+            if (evTol.inClick(MX,MY)) datumChState=1;
+            else if (honapTol.inClick(MX,MY)) datumChState=2;
+            else if (napTol.inClick(MX,MY)) datumChState=3;
+            else if (evIg.inClick(MX,MY)) datumChState=4;
+            else if (honapIg.inClick(MX,MY)) datumChState=5;
+            else if (napIg.inClick(MX,MY)) datumChState=6;
+            else datumChState=0;
+
+            if (reszInp.inClick(MX,MY)) reszState=1;
+            else if (reszCsopInp.inClick(MX,MY)) reszState=2;
+            else if (reszvenyLista.inClick(MX,MY)) {
+                reszState=1;
+                /// görgető-be kattintva kérdéses még, hogy hova is érkezett a kattintás
+                string btStr = reszvenyLista.whichButton(MX,MY);
+                if (btStr!=""){ /// ha siker, akkor szövegét használjuk
+                    reszInp.str=btStr;
+                    reszvenyLista.elemekKeresese(btStr);
+                } else {/// csúszka használatra fenntartva
+
+                }
+            }
+
+            else if (reszvenyCsoportLista.inClick(MX,MY)) {
+                reszState=2;
+                /// görgető-be kattintva kérdéses még, hogy hova is érkezett a kattintás
+                string btStr = reszvenyCsoportLista.whichButton(MX,MY);
+                if (btStr!=""){ /// ha siker, akkor szövegét használjuk
+                    reszCsopInp.str=btStr;
+                    reszvenyCsoportLista.elemekKeresese(btStr);
+                } else {/// csúszka használatra fenntartva
+
+                }
+            }
+            else reszState=0;
+            if (reszState==1) {
+                reszvenyLista.elemekFrissitese(osszesReszveny());
+                reszvenyCsoportLista.elemekKeresese("???");
+            }
+            else if (reszState==2) {
+                reszvenyCsoportLista.elemekFrissitese(osszesCsoport());
+                reszvenyLista.elemekKeresese("???");
+            }
+
+            if (ujNap.inClick(MX,MY)) tipusState=0;
+            else if (ujNapKomp.inClick(MX,MY)) tipusState=1;
+            else if (ujNegyed.inClick(MX,MY)) tipusState=2;
+            else if (ujNegyedKomp.inClick(MX,MY)) tipusState=3;
+            ujNap.selected=(tipusState==0);
+            ujNapKomp.selected=(tipusState==1);
+            ujNegyed.selected=(tipusState==2);
+            ujNegyedKomp.selected=(tipusState==3);
         }
     }
 
@@ -121,7 +174,15 @@ void ElemzesMenu::inputHandle(){
 
     if (ev->type == SDL_TEXTINPUT && ev->text.timestamp!=timestampText){ /// bevitel
         timestampText=ev->text.timestamp; /// szövegbevitel esemény végtelen, de idõbélyege nem
+        if (datumChState==1) evTol.str+=ev->text.text[0];
+        else if (datumChState==2) honapTol.str+=ev->text.text[0];
+        else if (datumChState==3) napTol.str+=ev->text.text[0];
+        else if (datumChState==4) evIg.str+=ev->text.text[0];
+        else if (datumChState==5) honapIg.str+=ev->text.text[0];
+        else if (datumChState==6) napIg.str+=ev->text.text[0];
 
+        if (reszState==1) reszInp.str+=ev->text.text[0];
+        else if (reszState==2) reszCsopInp.str+=ev->text.text[0];
         /**
         if (ujCimkePopUpB){
             ujCimkePopUp.inputText(ev->text.text[0]);
@@ -144,6 +205,15 @@ void ElemzesMenu::inputHandle(){
     if (keyDown){ /// ha billentyûzetet nem gépelés miatt ütöttük le
         if (ev->key.keysym.sym==SDLK_BACKSPACE){ /// pl. törlés miatt
             /// elõzõ beviteli mezõk tartalmának redukálása és szûrések frissítése
+            if (datumChState==1) {if (evTol.str.size()>0) evTol.str.pop_back();}
+            else if (datumChState==2) {if (honapTol.str.size()>0)  honapTol.str.pop_back();}
+            else if (datumChState==3) {if (napTol.str.size()>0)  napTol.str.pop_back();}
+            else if (datumChState==4) {if (evIg.str.size()>0)  evIg.str.pop_back();}
+            else if (datumChState==5) {if (honapIg.str.size()>0)  honapIg.str.pop_back();}
+            else if (datumChState==6) {if (napIg.str.size()>0)  napIg.str.pop_back();}
+
+            if (reszState==1) {if (reszInp.str.size()>0) reszInp.str.pop_back();}
+            else if (reszState==2) {if (reszCsopInp.str.size()>0) reszCsopInp.str.pop_back();}
 
             /**
             if (ujCimkePopUpB){
@@ -163,10 +233,12 @@ void ElemzesMenu::inputHandle(){
         }
 
         if (ev->key.keysym.sym==SDLK_UP){ /// pl. görgetés gyorsítása
-            //if (state==1) {reszvenyLista.speedUpRoll();}
+            if (reszState==1) {reszvenyLista.speedUpRoll();}
+            if (reszState==2) {reszvenyCsoportLista.speedUpRoll();}
         }
         if (ev->key.keysym.sym==SDLK_DOWN){ /// lassítása
-            //if (state==1) {reszvenyLista.speedDownRoll();}
+            if (reszState==1) {reszvenyLista.speedDownRoll();}
+            if (reszState==2) {reszvenyCsoportLista.speedDownRoll();}
         }
         if (ev->key.keysym.sym==SDLK_LEFT){ /// feltétel lista reset
             panYFelt=0;
@@ -178,8 +250,8 @@ void ElemzesMenu::inputHandle(){
 
     if (mouseWheel){ /// vagy épp görgetnénk?
         /// görgetőknek átadjuk az irányt, többi az ő bajuk
-        //if (ujCimkePopUpB) ujCimkePopUp.cimkeTipusLista.rollIt(-ev->wheel.y);
-        //else if (state==1)reszvenyLista.rollIt(-ev->wheel.y);
+        if (reszState==1) reszvenyLista.rollIt(-ev->wheel.y);
+        else if (reszState==2)reszvenyCsoportLista.rollIt(-ev->wheel.y);
     }
 
     if (state!=oldState){
@@ -191,5 +263,9 @@ void ElemzesMenu::inputHandle(){
 }
 
 void ElemzesMenu::process(){
-    SDL_SetWindowSize(window,800,600);
+    //SDL_SetWindowSize(window,800,600);
+    meglevoReszvenyek = osszesReszveny();
+    meglevoCsoportok = osszesCsoport();
+    if (reszState==1){reszvenyLista.elemekKeresese(reszInp.str,true); reszCsopInp.str="";}
+    if (reszState==2){reszvenyCsoportLista.elemekKeresese(reszCsopInp.str,true); reszInp.str="";}
 }

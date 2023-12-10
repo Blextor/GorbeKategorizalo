@@ -107,9 +107,10 @@ struct Gorgetheto {
         }
     }
 
-    void elemekKeresese(string str=""){
+    void elemekKeresese(string str="", bool rollOver=false){
         megfeleloElemekSzelekt=megfeleloElemek;
-        roll=0;
+        if (rollOver) rollIt(0);
+        else roll=0;
         gombok.clear();
         for (size_t i=0; i<elemek.size(); i++){
             if (benneVanAzStr(elemek[i],str) || str.size()==0){
@@ -963,7 +964,7 @@ struct UjCimkePopUp{
         typeInput = Button("",x+20,y+60,120,13,false,false);
         nameInputT = Text("Cimke neve",x+160,y+45,false);
         nameInput = Button("",x+160,y+60,120,13,false,false);
-        napNegyedInputT = Text("Nap / Negyed",x+300,y+45,false);
+        napNegyedInputT = Text("tipus",x+300,y+45,false);
         napNegyedInput = Button("",x+300,y+60,29,13,false,false);
         cimkeTipusLista = Gorgetheto(reszvenyTipusok,x+20,x+80,120,120);
     }
@@ -1072,7 +1073,55 @@ struct UjCimkePopUp{
 };
 
 struct Feltetel {
+    int x=0, y=0, w=0, h=0;
+    bool komper = false;
+    bool napi = true;
 
+    vector<Cimke*> cimkek;
+
+    Text elsoIdoT, masodikIdoT; /// . nap / negyed kétszer
+    Button elsoIdo, masodikIdo; /// X és Y elé ha kell
+
+    Button cimkeInp, ujCimke; /// input mező és a hozzáadás "+" gomb
+    Gorgetheto cimkeLista, felvettCimkek; /// a választható címkék és a választottak listája
+    Text cimkeT; /// a "Cimkek:" szöveghez
+    Button deleteB; /// ha nem akarjuk mégsem a feltételt "X" bezáró gomb
+
+    Feltetel(int X, int Y, int W, int H){
+        //for (int i=0; i<cimkek.size(); i++) reszvenyTipusok.push_back(cimkek[i]->IDname);
+        x=X,y=Y;w=W;h=H;
+        /**
+        closeB = Button("X",x+487,y+0,13,13,false,false);
+        ujLetrehozas = Button("Letrehozas",x+180,y+8,85,13,false,false);
+        typeInputT = Text("Cimke tipusa",x+20,y+45,false);
+        typeInput = Button("",x+20,y+60,120,13,false,false);
+        nameInputT = Text("Cimke neve",x+160,y+45,false);
+        nameInput = Button("",x+160,y+60,120,13,false,false);
+        napNegyedInputT = Text("tipus",x+300,y+45,false);
+        napNegyedInput = Button("",x+300,y+60,29,13,false,false);
+        cimkeTipusLista = Gorgetheto(reszvenyTipusok,x+20,x+80,120,120);
+        */
+    }
+
+    void draw (SDL_Renderer *renderer, int wa, int wb){
+        boxRGBA(renderer,x,y,x+w+5,y+h+5,100,100,200,255);
+        /**
+        stringRGBA(renderer,x+8,y+13,"Uj cimke letrehozasa",0,0,0,255);
+
+        closeB.draw(renderer,wa,wb);
+        ujLetrehozas.draw(renderer,wa,wb);
+        typeInputT.draw(renderer,wa,wb);
+        typeInput.draw(renderer,wa,wb);
+        nameInputT.draw(renderer,wa,wb);
+        nameInput.draw(renderer,wa,wb);
+        napNegyedInputT.draw(renderer,wa,wb);
+        napNegyedInput.draw(renderer,wa,wb);
+
+        for (int i=0; i<inputs.size(); i++){inputsT[i].draw(renderer,wa,wb); inputs[i].draw(renderer,wa,wb);}
+        */
+        rectangleRGBA(renderer,x,y,x+w+5,y+h+5,0,0,0,255);
+        //stringRGBA(renderer,x+300,y+300,cimkek[0]->IDname.c_str(),0,0,0,255);
+    }
 };
 
 #endif // BUTTON_H_INCLUDED

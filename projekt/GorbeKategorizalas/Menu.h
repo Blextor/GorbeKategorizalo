@@ -363,6 +363,10 @@ struct ElemzesMenu : public Menu {
     bool ujCimkePopUpB = false;
 
     int panYFelt=0, panYElemez=0; /// a vízszintes és függőleges mozgatásért
+    int datumChState = 0, reszState = 0, tipusState = 0; /// melyik gombot nyomtam le
+
+    vector<string> meglevoReszvenyek; /// szelekció
+    vector<string> meglevoCsoportok;
 
     void gombokKialakitasa();
 
