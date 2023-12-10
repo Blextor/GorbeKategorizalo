@@ -199,8 +199,6 @@ void ElemzesMenu::inputHandle(){
     if (ev->type==SDL_MOUSEMOTION && 0<(mouseState & SDL_BUTTON(SDL_BUTTON_MIDDLE))){
         if (tx<482 && tx>165) panYFelt+=MoveY;
         if (tx>482 && tx<800) panYElemez+=MoveY;
-        //if (panX<0) panYFelt=0;
-        //if (panY<0) panYElemez=0;
     }
 
     if (ev->type == SDL_TEXTINPUT && ev->text.timestamp!=timestampText){ /// bevitel
@@ -275,8 +273,12 @@ void ElemzesMenu::inputHandle(){
     }
 }
 
+
+clock_t lastTime = 0;
 void ElemzesMenu::process(){
-    //SDL_SetWindowSize(window,800,600);
+    if (lastTime+500<clock())
+        SDL_SetWindowSize(window,800,600);
+    lastTime=clock();
     meglevoReszvenyek = osszesReszveny();
     meglevoCsoportok = osszesCsoport();
     if (reszState==1){reszvenyLista.elemekKeresese(reszInp.str,true); reszCsopInp.str="";}
