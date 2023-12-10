@@ -31,6 +31,13 @@ void ElemzesMenu::gombokKialakitasa(){
     elemezendoT=Text("Elemezendoek",493,35);
 }
 
+void ElemzesMenu::feltetelAdd(bool elemezendo){
+    Feltetel f(0,0,303,100);
+    f.komper=(tipusState%2==1);
+    f.napi=(tipusState<2);
+    if (elemezendo){f.x=elemezendoPosX; elemezendoek.push_back(f);}
+    else {f.x=feltetelPosX; feltetelek.push_back(f);};
+}
 
 void ElemzesMenu::nextMenus(Menu *fomenu, Menu *elemzeshez){
     foMenu=fomenu;
@@ -45,6 +52,13 @@ void ElemzesMenu::draw() {
     SDL_GetWindowSize(window,&x,&y); /// méretek lekérdezése
     SDL_SetRenderDrawColor(renderer,100,100,100,255);
     SDL_RenderClear(renderer);
+
+    for (int i=0; i<feltetelek.size(); i++) {
+        feltetelek[i].draw(renderer,170,70+i*115);
+    }
+    for (int i=0; i<elemezendoek.size(); i++) {
+        elemezendoek[i].draw(renderer,487,70+i*115);
+    }
 
     reszvenyCsoportLista.draw(renderer,x,y); reszvenyLista.draw(renderer,x,y);
 
@@ -130,7 +144,6 @@ void ElemzesMenu::inputHandle(){
 
                 }
             }
-
             else if (reszvenyCsoportLista.inClick(MX,MY)) {
                 reszState=2;
                 /// görgető-be kattintva kérdéses még, hogy hova is érkezett a kattintás
@@ -160,6 +173,22 @@ void ElemzesMenu::inputHandle(){
             ujNapKomp.selected=(tipusState==1);
             ujNegyed.selected=(tipusState==2);
             ujNegyedKomp.selected=(tipusState==3);
+
+            for (int i=0; i<feltetelek.size() && MY>=70; i++){
+                if (feltetelek[i].inClick(MX,MY)){
+                    feltetelek.erase(feltetelek.begin()+i);
+                    i--;
+                }
+            }
+            for (int i=0; i<elemezendoek.size() && MY>=70; i++){
+                if (elemezendoek[i].inClick(MX,MY)){
+                    elemezendoek.erase(elemezendoek.begin()+i);
+                    i--;
+                }
+            }
+
+            if (ujFeltetel.inClick(MX,MY)) feltetelAdd(false);
+            if (ujElemezendo.inClick(MX,MY)) feltetelAdd(true);
         }
     }
 
@@ -183,22 +212,13 @@ void ElemzesMenu::inputHandle(){
 
         if (reszState==1) reszInp.str+=ev->text.text[0];
         else if (reszState==2) reszCsopInp.str+=ev->text.text[0];
-        /**
-        if (ujCimkePopUpB){
-            ujCimkePopUp.inputText(ev->text.text[0]);
+
+        for (int i=0; i<feltetelek.size(); i++){
+            feltetelek[i].inputText(ev->text.text[0]);
         }
-        else if (state==1){ /// új részvény
-            if (isalpha(ev->text.text[0])){ /// csak karakterek lehetnek
-                ujReszInp.str+=ev->text.text[0];
-                reszvenyLista.elemekKeresese(ujReszInp.str);
-            }
+        for (int i=0; i<elemezendoek.size(); i++){
+            elemezendoek[i].inputText(ev->text.text[0]);
         }
-        else {
-            for (size_t i=0; i<reszvenyek.size(); i++){
-                reszvenyek[i].inInput(ev->text.text[0]);
-            }
-        }
-        */
 
     }
 
@@ -215,21 +235,12 @@ void ElemzesMenu::inputHandle(){
             if (reszState==1) {if (reszInp.str.size()>0) reszInp.str.pop_back();}
             else if (reszState==2) {if (reszCsopInp.str.size()>0) reszCsopInp.str.pop_back();}
 
-            /**
-            if (ujCimkePopUpB){
-                ujCimkePopUp.inputText(' ',true);
+            for (int i=0; i<feltetelek.size(); i++){
+                feltetelek[i].inputText(' ',true);
             }
-            else if (state==1){
-                if (ujReszInp.str.size()>0) {
-                    ujReszInp.str.pop_back();
-                    reszvenyLista.elemekKeresese(ujReszInp.str);
-                }
-            } else {
-                for (size_t i=0; i<reszvenyek.size(); i++){
-                    reszvenyek[i].inDeleteButton();
-                }
+            for (int i=0; i<elemezendoek.size(); i++){
+                elemezendoek[i].inputText(' ',true);
             }
-            */
         }
 
         if (ev->key.keysym.sym==SDLK_UP){ /// pl. görgetés gyorsítása

@@ -15,6 +15,7 @@ int getActYear();
 
 vector<string> osszesReszveny();
 vector<string> osszesCsoport();
+vector<string> osszesCimke();
 
 string createNewReszveny(string str);
 string createNewCsoport(string str);

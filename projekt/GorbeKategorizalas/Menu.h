@@ -359,6 +359,7 @@ struct ElemzesMenu : public Menu {
     Text feltetelT, elemezendoT; /// címkelisták fejléce
 
     vector<Feltetel> feltetelek, elemezendoek;
+    int feltetelPosX = 170, elemezendoPosX = 487;
 
     bool ujCimkePopUpB = false;
 
@@ -367,6 +368,7 @@ struct ElemzesMenu : public Menu {
 
     vector<string> meglevoReszvenyek; /// szelekció
     vector<string> meglevoCsoportok;
+    void feltetelAdd(bool elemezendo);
 
     void gombokKialakitasa();
 

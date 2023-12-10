@@ -58,6 +58,19 @@ vector<string> osszesCsoport(){
     return subdirectories;
 }
 
+vector<string> osszesCimke(){
+    string cimkeFajlPath = Config.getRootDirectory()+"cimkek.txt";
+    vector<string> cimkek;
+    ifstream ifs(cimkeFajlPath); if (ifs.fail()) return cimkek;
+    while (!ifs.eof()){
+        string line;
+        getline(ifs, line); if (line.size()<2) break;
+        stringstream ss(line);
+        ss>>line>>line; cimkek.push_back(line);
+    }
+    return cimkek;
+}
+
 string createNewReszveny(string str){
     string path = Config.getRootDirectory()+"\\stocks";
     transform(str.begin(), str.end(), str.begin(), [](unsigned char c){ return toupper(c); });

@@ -107,6 +107,23 @@ struct Gorgetheto {
         }
     }
 
+    bool elemHozzadas(string e){
+        if (find(elemek.begin(),elemek.end(),e)==elemek.end()){
+            elemek.push_back(e);
+            elemekFrissitese(elemek);
+            return true;
+        }
+        return false;
+    }
+
+    bool elemTorol(string e){
+        vector<string>::iterator it = find(elemek.begin(),elemek.end(),e);
+        if (it==elemek.end()) return false;
+        elemek.erase(it);
+        elemekFrissitese(elemek);
+        return true;
+    }
+
     void elemekKeresese(string str="", bool rollOver=false){
         megfeleloElemekSzelekt=megfeleloElemek;
         if (rollOver) rollIt(0);
@@ -141,6 +158,7 @@ struct Gorgetheto {
             int by = y+6+(i/gridx)*20 - roll;
             if (by+13>=y && by-1<=y+h+5){
                 gombok[i].afk=false;
+                gombok[i].w = ((w-25)/(gridx))-5;
                 int tempX = x+3+(i%gridx)*((w-25)/(gridx)+3);
                 gombok[i].draw(renderer,tempX,by);
                 if (elemSzelekt){
@@ -159,10 +177,12 @@ struct Gorgetheto {
             boxRGBA(renderer,x+w-11,gorgPos,x+w-2,gorgPos+gorgH,50,rollSpeed%255,50,255);
         }
         /// elfedõ
-        boxRGBA(renderer,x-radius,y-radius,x+w+radius,y+2,100,100,100,255);
-        boxRGBA(renderer,x-radius,y-radius,x-1,y+h+radius,100,100,100,255);
-        boxRGBA(renderer,x+w+5,y-radius,x+w+radius,y+h+radius,100,100,100,255);
-        boxRGBA(renderer,x-radius,y+h+5,x+w+radius,y+h+radius,100,100,100,255);
+        ///boxRGBA(renderer,x-radius,y-radius,x+w+radius,y+2,100,100,100,255);
+        boxRGBA(renderer,x,y-radius,x+w,y+2,100,100,100,255);
+        //boxRGBA(renderer,x-radius,y-radius,x-1,y+h+radius,100,100,100,255);
+        //boxRGBA(renderer,x+w+5,y-radius,x+w+radius,y+h+radius,100,100,100,255);
+        ///boxRGBA(renderer,x-radius,y+h+5,x+w+radius,y+h+radius,100,100,100,255);
+        boxRGBA(renderer,x,y+h+5,x+w,y+h+radius,100,100,100,255);
         rectangleRGBA(renderer,x,y+3,x+w+5,y+h+5,0,0,0,255);
 
     }
@@ -1073,9 +1093,12 @@ struct UjCimkePopUp{
 };
 
 struct Feltetel {
-    int x=0, y=0, w=0, h=0;
+    int x=0, y=0, w=303, h=100;
     bool komper = false;
     bool napi = true;
+
+    bool cimkeGepel = false;
+    int idoGepel = 0;
 
     vector<Cimke*> cimkek;
 
@@ -1087,40 +1110,114 @@ struct Feltetel {
     Text cimkeT; /// a "Cimkek:" szöveghez
     Button deleteB; /// ha nem akarjuk mégsem a feltételt "X" bezáró gomb
 
-    Feltetel(int X, int Y, int W, int H){
-        //for (int i=0; i<cimkek.size(); i++) reszvenyTipusok.push_back(cimkek[i]->IDname);
-        x=X,y=Y;w=W;h=H;
-        /**
-        closeB = Button("X",x+487,y+0,13,13,false,false);
-        ujLetrehozas = Button("Letrehozas",x+180,y+8,85,13,false,false);
-        typeInputT = Text("Cimke tipusa",x+20,y+45,false);
-        typeInput = Button("",x+20,y+60,120,13,false,false);
-        nameInputT = Text("Cimke neve",x+160,y+45,false);
-        nameInput = Button("",x+160,y+60,120,13,false,false);
-        napNegyedInputT = Text("tipus",x+300,y+45,false);
-        napNegyedInput = Button("",x+300,y+60,29,13,false,false);
-        cimkeTipusLista = Gorgetheto(reszvenyTipusok,x+20,x+80,120,120);
-        */
+    bool inClick(int MX, int MY){
+        if (cimkeInp.inClick(MX,MY)) {cimkeGepel=true; cimkeLista.elemekKeresese(cimkeInp.str);}
+        else if (cimkeGepel && cimkeLista.inClick(MX,MY)){
+            /// görgető-be kattintva kérdéses még, hogy hova is érkezett a kattintás
+            string btStr = cimkeLista.whichButton(MX,MY);
+            if (btStr!=""){ /// ha siker, akkor szövegét használjuk
+                cimkeInp.str=btStr;
+                cimkeLista.elemekKeresese(cimkeInp.str);
+            } else {/// csúszka használatra fenntartva
+
+            }
+        }
+        else cimkeGepel=false;
+
+        if (elsoIdo.inClick(MX,MY)) idoGepel=1;
+        else if (masodikIdo.inClick(MX,MY)) idoGepel=2;
+        else idoGepel=0;
+
+        if (deleteB.inClick(MX,MY)){return true;}
+
+        if (ujCimke.inClick(MX,MY)) {
+            vector<string> str = osszesCimke();
+
+            if (find(str.begin(),str.end(),cimkeInp.str)!=str.end()){
+                if (felvettCimkek.elemHozzadas(cimkeInp.str)){
+                    cimkeGepel=false;
+                    cimkeInp.str="";
+                    cimkeLista.elemekKeresese("???");
+                }
+            }
+        }
+        if (!cimkeGepel && felvettCimkek.inClick(MX,MY)){
+            /// görgető-be kattintva kérdéses még, hogy hova is érkezett a kattintás
+            string btStr = felvettCimkek.whichButton(MX,MY);
+            if (btStr!=""){ /// ha siker, akkor szövegét használjuk
+                felvettCimkek.elemTorol(btStr);
+            } else {/// csúszka használatra fenntartva
+
+            }
+        }
+
+        return false;
     }
 
+    bool inputText(char c, bool torol=false){
+        if (cimkeGepel) {
+            if (torol){
+                if (cimkeInp.str.size()>0) cimkeInp.str.pop_back();
+                cimkeLista.elemekKeresese(cimkeInp.str);
+            }
+            else {
+                cimkeInp.str+=c;
+                cimkeLista.elemekKeresese(cimkeInp.str);
+            }
+        }
+        if (idoGepel==1){
+            if (torol){
+                if (elsoIdo.str.size()>0) elsoIdo.str.pop_back();
+            }
+            else elsoIdo.str+=c;
+        }
+        else if (idoGepel==2){
+            if (torol){
+                if (masodikIdo.str.size()>0) masodikIdo.str.pop_back();
+            }
+            else masodikIdo.str+=c;
+        }
+
+        return true;
+    }
+
+    Feltetel(int X, int Y, int W, int H){
+        x=X,y=Y;w=W;h=H;
+        deleteB = Button("X",0,0,12,13,true,true);
+        cimkeInp = Button("",0,0,120,13,true,true);
+        ujCimke = Button("+",0,0,13,13,true,true);
+        elsoIdo = Button("",0,0,24,13,true,true);
+        masodikIdo = Button("",0,0,24,13,true,true);
+        elsoIdoT = Text(".negyed",0,0,true);
+        masodikIdoT = Text(".->",0,0,true);
+        cimkeLista = Gorgetheto(osszesCimke(),0,0,120,78); cimkeLista.relative=true;
+        felvettCimkek = Gorgetheto({},0,0,299,78,3); felvettCimkek.relative=true;
+    }
+
+    Feltetel(){}
+
     void draw (SDL_Renderer *renderer, int wa, int wb){
-        boxRGBA(renderer,x,y,x+w+5,y+h+5,100,100,200,255);
-        /**
-        stringRGBA(renderer,x+8,y+13,"Uj cimke letrehozasa",0,0,0,255);
+        boxRGBA(renderer,x,wb,x+w+4,wb+h+4,100,100,100,255);
 
-        closeB.draw(renderer,wa,wb);
-        ujLetrehozas.draw(renderer,wa,wb);
-        typeInputT.draw(renderer,wa,wb);
-        typeInput.draw(renderer,wa,wb);
-        nameInputT.draw(renderer,wa,wb);
-        nameInput.draw(renderer,wa,wb);
-        napNegyedInputT.draw(renderer,wa,wb);
-        napNegyedInput.draw(renderer,wa,wb);
+        felvettCimkek.draw(renderer,x+2,wb+20);
+        if (cimkeGepel) cimkeLista.draw(renderer,x+2,wb+20);
 
-        for (int i=0; i<inputs.size(); i++){inputsT[i].draw(renderer,wa,wb); inputs[i].draw(renderer,wa,wb);}
-        */
-        rectangleRGBA(renderer,x,y,x+w+5,y+h+5,0,0,0,255);
-        //stringRGBA(renderer,x+300,y+300,cimkek[0]->IDname.c_str(),0,0,0,255);
+        if (napi) elsoIdoT.str=".nap";
+        else elsoIdoT.str=".negyed";
+        if (komper){
+            elsoIdo.draw(renderer,x+150,wb+2);
+            masodikIdoT.draw(renderer,x+180,wb+7);
+            masodikIdo.draw(renderer,x+204,wb+2);
+            elsoIdoT.draw(renderer,x+234,wb+7);
+        } else {
+            elsoIdo.draw(renderer,x+170,wb+2);
+            elsoIdoT.draw(renderer,x+200,wb+7);
+        }
+
+        cimkeInp.draw(renderer,x+2,wb+2);
+        ujCimke.draw(renderer,x+128,wb+2);
+        deleteB.draw(renderer,x+291,wb);
+        rectangleRGBA(renderer,x,wb,x+w+5,wb+h+5,0,0,0,255);
     }
 };
 
