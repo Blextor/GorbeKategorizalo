@@ -54,11 +54,13 @@ void ElemzesMenu::draw() {
     SDL_RenderClear(renderer);
 
     for (int i=0; i<feltetelek.size(); i++) {
-        feltetelek[i].draw(renderer,170,70+i*115);
+        feltetelek[i].draw(renderer,170,70+i*115 + panYFelt);
     }
     for (int i=0; i<elemezendoek.size(); i++) {
-        elemezendoek[i].draw(renderer,487,70+i*115);
+        elemezendoek[i].draw(renderer,487,70+i*115 + panYElemez);
     }
+
+    boxRGBA(renderer,0,0,800,65,100,100,100,255);
 
     reszvenyCsoportLista.draw(renderer,x,y); reszvenyLista.draw(renderer,x,y);
 
@@ -195,10 +197,10 @@ void ElemzesMenu::inputHandle(){
     int tx, ty;
     Uint32 mouseState = SDL_GetMouseState(&tx, &ty);
     if (ev->type==SDL_MOUSEMOTION && 0<(mouseState & SDL_BUTTON(SDL_BUTTON_MIDDLE))){
-        ///panX+=MoveX;
-        ///panY+=MoveY;
-        //if (panX<0) panX=0;
-        //if (panY<0) panY=0;
+        if (tx<482 && tx>165) panYFelt+=MoveY;
+        if (tx>482 && tx<800) panYElemez+=MoveY;
+        //if (panX<0) panYFelt=0;
+        //if (panY<0) panYElemez=0;
     }
 
     if (ev->type == SDL_TEXTINPUT && ev->text.timestamp!=timestampText){ /// bevitel
