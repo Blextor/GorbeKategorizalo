@@ -16,6 +16,7 @@ std::string toUpper(const std::string& str) {
     return upperCase;
 }
 
+
 int Cimke::getI(){return 14;};
 
 bool Cimke::readIn(ifstream ifs){return false;};

@@ -35,6 +35,7 @@ void ElemzesMenu::feltetelAdd(bool elemezendo){
     Feltetel f(0,0,303,100);
     f.komper=(tipusState%2==1);
     f.napi=(tipusState<2);
+    f.refreshCimkek();
     if (elemezendo){f.x=elemezendoPosX; elemezendoek.push_back(f);}
     else {f.x=feltetelPosX; feltetelek.push_back(f);};
 }

@@ -9,6 +9,10 @@
 #define APICallsLimit (string)"APICallsLimit"
 #define dataFolder (string)"dataFolder"
 
+int getCimkeType(bool comp, bool daily, bool quarterly, bool onlyFloat);
+std::vector<bool> getCimkeType(int type);
+bool cimkeTypeCompatible(int t1, int t2);
+
 class AppConfig {
 private:
     // Privát konstruktor, hogy más osztályok ne tudják közvetlenül létrehozni

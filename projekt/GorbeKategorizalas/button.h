@@ -1194,6 +1194,10 @@ struct Feltetel {
         felvettCimkek = Gorgetheto({},0,0,299,78,3); felvettCimkek.relative=true;
     }
 
+    void refreshCimkek(){
+        cimkeLista.elemekFrissitese(osszesCimke(getCimkeType(komper,napi,!napi,true)));
+    }
+
     Feltetel(){}
 
     void draw (SDL_Renderer *renderer, int wa, int wb){

@@ -1,6 +1,7 @@
 #include "cimke.h"
 
 LokMinMax::LokMinMax(){
+    comperator=false;
     IDname="lokMinMax";
     inputok = {"min/max","tol","ig","hol","kornyezet"};
     Cimke::categoryID = 123;

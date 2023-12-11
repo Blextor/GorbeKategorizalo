@@ -14,11 +14,6 @@ struct Cimke {
 
 	int categoryID = 0; /// ha egy kategóriába esik egy címke, akkor azokat lehessen együtt kezelni
 
-	bool lowerLimitB = false; 	/// van valami alsó határa
-	float lowerLimit = 0; 		/// és mi az
-	bool upperLimitB = false;	/// és fölsõ
-	float upperLimit = 0;		/// és mi az
-
 	Cimke(string n="NA", bool c=false, bool o3=false, bool oD=false){
         name=n; comperator=c; onlyDaily=o3; onlyQuarter=oD;
 	}

@@ -58,15 +58,18 @@ vector<string> osszesCsoport(){
     return subdirectories;
 }
 
-vector<string> osszesCimke(){
+vector<string> osszesCimke(int type){
     string cimkeFajlPath = Config.getRootDirectory()+"cimkek.txt";
     vector<string> cimkek;
     ifstream ifs(cimkeFajlPath); if (ifs.fail()) return cimkek;
     while (!ifs.eof()){
-        string line;
+        string line; int t;
         getline(ifs, line); if (line.size()<2) break;
         stringstream ss(line);
-        ss>>line>>line; cimkek.push_back(line);
+        ss>>line>>line>>t;
+
+        if (cimkeTypeCompatible(t,type))
+            cimkek.push_back(line);
     }
     return cimkek;
 }

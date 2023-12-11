@@ -68,3 +68,24 @@ void AppConfig::setMaxAPICalls(int calls){
     writeConfig(rootDirectory,maxThreads,maxAPICalls);
 }
 
+int getCimkeType(bool comp, bool daily, bool quarterly, bool onlyFloat){
+    int ret = 0;
+    if (comp) ret+=1; if (daily) ret+=2; if (quarterly) ret+=4; if (onlyFloat) ret+=8;
+    return ret;
+}
+vector<bool> getCimkeType(int type){
+    vector<bool> ret = {type&1,type&2,type&4,type&8};
+    return ret;
+}
+
+bool cimkeTypeCompatible(int t1, int t2){
+    //cout<<(t1&1)<<(t2&1)<<endl;
+    if ((t1&1) != (t2&1)) return false;
+    //cout<<(t1&8)<<(t2&8)<<endl;
+    if ((t1&8) && !(t2&8)) return false;
+    //cout<<(t1&2)<<(t2&2)<<(t1&4)<<(t2&4)<<endl;
+    if (((t1&2) == (t2&2)) || ((t1&4) == (t2&4))) return true;
+    //cout<<"hm"<<endl;
+    return false;
+}
+
