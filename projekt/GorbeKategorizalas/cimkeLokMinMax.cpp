@@ -13,11 +13,12 @@ int LokMinMax::getI(){return categoryID;};
 bool LokMinMax::readIn(ifstream ifs){
     int napNegy = 0;
     ifs>>name>>napNegy>>minimum>>tol>>ig>>hol>>kornyezet;
+    //vector<bool> b = getCimkeType(napNegy);
     napNegyedSet(napNegy);
 }
 bool LokMinMax::writeOut(ofstream ofs){
     int napNegy = napNegyedGet();
-    ofs<<" "<<name<<" "<<napNegy<<" "<<minimum<<" "<<tol<<" "<<ig<<" "<<hol<<" "<<kornyezet;
+    ofs<<" "<<name<<" "<<getCimkeType(comperator,onlyDaily,onlyQuarter,false)<<" "<<minimum<<" "<<tol<<" "<<ig<<" "<<hol<<" "<<kornyezet;
 }
 
 
@@ -59,7 +60,8 @@ bool LokMinMax::writeOut() {
     string fajlName = rtDir+"cimkek.txt";
     ofstream ofs;
     ofs.open(fajlName,std::ios::app);
-    ofs<<IDname<<" "<<name<<" "<<napNegyedGet()<<" "<<minimum<<" "<<tol<<" "<<ig<<" "<<hol<<" "<<kornyezet<<endl;
+    ofs<<IDname<<" "<<name<<" "<<getCimkeType(comperator,onlyDaily,onlyQuarter,false)
+    <<" "<<minimum<<" "<<tol<<" "<<ig<<" "<<hol<<" "<<kornyezet<<endl;
     ofs.close();
     return true;
 }
