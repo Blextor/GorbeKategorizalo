@@ -70,7 +70,10 @@ void AppConfig::setMaxAPICalls(int calls){
 
 int getCimkeType(bool comp, bool daily, bool quarterly, bool onlyFloat){
     int ret = 0;
-    if (comp) ret+=1; if (daily) ret+=2; if (quarterly) ret+=4; if (onlyFloat) ret+=8;
+    if (comp) ret+=1;
+    if (daily) ret+=2;
+    if (quarterly) ret+=4;
+    if (onlyFloat) ret+=8;
     return ret;
 }
 vector<bool> getCimkeType(int type){

@@ -14,10 +14,12 @@ bool LokMinMax::readIn(ifstream ifs){
     int napNegy = 0;
     ifs>>name>>napNegy>>minimum>>tol>>ig>>hol>>kornyezet;
     napNegyedSet(napNegy);
+    return true;
 }
 bool LokMinMax::writeOut(ofstream ofs){
     int tipus = getCimkeType(comperator,onlyDaily,onlyQuarter,onlyFloat);
     ofs<<" "<<name<<" "<<tipus<<" "<<minimum<<" "<<tol<<" "<<ig<<" "<<hol<<" "<<kornyezet;
+    return true;
 }
 
 
@@ -91,8 +93,8 @@ int LokMinMax::check(Stock* stock, Datum datum){
     if (where-r<=szelsoIndex && szelsoIndex<=where+r) return 1;
     return 0;
 }		/// nézzük meg, hogy igaz-e az adott dátumra
-float LokMinMax::getValue(Stock* stock, Datum datum){}	/// mi az aznapra az értéke
-float LokMinMax::getDiffValue(Stock* stock, Datum from, Datum to){} /// mi a két nap közötti érték különöbzet
+float LokMinMax::getValue(Stock* stock, Datum datum){return 0;}	/// mi az aznapra az értéke
+float LokMinMax::getDiffValue(Stock* stock, Datum from, Datum to){return 0;} /// mi a két nap közötti érték különöbzet
 
 int LokMinMax::check(Stock* stock, Negyed datum){
 
@@ -121,5 +123,5 @@ int LokMinMax::check(Stock* stock, Negyed datum){
     if (where-r<=szelsoIndex && szelsoIndex<=where+r) return 1;
     return 0;
 }
-float LokMinMax::getValue(Stock* stock, Negyed datum){}
-float LokMinMax::getDiffValue(Stock* stock, Negyed from, Negyed to){}
+float LokMinMax::getValue(Stock* stock, Negyed datum){return 0;}
+float LokMinMax::getDiffValue(Stock* stock, Negyed from, Negyed to){return 0;}

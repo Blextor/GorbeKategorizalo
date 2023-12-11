@@ -130,7 +130,8 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     thread th5(loadStock,"MCD",ref(stock55));
     th1.join();th2.join();th3.join();th4.join();th5.join();
     */
-
+    /// manuális teszt
+    /**
     vector<string> reszvenyekNeve = csoportReszvenyei("estere"); //osszesReszveny();
     reszvenyekNeve = osszesReszveny();
     int thCnt = 10;
@@ -200,9 +201,11 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                 z1++;
 
                 stocks[j].getNyit(e5,d1,true);
-                if (e1>e5) continue; e1=e5;
+                if (e1>e5) continue;
+                e1=e5;
                 stocks[j].getMin(e5,d1,true);
-                if (e2<e5) continue; e2=e5;
+                if (e2<e5) continue;
+                e2=e5;
                 stocks[j].getMax(e3,d1,true);
                 stocks[j].getZar(e4,d1,true);
                 if (e1==0 || e2==0 || e3==0 || e4==0) {//cout<<"BAJ 0"<<endl;
@@ -241,14 +244,14 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                 /// Tényleges találat
                 osszesPelda++;
 
-                /*
-                stocks[j].getZar(e5,d1,true); stocks[j].getZar(e6,d1,true); if (e5>e4) z1++;
-                stocks[j].getZar(e5,d2,true); stocks[j].getZar(e6,d2,true); if (e5>e4) z2++;
-                stocks[j].getZar(e5,d3,true); stocks[j].getZar(e6,d3,true); if (e5>e4) z3++;
-                stocks[j].getZar(e5,d4,true); stocks[j].getZar(e6,d4,true); if (e5>e4) z4++;
-                stocks[j].getZar(e5,d5,true); stocks[j].getZar(e6,d5,true); if (e5>e4) z5++;
-                stocks[j].getZar(e5,d6,true); stocks[j].getZar(e6,d6,true); if (e5>e4) z6++;
-                */
+
+                //stocks[j].getZar(e5,d1,true); stocks[j].getZar(e6,d1,true); if (e5>e4) z1++;
+                //stocks[j].getZar(e5,d2,true); stocks[j].getZar(e6,d2,true); if (e5>e4) z2++;
+                //stocks[j].getZar(e5,d3,true); stocks[j].getZar(e6,d3,true); if (e5>e4) z3++;
+                //stocks[j].getZar(e5,d4,true); stocks[j].getZar(e6,d4,true); if (e5>e4) z4++;
+                //stocks[j].getZar(e5,d5,true); stocks[j].getZar(e6,d5,true); if (e5>e4) z5++;
+                //stocks[j].getZar(e5,d6,true); stocks[j].getZar(e6,d6,true); if (e5>e4) z6++;
+
                 cout<<"alma "<<stocks[j].name<<" "<<dv.datum.year<<" "<<dv.datum.month<<" "<<dv.datum.day<<endl;
                 /// Helyes elmozdulás
                 if (dv.nyitas<e4) continue;
@@ -263,7 +266,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     cout<<z1<<" "<<z2<<" "<<z3<<" "<<z4<<" "<<z5<<" "<<z6<<endl;
     if (osszesPelda>0)cout<<z1*100/osszesPelda<<" "<<z2*100/osszesPelda<<" "<<z3*100/osszesPelda<<" "<<z4*100/osszesPelda<<" "<<z5*100/osszesPelda<<" "<<z6*100/osszesPelda<<endl;
     cout<<"osszes, jo: "<<osszesPelda<<" "<<joPelda<<" "<<(float)joPelda/osszesPelda<<endl;
-
+    */
 
 
 

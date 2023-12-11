@@ -120,14 +120,14 @@ int npB(string path, set<Nap> &osszesNap, bool reset=true){
 }
 
 void loadStock(string name, Stock &stock){
-    clock_t t = clock();
+    //clock_t t = clock();
     stock.adatokBetoltese(name);
     //cout<<name<<" betoltve: "<<(clock()-t)<<"ms"<<endl;
-    t=clock();
+    //t=clock();
     //cout<<"napok szama: "<<stock.mindenNap.size()<<endl;
     stock.adatokFeldolgozasa();
     //cout<<name<<" feldolgozva: "<<(clock()-t)<<"ms"<<endl;
-    t=clock();
+    //t=clock();
 }
 
 void loadStockOld(string name, Stock &stock){

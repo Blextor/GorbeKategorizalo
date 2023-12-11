@@ -31,8 +31,39 @@ void ElemzesMenu::gombokKialakitasa(){
     elemezendoT=Text("Elemezendoek",493,35);
 }
 
+bool datumKinyeres(string ev, string honap, string nap, Datum& datum){
+    stringstream sse(ev); sse>>datum.year;
+    if (sse.fail()) return false;
+    if (honap.size()>0){
+        stringstream ssh(honap); ssh>>datum.month;
+        if (ssh.fail()) return false;
+        if (nap.size()>0){
+            stringstream ssn(nap); ssn>>datum.day;
+            if (ssn.fail()) return false;
+        }
+    }
+    return true;
+}
+
+bool ElemzesMenu::lekerdezesOsszeallitas(){
+    Lekerdezes lekerdezes;
+    if (!datumKinyeres(evTol.str,honapTol.str,napTol.str,lekerdezes.mettol)) return false;
+    if (!datumKinyeres(evIg.str,honapIg.str,napIg.str,lekerdezes.meddig)) return false;
+    if (reszInp.str.size() == 0 && reszCsopInp.str.size() == 0) return false;
+    if (reszInp.str.size() != 0) {
+        lekerdezes.reszveny=reszInp.str;
+        lekerdezes.reszvenyek.push_back(reszInp.str);
+    }
+    else {
+        lekerdezes.reszvenyCsoport=reszCsopInp.str;
+        lekerdezes.reszvenyek=csoportReszvenyei(lekerdezes.reszvenyCsoport);
+    }
+
+    return false;
+}
+
 void ElemzesMenu::feltetelAdd(bool elemezendo){
-    Feltetel f(0,0,303,100);
+    FeltetelUI f(0,0,303,100);
     f.komper=(tipusState%2==1);
     f.napi=(tipusState<2);
     f.refreshCimkek();
@@ -54,10 +85,10 @@ void ElemzesMenu::draw() {
     SDL_SetRenderDrawColor(renderer,100,100,100,255);
     SDL_RenderClear(renderer);
 
-    for (int i=0; i<feltetelek.size(); i++) {
+    for (int i=0; i<(int)feltetelek.size(); i++) {
         feltetelek[i].draw(renderer,170,70+i*115 + panYFelt);
     }
-    for (int i=0; i<elemezendoek.size(); i++) {
+    for (int i=0; i<(int)elemezendoek.size(); i++) {
         elemezendoek[i].draw(renderer,487,70+i*115 + panYElemez);
     }
 
@@ -104,7 +135,7 @@ void ElemzesMenu::inputHandle(){
             //middleButton=ev->button.button==SDL_BUTTON_MIDDLE; /// bal gomb
         } else if (ev->type==SDL_MOUSEBUTTONUP){
         } else if (ev->type==SDL_MOUSEMOTION){
-            if (ev->motion.state!=-1){
+            if ((int)ev->motion.state!=-1){
                 MoveX = ev->motion.xrel;
                 MoveY = ev->motion.yrel;
             }
@@ -177,13 +208,13 @@ void ElemzesMenu::inputHandle(){
             ujNegyed.selected=(tipusState==2);
             ujNegyedKomp.selected=(tipusState==3);
 
-            for (int i=0; i<feltetelek.size() && MY>=70; i++){
+            for (int i=0; i<(int)feltetelek.size() && MY>=70; i++){
                 if (feltetelek[i].inClick(MX,MY)){
                     feltetelek.erase(feltetelek.begin()+i);
                     i--;
                 }
             }
-            for (int i=0; i<elemezendoek.size() && MY>=70; i++){
+            for (int i=0; i<(int)elemezendoek.size() && MY>=70; i++){
                 if (elemezendoek[i].inClick(MX,MY)){
                     elemezendoek.erase(elemezendoek.begin()+i);
                     i--;
@@ -214,10 +245,10 @@ void ElemzesMenu::inputHandle(){
         if (reszState==1) reszInp.str+=ev->text.text[0];
         else if (reszState==2) reszCsopInp.str+=ev->text.text[0];
 
-        for (int i=0; i<feltetelek.size(); i++){
+        for (int i=0; i<(int)feltetelek.size(); i++){
             feltetelek[i].inputText(ev->text.text[0]);
         }
-        for (int i=0; i<elemezendoek.size(); i++){
+        for (int i=0; i<(int)elemezendoek.size(); i++){
             elemezendoek[i].inputText(ev->text.text[0]);
         }
 
@@ -236,10 +267,10 @@ void ElemzesMenu::inputHandle(){
             if (reszState==1) {if (reszInp.str.size()>0) reszInp.str.pop_back();}
             else if (reszState==2) {if (reszCsopInp.str.size()>0) reszCsopInp.str.pop_back();}
 
-            for (int i=0; i<feltetelek.size(); i++){
+            for (int i=0; i<(int)feltetelek.size(); i++){
                 feltetelek[i].inputText(' ',true);
             }
-            for (int i=0; i<elemezendoek.size(); i++){
+            for (int i=0; i<(int)elemezendoek.size(); i++){
                 elemezendoek[i].inputText(' ',true);
             }
         }

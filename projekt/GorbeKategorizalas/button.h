@@ -566,7 +566,7 @@ struct KeziGorbe{
     }
 
     void setDatumok(){
-        int len = gorbe.size();
+        //int len = gorbe.size();
         Datum elsoNap = valasztottNegyed.korrigaltTenylegesJelentes;
         Arfolyam temp = gorbe[gorbe.size()-1];
         Datum utolsoNap(0,temp.idopont.ora,temp.idopont.perc);
@@ -976,7 +976,7 @@ struct UjCimkePopUp{
     UjCimkePopUp(int X, int Y, int W, int H){
         cimkek.push_back(new LokMinMax());
         cimkek.push_back(new Cimke());
-        for (int i=0; i<cimkek.size(); i++) reszvenyTipusok.push_back(cimkek[i]->IDname);
+        for (size_t i=0; i<cimkek.size(); i++) reszvenyTipusok.push_back(cimkek[i]->IDname);
         x=X,y=Y;w=W;h=H;
         closeB = Button("X",x+487,y+0,13,13,false,false);
         ujLetrehozas = Button("Letrehozas",x+180,y+8,85,13,false,false);
@@ -1006,7 +1006,7 @@ struct UjCimkePopUp{
         napNegyedInputT.draw(renderer,wa,wb);
         napNegyedInput.draw(renderer,wa,wb);
 
-        for (int i=0; i<inputs.size(); i++){inputsT[i].draw(renderer,wa,wb); inputs[i].draw(renderer,wa,wb);}
+        for (size_t i=0; i<inputs.size(); i++){inputsT[i].draw(renderer,wa,wb); inputs[i].draw(renderer,wa,wb);}
 
         rectangleRGBA(renderer,x,y,x+w+5,y+h+5,0,0,0,255);
         //stringRGBA(renderer,x+300,y+300,cimkek[0]->IDname.c_str(),0,0,0,255);
@@ -1014,13 +1014,13 @@ struct UjCimkePopUp{
 
     int lastType = -1;
     bool generateInputs(){
-        for (int i=0; i<reszvenyTipusok.size(); i++){
+        for (int i=0; i<(int)reszvenyTipusok.size(); i++){
             if (toLower(reszvenyTipusok[i])==toLower(typeInput.str)){
                 if (lastType==i) return true;
                 lastType=i;
                 inputsT.clear(); inputsT.resize(cimkek[i]->inputok.size());
                 inputs.clear(); inputs.resize(cimkek[i]->inputok.size());
-                for (int k=0; k<inputs.size(); k++){
+                for (int k=0; k<(int)inputs.size(); k++){
                     inputsT[k]=Text(cimkek[i]->inputok[k],300-cimkek[i]->inputok[k].size()*8,105+k*20);
                     inputs[k]=Button("",300,100+k*20,120,13,false,false);
                 }
@@ -1037,13 +1037,13 @@ struct UjCimkePopUp{
         ret.push_back(typeInput.str);
         ret.push_back(nameInput.str);
         ret.push_back(napNegyedInput.str);
-        for (int i=0; i<inputs.size(); i++) ret.push_back(inputs[i].str);
+        for (int i=0; i<(int)inputs.size(); i++) ret.push_back(inputs[i].str);
         return ret;
     }
 
     bool ujCimkeLetrehozasa(){
         vector<string> param = bemenetekGet();
-        for (int i=0; i<reszvenyTipusok.size(); i++){
+        for (int i=0; i<(int)reszvenyTipusok.size(); i++){
             if (reszvenyTipusok[i]==param[0]){
                 if (cimkek[i]->readIn(param)){
                     cimkek[i]->writeOut();
@@ -1082,7 +1082,7 @@ struct UjCimkePopUp{
         if (typeInput.inClick(MX,MY)) lastInputField=0;
         else if (nameInput.inClick(MX,MY)) lastInputField=1;
         else if (napNegyedInput.inClick(MX,MY)) lastInputField=2;
-        for (int i=0; i<inputs.size(); i++){
+        for (int i=0; i<(int)inputs.size(); i++){
             if (inputs[i].inClick(MX,MY)){
                 lastInputField=i+kotelezoMexoCnt; return true;
             }
@@ -1092,7 +1092,7 @@ struct UjCimkePopUp{
     }
 };
 
-struct Feltetel {
+struct FeltetelUI {
     int x=0, y=0, w=303, h=100;
     bool komper = false;
     bool napi = true;
@@ -1181,7 +1181,7 @@ struct Feltetel {
         return true;
     }
 
-    Feltetel(int X, int Y, int W, int H){
+    FeltetelUI(int X, int Y, int W, int H){
         x=X,y=Y;w=W;h=H;
         deleteB = Button("X",0,0,12,13,true,true);
         cimkeInp = Button("",0,0,120,13,true,true);
@@ -1198,7 +1198,7 @@ struct Feltetel {
         cimkeLista.elemekFrissitese(osszesCimke(getCimkeType(komper,napi,!napi,true)));
     }
 
-    Feltetel(){}
+    FeltetelUI(){}
 
     void draw (SDL_Renderer *renderer, int wa, int wb){
         boxRGBA(renderer,x,wb,x+w+4,wb+h+4,100,100,100,255);

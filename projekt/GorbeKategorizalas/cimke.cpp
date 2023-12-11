@@ -33,7 +33,3 @@ float Cimke::getValue(Stock* stock, Negyed datum){return 0;};
 float Cimke::getDiffValue(Stock* stock, Negyed from, Negyed to){return 0;};
 
 
-bool ujCimkeLetrehozasa(vector<string> param){
-
-}
-

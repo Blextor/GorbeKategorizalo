@@ -1,33 +1,37 @@
 #ifndef LEKERDEZES_H_INCLUDED
 #define LEKERDEZES_H_INCLUDED
 
-#include "cimkeSrc/OsszesCimke.h"
+#include "cimke.h"
 
 using namespace std;
 
 struct Ertek {
     string cimkeNeve;
-    int ih;
-    float ertek;
+    bool siker;
 };
 
 struct Pelda {
     string reszNev;
     Datum datum;
-    vector<Ertek> cimkekErteke;
+    vector<Ertek> elemezendoekTeljesulese;
+};
+
+struct Feltetel{
+    bool komper = false, nap=false, negyed = false, oFloat = false;
+    int hanyadik, hanyadikIg;
+    vector<Cimke> cimkek;
 };
 
 struct Lekerdezes {
-    vector<Cimke> feltetelek;
-    vector<Cimke> vizsgalandok;
+    vector<Feltetel> feltetelek;
+    vector<Feltetel> elemezendoek;
     Datum mettol, meddig;
+    string reszveny = "", reszvenyCsoport = "";
 
     vector<string> reszvenyek;
 
     vector<Pelda> joPeldak;
 
-    void addFeltetel(Cimke cimke){feltetelek.push_back(cimke);}
-    void addVizsgalando(Cimke cimke){vizsgalandok.push_back(cimke);}
 };
 
 #endif // LEKERDEZES_H_INCLUDED
