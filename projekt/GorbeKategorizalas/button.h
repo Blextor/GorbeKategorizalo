@@ -4,7 +4,8 @@
 #include "common.h"
 #include "adatBeolvas.h"
 #include "stock.h"
-#include "cimke.h"
+#include "cimkeSrc/OsszesCimke.h"
+
 
 using namespace std;
 
