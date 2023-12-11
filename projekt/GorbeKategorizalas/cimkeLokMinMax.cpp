@@ -61,7 +61,7 @@ bool LokMinMax::writeOut() {
     string fajlName = rtDir+"cimkek.txt";
     ofstream ofs;
     ofs.open(fajlName,std::ios::app);
-    ofs<<IDname<<" "<<name<<" "<<getCimkeType(comperator,onlyDaily,onlyQuarter,false)
+    ofs<<IDname<<" "<<name<<" "<<getCimkeType(comperator,onlyDaily,onlyQuarter,onlyFloat)
     <<" "<<minimum<<" "<<tol<<" "<<ig<<" "<<hol<<" "<<kornyezet<<endl;
     ofs.close();
     return true;

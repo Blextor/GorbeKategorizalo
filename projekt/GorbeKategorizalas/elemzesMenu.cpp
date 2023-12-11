@@ -59,6 +59,23 @@ bool ElemzesMenu::lekerdezesOsszeallitas(){
         lekerdezes.reszvenyek=csoportReszvenyei(lekerdezes.reszvenyCsoport);
     }
 
+    for (int i=0; i<(int)feltetelek.size(); i++){
+        Feltetel ujFeltetel; FeltetelUI k;
+        ujFeltetel.komper = feltetelek[i].komper;
+        ujFeltetel.nap = feltetelek[i].napi;
+        ujFeltetel.negyed = !feltetelek[i].napi;
+        ujFeltetel.oFloat = true;
+        stringstream sse(feltetelek[i].elsoIdo.str);
+        stringstream ssm(feltetelek[i].masodikIdo.str);
+        sse>>ujFeltetel.hanyadik;
+        if (ujFeltetel.komper) ssm>>ujFeltetel.hanyadikHoz;
+        if (sse.fail() || ssm.fail()) return false;
+        vector<string> cimkeNevek = feltetelek[i].felvettCimkek.elemek;
+        for (int j=0; j<(int)cimkeNevek.size(); j++){
+
+        }
+    }
+
     return false;
 }
 

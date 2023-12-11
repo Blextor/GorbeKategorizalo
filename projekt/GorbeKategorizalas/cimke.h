@@ -18,7 +18,7 @@ struct Cimke {
         name=n; comperator=c; onlyDaily=o3; onlyQuarter=oD;
 	}
 
-	void napNegyedSet(int i) {onlyQuarter=(i&4); onlyDaily=(i%2); onlyFloat=(i%8); comperator=(i%1);}
+	void napNegyedSet(int i) {onlyQuarter=(i&4); onlyDaily=(i&2); onlyFloat=(i&8); comperator=(i&1);}
 	vector<string> inputok;
 
 

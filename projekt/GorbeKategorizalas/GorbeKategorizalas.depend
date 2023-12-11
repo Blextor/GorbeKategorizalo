@@ -73,7 +73,7 @@
 1702256856 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimke.cpp
 	"cimke.h"
 
-1702254729 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimke.h
+1702258971 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimke.h
 	"common.h"
 	"stock.h"
 
@@ -186,7 +186,7 @@
 1696810918 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatletoltes.h
 	"common.h"
 
-1698586819 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\stock.cpp
+1702257016 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\stock.cpp
 	"stock.h"
 	<windows.h>
 	<iostream>
@@ -233,9 +233,9 @@
 1702256907 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkelokminmax.cpp
 	"cimke.h"
 
-1702257008 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\elemzesmenu.cpp
+1702257985 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\elemzesmenu.cpp
 	"Menu.h"
 
-1702256581 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\lekerdezes.h
+1702257798 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\lekerdezes.h
 	"cimke.h"
 

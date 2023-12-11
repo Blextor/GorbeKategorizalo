@@ -18,7 +18,7 @@ struct Pelda {
 
 struct Feltetel{
     bool komper = false, nap=false, negyed = false, oFloat = false;
-    int hanyadik, hanyadikIg;
+    int hanyadik, hanyadikHoz;
     vector<Cimke> cimkek;
 };
 
