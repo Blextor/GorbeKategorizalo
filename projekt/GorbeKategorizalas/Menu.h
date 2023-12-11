@@ -373,6 +373,8 @@ struct ElemzesMenu : public Menu {
 
     Lekerdezes lekerdezes;
     bool lekerdezesOsszeallitas(Lekerdezes &lek);
+    bool lekerdezesFut = false;
+    ProgressBar progBar;
 
     void gombokKialakitasa();
 

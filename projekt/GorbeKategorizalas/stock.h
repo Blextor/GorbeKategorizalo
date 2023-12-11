@@ -122,5 +122,7 @@ struct Stock{
     bool getNegyedOdebb(Negyed &ret, Negyed &negyed, int mennyivelOdebb);
 };
 
+void loadStock(string name, Stock &stock, bool &sor);
+
 
 #endif // STOCK_H_INCLUDED

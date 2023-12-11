@@ -2,6 +2,8 @@
 #define LEKERDEZES_H_INCLUDED
 
 #include "cimke.h"
+#include "adatBeolvas.h"
+#include "stock.h"
 
 using namespace std;
 
@@ -32,6 +34,10 @@ struct Lekerdezes {
 
     vector<Pelda> joPeldak;
 
+    void process();
+
 };
+
+void lekerdezesProc(Lekerdezes lek, vector<Pelda> &peldak);
 
 #endif // LEKERDEZES_H_INCLUDED

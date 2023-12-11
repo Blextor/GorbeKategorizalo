@@ -1236,4 +1236,8 @@ struct FeltetelUI {
     }
 };
 
+struct LekerdezesFolyamat{
+
+};
+
 #endif // BUTTON_H_INCLUDED

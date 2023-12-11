@@ -29,6 +29,8 @@ void ElemzesMenu::gombokKialakitasa(){
     feltetelT=Text("Feltetelek",175,35);
     ujElemezendo = Button("Uj Elemezendo",488,45,110,13,false,false);
     elemezendoT=Text("Elemezendoek",493,35);
+
+    progBar = ProgressBar(30,30,500,20,false,false);
 }
 
 bool datumKinyeres(string ev, string honap, string nap, Datum& datum){
@@ -148,6 +150,11 @@ void ElemzesMenu::draw() {
     SDL_GetWindowSize(window,&x,&y); /// méretek lekérdezése
     SDL_SetRenderDrawColor(renderer,100,100,100,255);
     SDL_RenderClear(renderer);
+    if (lekerdezesFut){
+        progBar.draw(renderer,x,y);
+        SDL_RenderPresent(renderer);
+        return;
+    }
 
     for (int i=0; i<(int)feltetelek.size(); i++) {
         feltetelek[i].draw(renderer,170,70+i*115 + panYFelt);
@@ -182,7 +189,6 @@ void ElemzesMenu::draw() {
     SDL_RenderPresent(renderer);
 }
 
-
 void ElemzesMenu::inputHandle(){
     int oldState=state;
     int MX=-1, MY=-1; /// kurzor pozíciója, ha -1 marad, nem történt változás
@@ -214,6 +220,7 @@ void ElemzesMenu::inputHandle(){
         if (ev->type == SDL_QUIT) /// beégetett kilépés engedélyezése
             exit(3);
     }
+    if (lekerdezesFut) return;
 
     if (MX!=-1){ /// azaz az egérrel kattintottunk
         if (leftButton){
@@ -236,7 +243,10 @@ void ElemzesMenu::inputHandle(){
                     cout<<lekerdezes.feltetelek[0].cimkek[0]->onlyQuarter<<endl;
                     cout<<lekerdezes.feltetelek[0].cimkek[0]->onlyFloat<<endl;
                     */
-                    *menu = elemzesFolyamatMenu;
+                    progBar.prepare(lekerdezes.reszvenyek.size());
+                    progBar.start();
+                    lekerdezesFut=true;
+                    //*menu = elemzesFolyamatMenu;
                 }
             }
 
