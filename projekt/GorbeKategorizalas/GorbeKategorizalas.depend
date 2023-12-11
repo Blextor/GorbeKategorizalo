@@ -165,7 +165,7 @@
 1702211682 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\csoporteditor.cpp
 	"Menu.h"
 
-1702259509 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\button.h
+1702260199 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\button.h
 	"common.h"
 	"adatBeolvas.h"
 	"stock.h"
@@ -186,7 +186,7 @@
 1696810918 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\adatletoltes.h
 	"common.h"
 
-1702257016 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\stock.cpp
+1702259922 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\stock.cpp
 	"stock.h"
 	<windows.h>
 	<iostream>

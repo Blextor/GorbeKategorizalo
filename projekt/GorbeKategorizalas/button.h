@@ -854,7 +854,7 @@ struct KeziGorbe{
 
 };
 
-void loadStock(string name, Stock &stock);
+void loadStock(string name, Stock &stock, bool &sor);
 void loadStockOld(string name, Stock &stock);
 
 struct ReszvenySor{
@@ -867,7 +867,9 @@ struct ReszvenySor{
     std::mutex mfs;
     thread th1;
 
-    Button UjElemB, ElemzesB;
+    Button UjElemB, ElemzesB, betoltottB;
+
+    bool betoltott = false;
 
     // Mozgató konstruktor
     ReszvenySor(ReszvenySor&& other) noexcept : stock(other.stock) {
@@ -891,6 +893,8 @@ struct ReszvenySor{
         gorbek.clear();
         UjElemB=Button("Uj elem",0,0,60,13,true,true);
         ElemzesB=Button("Elemzes",0,0,60,13,true,true);
+        betoltottB=Button("",0,0,13,13,true,true);
+        betoltottB.selectable=true; betoltottB.selected=false;
     }
 
     ReszvenySor(int vx, int vy){
@@ -909,7 +913,7 @@ struct ReszvenySor{
         if (isLocked(mfs)) return false;
         mfs.lock();
         if (th1.joinable()) th1.join();
-        th1 = move(thread(loadStock, name, ref(stock)));
+        th1 = move(thread(loadStock, name, ref(stock), ref(betoltott)));
         mfs.unlock();
         return true;
     }
@@ -918,6 +922,8 @@ struct ReszvenySor{
         rectangleRGBA(renderer, wa, wb, wa+75+gorbek.size()*410, wb+200,0,0,0,255);
         UjElemB.draw(renderer,wa+5,wb+30);
         ElemzesB.draw(renderer,wa+5,wb+60);
+        betoltottB.selected=betoltott;
+        betoltottB.draw(renderer,wa+57,wb);
         if (!isLocked(mfs))
             stringRGBA(renderer,wa+5,wb+5,stock.name.c_str(),0,0,0,255);
         for (size_t i=0; i<gorbek.size(); i++){
