@@ -51,6 +51,8 @@ std::string toLower(const std::string& str);
 
 std::string toUpper(const std::string& str);
 
+std::vector<std::string> split(const std::string &s, char delimiter);
+
 void main2( SDL_Window &window, SDL_Renderer &renderer);
 
 #endif // COMMON_H_INCLUDED

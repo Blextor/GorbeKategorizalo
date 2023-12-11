@@ -45,22 +45,29 @@ bool datumKinyeres(string ev, string honap, string nap, Datum& datum){
     return true;
 }
 
-bool ElemzesMenu::lekerdezesOsszeallitas(){
+bool ElemzesMenu::lekerdezesOsszeallitas(Lekerdezes &lek){
     Lekerdezes lekerdezes;
     if (!datumKinyeres(evTol.str,honapTol.str,napTol.str,lekerdezes.mettol)) return false;
     if (!datumKinyeres(evIg.str,honapIg.str,napIg.str,lekerdezes.meddig)) return false;
     if (reszInp.str.size() == 0 && reszCsopInp.str.size() == 0) return false;
     if (reszInp.str.size() != 0) {
-        lekerdezes.reszveny=reszInp.str;
-        lekerdezes.reszvenyek.push_back(reszInp.str);
+        vector<string> temp = osszesReszveny();
+        string str = toUpper(reszInp.str);
+        if (find(temp.begin(),temp.end(),str)==temp.end()) return false;
+        lekerdezes.reszveny=str;
+        lekerdezes.reszvenyek.push_back(str);
     }
     else {
         lekerdezes.reszvenyCsoport=reszCsopInp.str;
+        vector<string> temp = osszesCsoport();
+        if (find(temp.begin(),temp.end(),reszCsopInp.str)==temp.end()) return false;
         lekerdezes.reszvenyek=csoportReszvenyei(lekerdezes.reszvenyCsoport);
     }
 
+    lekerdezes.feltetelek.clear();
+    MindenCimke &m = MindenCimke::getInstance();
     for (int i=0; i<(int)feltetelek.size(); i++){
-        Feltetel ujFeltetel; FeltetelUI k;
+        Feltetel ujFeltetel; ujFeltetel.cimkek.clear();
         ujFeltetel.komper = feltetelek[i].komper;
         ujFeltetel.nap = feltetelek[i].napi;
         ujFeltetel.negyed = !feltetelek[i].napi;
@@ -71,12 +78,52 @@ bool ElemzesMenu::lekerdezesOsszeallitas(){
         if (ujFeltetel.komper) ssm>>ujFeltetel.hanyadikHoz;
         if (sse.fail() || ssm.fail()) return false;
         vector<string> cimkeNevek = feltetelek[i].felvettCimkek.elemek;
+        Cimke* cimke;
         for (int j=0; j<(int)cimkeNevek.size(); j++){
-
+            if (m.getCimkeByNameAndType(cimkeNevek[i],
+            getCimkeType(ujFeltetel.komper,ujFeltetel.nap,ujFeltetel.negyed,ujFeltetel.oFloat),
+            cimke)){
+                ujFeltetel.cimkek.push_back(cimke);
+            } else {
+                cout<<"BAJ ujFeltetel.cimkek"<<endl;
+                return false;
+            }
         }
+        lekerdezes.feltetelek.push_back(ujFeltetel);
     }
 
-    return false;
+    lekerdezes.elemezendoek.clear();
+    for (int i=0; i<(int)elemezendoek.size(); i++){
+        Feltetel ujFeltetel; FeltetelUI k;
+        ujFeltetel.komper = elemezendoek[i].komper;
+        ujFeltetel.nap = elemezendoek[i].napi;
+        ujFeltetel.negyed = !elemezendoek[i].napi;
+        ujFeltetel.oFloat = true;
+        stringstream sse(elemezendoek[i].elsoIdo.str);
+        stringstream ssm(elemezendoek[i].masodikIdo.str);
+        sse>>ujFeltetel.hanyadik;
+        if (ujFeltetel.komper) ssm>>ujFeltetel.hanyadikHoz;
+        if (sse.fail() || ssm.fail()) return false;
+        vector<string> cimkeNevek = elemezendoek[i].felvettCimkek.elemek;
+        Cimke* cimke;
+        for (int j=0; j<(int)cimkeNevek.size(); j++){
+            if (m.getCimkeByNameAndType(cimkeNevek[i],
+            getCimkeType(ujFeltetel.komper,ujFeltetel.nap,ujFeltetel.negyed,ujFeltetel.oFloat),
+            cimke)){
+                ujFeltetel.cimkek.push_back(cimke);
+            } else {
+                cout<<"BAJ ujElemez.cimkek"<<endl;
+                return false;
+            }
+        }
+        lekerdezes.elemezendoek.push_back(ujFeltetel);
+    }
+    if (lekerdezes.elemezendoek.size() == 0 ||
+        lekerdezes.elemezendoek.size() == 0)
+            return false;
+    lek=lekerdezes;
+
+    return true;
 }
 
 void ElemzesMenu::feltetelAdd(bool elemezendo){
@@ -172,7 +219,26 @@ void ElemzesMenu::inputHandle(){
         if (leftButton){
             /// kérdés, hogy eltaláltunk-e valami kattinthatót
             if (fomenubeB.inClick(MX,MY)) *menu = foMenu;
-            else if (elemzeshezB.inClick(MX,MY)) *menu = elemzesFolyamatMenu;
+            else if (elemzeshezB.inClick(MX,MY)) {
+                bool b = lekerdezesOsszeallitas(lekerdezes);
+                //cout<<"lek "<<true<<b<<endl;
+                if (b){
+                    /**
+                    cout<<lekerdezes.feltetelek.size()<<endl;
+                    cout<<lekerdezes.feltetelek[0].komper<<lekerdezes.feltetelek[0].nap<<
+                    lekerdezes.feltetelek[0].negyed<<lekerdezes.feltetelek[0].oFloat<<endl;
+                    cout<<lekerdezes.feltetelek[0].hanyadik<<lekerdezes.feltetelek[0].hanyadikHoz<<
+                    lekerdezes.feltetelek[0].cimkek.size()<<endl;
+                    cout<<lekerdezes.feltetelek[0].cimkek[0]->IDname<<endl;
+                    cout<<lekerdezes.feltetelek[0].cimkek[0]->name<<endl;
+                    cout<<lekerdezes.feltetelek[0].cimkek[0]->comperator<<endl;
+                    cout<<lekerdezes.feltetelek[0].cimkek[0]->onlyDaily<<endl;
+                    cout<<lekerdezes.feltetelek[0].cimkek[0]->onlyQuarter<<endl;
+                    cout<<lekerdezes.feltetelek[0].cimkek[0]->onlyFloat<<endl;
+                    */
+                    *menu = elemzesFolyamatMenu;
+                }
+            }
 
             if (evTol.inClick(MX,MY)) datumChState=1;
             else if (honapTol.inClick(MX,MY)) datumChState=2;
@@ -225,13 +291,13 @@ void ElemzesMenu::inputHandle(){
             ujNegyed.selected=(tipusState==2);
             ujNegyedKomp.selected=(tipusState==3);
 
-            for (int i=0; i<(int)feltetelek.size() && MY>=70; i++){
+            for (int i=0; i<(int)feltetelek.size() && (MY>=70 || MX<165); i++){
                 if (feltetelek[i].inClick(MX,MY)){
                     feltetelek.erase(feltetelek.begin()+i);
                     i--;
                 }
             }
-            for (int i=0; i<(int)elemezendoek.size() && MY>=70; i++){
+            for (int i=0; i<(int)elemezendoek.size() && (MY>=70 || MX<165); i++){
                 if (elemezendoek[i].inClick(MX,MY)){
                     elemezendoek.erase(elemezendoek.begin()+i);
                     i--;

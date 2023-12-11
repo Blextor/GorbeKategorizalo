@@ -14,6 +14,8 @@ struct Cimke {
 
 	int categoryID = 0; /// ha egy kategóriába esik egy címke, akkor azokat lehessen együtt kezelni
 
+	virtual Cimke* clone() const = 0; // Tiszta virtuális "clone" függvény
+
 	Cimke(string n="NA", bool c=false, bool o3=false, bool oD=false){
         name=n; comperator=c; onlyDaily=o3; onlyQuarter=oD;
 	}

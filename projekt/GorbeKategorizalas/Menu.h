@@ -370,7 +370,9 @@ struct ElemzesMenu : public Menu {
     vector<string> meglevoReszvenyek; /// szelekció
     vector<string> meglevoCsoportok;
     void feltetelAdd(bool elemezendo);
-    bool lekerdezesOsszeallitas();
+
+    Lekerdezes lekerdezes;
+    bool lekerdezesOsszeallitas(Lekerdezes &lek);
 
     void gombokKialakitasa();
 

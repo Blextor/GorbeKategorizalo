@@ -19,6 +19,8 @@ struct LokMinMax : Cimke {
 	bool readIn(vector<string> param) override;
 	bool writeOut() override;
 
+	LokMinMax* clone() const override { return new LokMinMax(*this); }
+
     int check(Stock* stock, Datum datum) override;		/// nézzük meg, hogy igaz-e az adott dátumra
 	float getValue(Stock* stock, Datum datum) override;	/// mi az aznapra az értéke
 	float getDiffValue(Stock* stock, Datum from, Datum to) override; /// mi a két nap közötti érték különöbzet

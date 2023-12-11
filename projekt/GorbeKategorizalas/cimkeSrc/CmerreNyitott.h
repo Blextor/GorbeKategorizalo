@@ -6,8 +6,9 @@
 struct CmerreNyitott : public Cimke{
 
 
-    CmerreNyitott(){name="merreNyitott"; comperator=true;}
+    CmerreNyitott(){IDname="merreNyit"; comperator=true;}
 
+	CmerreNyitott* clone() const override { return new CmerreNyitott(*this); }
 
     int getI() override;
 	bool readIn(ifstream ifs) override;

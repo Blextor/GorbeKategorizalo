@@ -968,8 +968,8 @@ struct UjCimkePopUp{
     Text nameInputT, typeInputT, napNegyedInputT;
     Gorgetheto cimkeTipusLista;
 
-    LokMinMax lokMinMax;
-    Cimke cimke;
+    //LokMinMax lokMinMax;
+    //Cimke cimke;
 
     vector<Cimke*> cimkek;
     vector<string> reszvenyTipusok;
@@ -981,8 +981,8 @@ struct UjCimkePopUp{
     UjCimkePopUp(){ }
 
     UjCimkePopUp(int X, int Y, int W, int H){
-        cimkek.push_back(new LokMinMax());
-        cimkek.push_back(new Cimke());
+        MindenCimke& m = MindenCimke::getInstance();
+        cimkek = m.getMindenCimke();
         for (size_t i=0; i<cimkek.size(); i++) reszvenyTipusok.push_back(cimkek[i]->IDname);
         x=X,y=Y;w=W;h=H;
         closeB = Button("X",x+487,y+0,13,13,false,false);
@@ -1138,10 +1138,14 @@ struct FeltetelUI {
         if (deleteB.inClick(MX,MY)){return true;}
 
         if (ujCimke.inClick(MX,MY)) {
-            vector<string> str = osszesCimke();
-
+            vector<string> str = cimkeLista.elemek;
+            //cout<<str.size()<<endl;
+            //for (int i=0; i<str.size(); i++) cout<<str[i]<<endl;
+            //cout<<"ujCimke"<<endl;
             if (find(str.begin(),str.end(),cimkeInp.str)!=str.end()){
+                //cout<<"ujCimke1"<<endl;
                 if (felvettCimkek.elemHozzadas(cimkeInp.str)){
+                    //cout<<"ujCimke2"<<endl;
                     cimkeGepel=false;
                     cimkeInp.str="";
                     cimkeLista.elemekKeresese("???");

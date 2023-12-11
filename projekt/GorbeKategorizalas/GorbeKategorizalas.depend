@@ -70,14 +70,14 @@
 1695301737 source:c:\users\bobo\documents\stockanal\gorbekategorizalas\menuk.cpp
 	"Menu.h"
 
-1702256856 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimke.cpp
+1702264278 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimke.cpp
 	"cimke.h"
 
-1702259475 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimke.h
+1702263541 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimke.h
 	"common.h"
 	"stock.h"
 
-1702068060 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\common.h
+1702263843 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\common.h
 	<vector>
 	<set>
 	<string>
@@ -116,7 +116,7 @@
 1702091993 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\fomenu.cpp
 	"Menu.h"
 
-1702256571 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\menu.h
+1702265514 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\menu.h
 	"common.h"
 	"button.h"
 	"adatBeolvas.h"
@@ -165,7 +165,7 @@
 1702211682 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\csoporteditor.cpp
 	"Menu.h"
 
-1702260199 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\button.h
+1702267027 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\button.h
 	"common.h"
 	"adatBeolvas.h"
 	"stock.h"
@@ -208,7 +208,7 @@
 1702252193 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\config.h
 	"common.h"
 
-1702256968 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\config.cpp
+1702264246 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\config.cpp
 	"config.h"
 
 1702091965 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\reszvenymenu.cpp
@@ -217,33 +217,33 @@
 1702058500 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\cmerrenyitott.cpp
 	"CmerreNyitott.h"
 
-1702058543 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\cmerrenyitott.h
+1702263180 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\cmerrenyitott.h
 	"../cimke.h"
 
-1702259509 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\osszescimke.h
+1702264936 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\osszescimke.h
 	"../cimke.h"
 	"CmerreNyitott.h"
 	"CmerreZart.h"
 	"CLokMinMax.h"
 
-1702058625 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\cmerrezart.h
+1702263180 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\cmerrezart.h
 	"../cimke.h"
 
-1702058636 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\cmerrezart.cpp
+1702261051 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\cmerrezart.cpp
 	"CmerreZart.h"
 
 1702258916 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkelokminmax.cpp
 	"cimke.h"
 
-1702257985 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\elemzesmenu.cpp
+1702266657 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\elemzesmenu.cpp
 	"Menu.h"
 
-1702257798 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\lekerdezes.h
+1702265189 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\lekerdezes.h
 	"cimke.h"
 
 1702259431 source:c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\cimkelokminmax.cpp
 	"CLokMinMax.h"
 
-1702259475 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\clokminmax.h
+1702263132 c:\users\bobo\documents\github\gorbekategorizalo\projekt\gorbekategorizalas\cimkesrc\clokminmax.h
 	"../cimke.h"
 
