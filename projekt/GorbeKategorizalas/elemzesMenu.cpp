@@ -243,9 +243,12 @@ void ElemzesMenu::inputHandle(){
                     cout<<lekerdezes.feltetelek[0].cimkek[0]->onlyQuarter<<endl;
                     cout<<lekerdezes.feltetelek[0].cimkek[0]->onlyFloat<<endl;
                     */
+
                     progBar.prepare(lekerdezes.reszvenyek.size());
                     progBar.start();
                     lekerdezesFut=true;
+                    if (th1.joinable()) th1.join();
+                    th1 = move(thread(lekerdezesProc, lekerdezes, ref(lekerdezes.joPeldak),ref(progBar)));
                     //*menu = elemzesFolyamatMenu;
                 }
             }

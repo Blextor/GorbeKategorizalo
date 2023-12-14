@@ -67,9 +67,9 @@ bool LokMinMax::writeOut() {
     return true;
 }
 
-int LokMinMax::check(Stock* stock, Datum datum){
+bool LokMinMax::check(Stock& stock, Datum datum, Datum datumhoz){
     Nap nap(datum);
-    if (!stock->getNap(nap,datum)) return 0;
+    if (!stock.getNap(nap,datum)) return 0;
     int from=tol, to=ig, where=hol, r=kornyezet;
     if (onlyFloat){
         from = tol * 390.0f; to = ig * 390.0f; where = hol * 390.0f; r = kornyezet * 390.0f;
@@ -93,12 +93,12 @@ int LokMinMax::check(Stock* stock, Datum datum){
     if (where-r<=szelsoIndex && szelsoIndex<=where+r) return 1;
     return 0;
 }		/// nézzük meg, hogy igaz-e az adott dátumra
-float LokMinMax::getValue(Stock* stock, Datum datum){return 0;}	/// mi az aznapra az értéke
-float LokMinMax::getDiffValue(Stock* stock, Datum from, Datum to){return 0;} /// mi a két nap közötti érték különöbzet
+float LokMinMax::getValue(Stock& stock, Datum datum){return 0;}	/// mi az aznapra az értéke
+float LokMinMax::getDiffValue(Stock& stock, Datum from, Datum to){return 0;} /// mi a két nap közötti érték különöbzet
 
-int LokMinMax::check(Stock* stock, Negyed datum){
+bool LokMinMax::check(Stock& stock, Negyed datum, Negyed datumhoz){
 
-    if (!stock->getNegyed(datum,datum.idoszakVege)) return 0;
+    if (!stock.getNegyed(datum,datum.idoszakVege)) return 0;
     int from=tol, to=ig, where=hol, r=kornyezet;
     if (onlyFloat){
         from = tol * 390.0f; to = ig * 390.0f; where = hol * 390.0f; r = kornyezet * 390.0f;
@@ -106,10 +106,10 @@ int LokMinMax::check(Stock* stock, Negyed datum){
     from = max(0,from);
     float szelsoErtek = 0; int szelsoIndex = -1;
     if (minimum) szelsoErtek=999999;
-    set<Nap>::iterator it = stock->mindenNap.find(datum.korrigaltTenylegesJelentes);
-    if (it==stock->mindenNap.end()) return 0;
+    set<Nap>::iterator it = stock.mindenNap.find(datum.korrigaltTenylegesJelentes);
+    if (it==stock.mindenNap.end()) return 0;
     for (int i=0; i<from && i<390;i++) it++;
-    for (int i=from; it!=stock->mindenNap.end() && i<=to;i++){
+    for (int i=from; it!=stock.mindenNap.end() && i<=to;i++){
         if (minimum && it->minimum<szelsoErtek){
             szelsoErtek=it->minimum;
             szelsoIndex=i;
@@ -123,5 +123,5 @@ int LokMinMax::check(Stock* stock, Negyed datum){
     if (where-r<=szelsoIndex && szelsoIndex<=where+r) return 1;
     return 0;
 }
-float LokMinMax::getValue(Stock* stock, Negyed datum){return 0;}
-float LokMinMax::getDiffValue(Stock* stock, Negyed from, Negyed to){return 0;}
+float LokMinMax::getValue(Stock& stock, Negyed datum){return 0;}
+float LokMinMax::getDiffValue(Stock& stock, Negyed from, Negyed to){return 0;}

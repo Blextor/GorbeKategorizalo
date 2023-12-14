@@ -121,11 +121,14 @@ int npB(string path, set<Nap> &osszesNap, bool reset=true){
 
 void loadStock(string name, Stock &stock, bool &sor){
     //clock_t t = clock();
+    ///cout<<"lSa"<<endl;
     stock.adatokBetoltese(name);
     //cout<<name<<" betoltve: "<<(clock()-t)<<"ms"<<endl;
     //t=clock();
     //cout<<"napok szama: "<<stock.mindenNap.size()<<endl;
+    ///cout<<"lSb"<<endl;
     stock.adatokFeldolgozasa();
+    ///cout<<"lSc"<<endl;
     sor=true;
     //cout<<name<<" feldolgozva: "<<(clock()-t)<<"ms"<<endl;
     //t=clock();
@@ -402,6 +405,7 @@ void Stock::adatokFeldolgozasa(){
     Nap ntm;
     Arfolyam itm;
     const Nap *legutobbiNap = &ntm;
+    ///cout<<"aFa"<<endl;
     for (const Nap& nap : mindenNap) {
 
         /// ha létezik az előző nap
@@ -526,6 +530,7 @@ void Stock::adatokFeldolgozasa(){
         legutobbiNap=&nap;
     }
 
+    ///cout<<"aFb"<<endl;
     /// megvannak a perc adatok és a napok összegzése
     /// kell a nagyedévek összehangolása is
     vector<Negyed> olvasztottNegyedek;
@@ -551,15 +556,24 @@ void Stock::adatokFeldolgozasa(){
             }
         }
     }
+
+    ///cout<<"aFc"<<endl;
     for (size_t i=0; i<olvasztottNegyedek.size(); i++){ /// beolvasztott negyedek törlése
-        negyedevek.erase(negyedevek.find(olvasztottNegyedek[i]));
+        set<Negyed>::iterator it = negyedevek.find(olvasztottNegyedek[i]);
+        if (negyedevek.end()!=it)
+            negyedevek.erase(negyedevek.find(olvasztottNegyedek[i]));
+        //else
+            //cout<<i<<endl;
     }
+    ///cout<<"aFc2"<<endl;
     for (size_t i=0; i<ujNegyedek.size(); i++){ /// új negyedek beillesztése
         negyedevek.insert(ujNegyedek[i]);
     }
+    ///cout<<"aFd"<<endl;
 
     /// negyedéves jelentések korrigálása, hogy nyitás előtt, vagy zárás után jött ki
     negyedevekKorrigalasa();
+    ///cout<<"aFe"<<endl;
 }
 
 void Stock::negyedevekKorrigalasa(){

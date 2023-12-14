@@ -31,13 +31,13 @@ struct Cimke {
 	virtual bool writeOut(ofstream ofs);
 	virtual bool writeOut();
 
-	virtual int check(Stock* stock, Datum datum);		/// nézzük meg, hogy igaz-e az adott dátumra
-	virtual float getValue(Stock* stock, Datum datum);	/// mi az aznapra az értéke
-	virtual float getDiffValue(Stock* stock, Datum from, Datum to); /// mi a két nap közötti érték különöbzet
+	virtual bool check(Stock& stock, Datum datum, Datum datumhoz);		/// nézzük meg, hogy igaz-e az adott dátumra
+	virtual float getValue(Stock& stock, Datum datum);	/// mi az aznapra az értéke
+	virtual float getDiffValue(Stock& stock, Datum from, Datum to); /// mi a két nap közötti érték különöbzet
 
-	virtual int check(Stock* stock, Negyed datum);
-    virtual float getValue(Stock* stock, Negyed datum);
-    virtual float getDiffValue(Stock* stock, Negyed from, Negyed to);
+	virtual bool check(Stock& stock, Negyed datum, Negyed datumhoz);
+    virtual float getValue(Stock& stock, Negyed datum);
+    virtual float getDiffValue(Stock& stock, Negyed from, Negyed to);
 
 };
 

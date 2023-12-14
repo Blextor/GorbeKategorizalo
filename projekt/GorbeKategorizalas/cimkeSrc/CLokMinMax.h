@@ -21,13 +21,13 @@ struct LokMinMax : Cimke {
 
 	LokMinMax* clone() const override { return new LokMinMax(*this); }
 
-    int check(Stock* stock, Datum datum) override;		/// nézzük meg, hogy igaz-e az adott dátumra
-	float getValue(Stock* stock, Datum datum) override;	/// mi az aznapra az értéke
-	float getDiffValue(Stock* stock, Datum from, Datum to) override; /// mi a két nap közötti érték különöbzet
+    bool check(Stock& stock, Datum datum, Datum datumhoz) override;		/// nézzük meg, hogy igaz-e az adott dátumra
+	float getValue(Stock& stock, Datum datum) override;	/// mi az aznapra az értéke
+	float getDiffValue(Stock& stock, Datum from, Datum to) override; /// mi a két nap közötti érték különöbzet
 
-	int check(Stock* stock, Negyed datum) override;
-    float getValue(Stock* stock, Negyed datum) override;
-    float getDiffValue(Stock* stock, Negyed from, Negyed to) override;
+	bool check(Stock& stock, Negyed datum, Negyed datumhoz) override;
+    float getValue(Stock& stock, Negyed datum) override;
+    float getDiffValue(Stock& stock, Negyed from, Negyed to) override;
 };
 
 #endif // CLOKMINMAX_H_INCLUDED
