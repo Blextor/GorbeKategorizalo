@@ -49,9 +49,11 @@ bool datumKinyeres(string ev, string honap, string nap, Datum& datum){
 
 bool ElemzesMenu::lekerdezesOsszeallitas(Lekerdezes &lek){
     Lekerdezes lekerdezes;
+    cout<<"l"<<endl;
     if (!datumKinyeres(evTol.str,honapTol.str,napTol.str,lekerdezes.mettol)) return false;
     if (!datumKinyeres(evIg.str,honapIg.str,napIg.str,lekerdezes.meddig)) return false;
     if (reszInp.str.size() == 0 && reszCsopInp.str.size() == 0) return false;
+    cout<<"k"<<endl;
     if (reszInp.str.size() != 0) {
         vector<string> temp = osszesReszveny();
         string str = toUpper(reszInp.str);
@@ -65,9 +67,11 @@ bool ElemzesMenu::lekerdezesOsszeallitas(Lekerdezes &lek){
         if (find(temp.begin(),temp.end(),reszCsopInp.str)==temp.end()) return false;
         lekerdezes.reszvenyek=csoportReszvenyei(lekerdezes.reszvenyCsoport);
     }
+    cout<<"j"<<endl;
 
     lekerdezes.feltetelek.clear();
     MindenCimke &m = MindenCimke::getInstance();
+    cout<<"i"<<endl;
     for (int i=0; i<(int)feltetelek.size(); i++){
         Feltetel ujFeltetel; ujFeltetel.cimkek.clear();
         ujFeltetel.komper = feltetelek[i].komper;
@@ -82,7 +86,7 @@ bool ElemzesMenu::lekerdezesOsszeallitas(Lekerdezes &lek){
         vector<string> cimkeNevek = feltetelek[i].felvettCimkek.elemek;
         Cimke* cimke;
         for (int j=0; j<(int)cimkeNevek.size(); j++){
-            if (m.getCimkeByNameAndType(cimkeNevek[i],
+            if (m.getCimkeByNameAndType(cimkeNevek[j],
             getCimkeType(ujFeltetel.komper,ujFeltetel.nap,ujFeltetel.negyed,ujFeltetel.oFloat),
             cimke)){
                 ujFeltetel.cimkek.push_back(cimke);
@@ -93,6 +97,7 @@ bool ElemzesMenu::lekerdezesOsszeallitas(Lekerdezes &lek){
         }
         lekerdezes.feltetelek.push_back(ujFeltetel);
     }
+    cout<<"h"<<endl;
 
     lekerdezes.elemezendoek.clear();
     for (int i=0; i<(int)elemezendoek.size(); i++){
@@ -109,7 +114,7 @@ bool ElemzesMenu::lekerdezesOsszeallitas(Lekerdezes &lek){
         vector<string> cimkeNevek = elemezendoek[i].felvettCimkek.elemek;
         Cimke* cimke;
         for (int j=0; j<(int)cimkeNevek.size(); j++){
-            if (m.getCimkeByNameAndType(cimkeNevek[i],
+            if (m.getCimkeByNameAndType(cimkeNevek[j],
             getCimkeType(ujFeltetel.komper,ujFeltetel.nap,ujFeltetel.negyed,ujFeltetel.oFloat),
             cimke)){
                 ujFeltetel.cimkek.push_back(cimke);
@@ -120,10 +125,12 @@ bool ElemzesMenu::lekerdezesOsszeallitas(Lekerdezes &lek){
         }
         lekerdezes.elemezendoek.push_back(ujFeltetel);
     }
+    cout<<"g"<<endl;
     if (lekerdezes.elemezendoek.size() == 0 ||
         lekerdezes.elemezendoek.size() == 0)
             return false;
     lek=lekerdezes;
+    cout<<"f"<<endl;
 
     return true;
 }
@@ -227,7 +234,9 @@ void ElemzesMenu::inputHandle(){
             /// kérdés, hogy eltaláltunk-e valami kattinthatót
             if (fomenubeB.inClick(MX,MY)) *menu = foMenu;
             else if (elemzeshezB.inClick(MX,MY)) {
+                cout<<"lekOssz"<<endl;
                 bool b = lekerdezesOsszeallitas(lekerdezes);
+                cout<<"lekEloKesz"<<endl;
                 //cout<<"lek "<<true<<b<<endl;
                 if (b){
                     /**

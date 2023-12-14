@@ -86,20 +86,20 @@ bool LokMinMax::check(Stock& stock, Datum datum, Datum datumhoz){
     for (int i=0; i<from && i<390;i++) it++;
     //cout<<nap.percek.size()<<endl;
     for (int i=from; i<390 && i<=to;i++){ //Arfolyam a; a.idopont.ora
-        cout<<i<<" "<<it->minimum<<" "<<it->idopont.ora<<" "<<it->idopont.perc<<endl;
-        if (minimum && it->minimum<szelsoErtek){
-            szelsoErtek=it->minimum;
+        ///cout<<i<<" "<<it->minimum<<" "<<it->idopont.ora<<" "<<it->idopont.perc<<endl;
+        if (minimum && it->open<szelsoErtek){
+            szelsoErtek=it->open;
             szelsoIndex=i;
         }
-        if (!minimum && it->maximum>szelsoErtek){
-            szelsoErtek=it->maximum;
+        if (!minimum && it->open>szelsoErtek){
+            szelsoErtek=it->open;
             szelsoIndex=i;
         }
         it++;
     }
-    cout<<datum.year<<" "<<datum.month<<" "<<datum.day<<endl;
-    cout<<szelsoErtek<<endl;
-    cout<<(where-r)<<" "<<szelsoIndex<<" "<<(where+r)<<" "<<r<<endl;
+    ///cout<<datum.year<<" "<<datum.month<<" "<<datum.day<<endl;
+    ///cout<<szelsoErtek<<endl;
+    ///cout<<(where-r)<<" "<<szelsoIndex<<" "<<(where+r)<<" "<<r<<endl;
     if (where-r<=szelsoIndex && szelsoIndex<=where+r) {
         return true;
     }

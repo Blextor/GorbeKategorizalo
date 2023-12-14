@@ -297,9 +297,10 @@ void lekerdezesProc(Lekerdezes lek, vector<Pelda> &peldak, ProgressBar &progBar)
     peldak=lek.joPeldak;
     cout<<"eltelt ido: "<<clock()-t<<endl;
 
-    for (int i=0; i<peldak.size(); i++){
+    for (int i=0; i<peldak.size() && false; i++){
         Datum d = peldak[i].felteteliDatumok[0][0];
-        cout<<peldak[i].reszNev<<" "<<d.year<<" "<<d.month<<" "<<d.day<<endl;
+        d = peldak[i].datumok[0][0];
+         cout<<peldak[i].reszNev<<" "<<d.year<<" "<<d.month<<" "<<d.day<<endl;
         /*
         for (int j=0; j<peldak[i].size(); j++){
 
