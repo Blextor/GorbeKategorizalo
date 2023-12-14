@@ -186,9 +186,11 @@ void Lekerdezes::naposVizsgalat(){
         Pelda pelda; pelda.reszNev=stock.name;
         Cimke* c;
         bool baj = false; /// ha az egyik feltétel nem teljesül
+        bool datumError = false;
+        Datum nap;
+        Datum naphoz;
         for (int i=0; i<vizsgaltNap.size(); i++){
-            Datum nap = vizsgaltNap[i].nap->datum;
-            Datum naphoz;
+            nap = vizsgaltNap[i].nap->datum;
             if (vizsgaltNap[i].komper) naphoz = vizsgaltNap[i].naphoz->datum;
             vector<Datum> ketNap; ketNap.push_back(nap);
             if (vizsgaltNap[i].komper) ketNap.push_back(naphoz);
@@ -198,7 +200,11 @@ void Lekerdezes::naposVizsgalat(){
                     break;
                 }
             }
-            if (baj) break;
+            if (baj) {
+                datumError=true;
+                //cout<<"nap hiba "<<nap.year<<" "<<nap.month<<" "<<nap.day<<endl;
+                break;
+            }
             vector<Cimke*> cimkek;
             if (vizsgaltNap[i].felt) cimkek = feltetelek[vizsgaltNap[i].feltetelIdx].cimkek;
             else cimkek = elemezendoek[vizsgaltNap[i].elemezendoIdx].cimkek;
@@ -226,7 +232,14 @@ void Lekerdezes::naposVizsgalat(){
             pelda.elemezendoekTeljesulese.push_back(elemezendoekB);
         }
 
-        if (!baj) joPeldak.push_back(pelda);
+        if (!baj) {
+            joPeldak.push_back(pelda);
+        } else if (!datumError && false){
+            cout<<"nem teljesul a feltetel "<<nap.year<<" "<<nap.month<<" "<<nap.day<<endl;
+            cout<<vizsgaltNap[0].feltetelIdx<<endl;
+            cout<<feltetelek[vizsgaltNap[0].feltetelIdx].hanyadik<<" "<<feltetelek[vizsgaltNap[0].feltetelIdx].nap<<endl;
+            cout<<feltetelek[vizsgaltNap[0].feltetelIdx].cimkek[0]->name<<" "<<feltetelek[vizsgaltNap[0].feltetelIdx].cimkek[0]->IDname<<endl;
+        }
 
         for (int i=0; i<vizsgaltNap.size(); i++){ /// lépünk egyet elõre a napokon
             vizsgaltNap[i].nap++;
@@ -245,7 +258,10 @@ void Lekerdezes::negyedevesVizsgalat(){
 }
 
 void lekProc(Lekerdezes lek, int i, vector<Pelda> &peldak){
+    clock_t t = clock();
+    cout<<"start ido2: "<<clock()<<endl;
     lek.lStock(i);
+    cout<<"eltelt ido2: "<<clock()-t<<endl;
     lek.feltetelekLekFeltek();
     lek.elemezendoLekFeltekHozzaadasa();
     lek.eltolasMertekeLekFelt();
@@ -254,6 +270,7 @@ void lekProc(Lekerdezes lek, int i, vector<Pelda> &peldak){
     if (lek.csakNapok) lek.naposVizsgalat();
     else lek.negyedevesVizsgalat();
     //lek.process();
+    cout<<"eltelt ido3: "<<clock()-t<<endl;
     peldak = lek.joPeldak;
 }
 
@@ -279,4 +296,13 @@ void lekerdezesProc(Lekerdezes lek, vector<Pelda> &peldak, ProgressBar &progBar)
     //lek.process();
     peldak=lek.joPeldak;
     cout<<"eltelt ido: "<<clock()-t<<endl;
+
+    for (int i=0; i<peldak.size(); i++){
+        Datum d = peldak[i].felteteliDatumok[0][0];
+        cout<<peldak[i].reszNev<<" "<<d.year<<" "<<d.month<<" "<<d.day<<endl;
+        /*
+        for (int j=0; j<peldak[i].size(); j++){
+
+        }*/
+    }
 }

@@ -13,6 +13,7 @@ int LokMinMax::getI(){return categoryID;};
 bool LokMinMax::readIn(ifstream ifs){
     int napNegy = 0;
     ifs>>name>>napNegy>>minimum>>tol>>ig>>hol>>kornyezet;
+    //cout<<"b " <<minimum<<tol<<ig<<hol<<kornyezet<<endl;
     napNegyedSet(napNegy);
     return true;
 }
@@ -52,7 +53,7 @@ bool LokMinMax::readIn(vector<string> param) {
     stringstream ss5; ss5<<param[7];
     ss5>>f; if (ss5.fail()) return false;
     kornyezet=f;
-
+    //cout<<"a " <<minimum<<tol<<ig<<hol<<kornyezet<<endl;
     return true;
 }
 bool LokMinMax::writeOut() {
@@ -69,7 +70,7 @@ bool LokMinMax::writeOut() {
 
 bool LokMinMax::check(Stock& stock, Datum datum, Datum datumhoz){
     Nap nap(datum);
-    if (!stock.getNap(nap,datum)) return 0;
+    if (!stock.getNap(nap,datum)) return false;
     int from=tol, to=ig, where=hol, r=kornyezet;
     if (onlyFloat){
         from = tol * 390.0f; to = ig * 390.0f; where = hol * 390.0f; r = kornyezet * 390.0f;
@@ -78,8 +79,14 @@ bool LokMinMax::check(Stock& stock, Datum datum, Datum datumhoz){
     float szelsoErtek = 0; int szelsoIndex = -1;
     if (minimum) szelsoErtek=999999;
     set<Arfolyam>::iterator it = nap.percek.begin();
+    //cout<<from<<endl;
+    while(it->idopont.ora!=9 || it->idopont.perc!=30){
+        it++;
+    }
     for (int i=0; i<from && i<390;i++) it++;
-    for (int i=from; i<390 && i<=to;i++){
+    //cout<<nap.percek.size()<<endl;
+    for (int i=from; i<390 && i<=to;i++){ //Arfolyam a; a.idopont.ora
+        cout<<i<<" "<<it->minimum<<" "<<it->idopont.ora<<" "<<it->idopont.perc<<endl;
         if (minimum && it->minimum<szelsoErtek){
             szelsoErtek=it->minimum;
             szelsoIndex=i;
@@ -90,8 +97,14 @@ bool LokMinMax::check(Stock& stock, Datum datum, Datum datumhoz){
         }
         it++;
     }
-    if (where-r<=szelsoIndex && szelsoIndex<=where+r) return 1;
-    return 0;
+    cout<<datum.year<<" "<<datum.month<<" "<<datum.day<<endl;
+    cout<<szelsoErtek<<endl;
+    cout<<(where-r)<<" "<<szelsoIndex<<" "<<(where+r)<<" "<<r<<endl;
+    if (where-r<=szelsoIndex && szelsoIndex<=where+r) {
+        return true;
+    }
+    //cout<<(where-r)<<" "<<szelsoIndex<<" "<<(where+r)<<" "<<r<<endl;
+    return false;
 }		/// nézzük meg, hogy igaz-e az adott dátumra
 float LokMinMax::getValue(Stock& stock, Datum datum){return 0;}	/// mi az aznapra az értéke
 float LokMinMax::getDiffValue(Stock& stock, Datum from, Datum to){return 0;} /// mi a két nap közötti érték különöbzet
