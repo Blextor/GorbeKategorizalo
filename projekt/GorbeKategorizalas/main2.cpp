@@ -199,7 +199,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                 ok = ok && getValueFromIdopont(erdekesPercek[3],15,56,ertekek);
                 ok = ok && getValueFromIdopont(erdekesPercek[4],15,59,ertekek);
 
-                bool felmegy = erdekesPercek[0]<erdekesPercek[4];
+                bool felmegy = adatok[29]<zar;
                 float maxiPerMini = 999999;
                 if (felmegy) maxiPerMini = 0;
                 Idopont vege = nap.idoZaras; vege.kovetkezoPerc();
