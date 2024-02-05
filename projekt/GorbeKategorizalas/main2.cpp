@@ -92,7 +92,19 @@ void konzolKezel(){
     }
 }
 
-
+bool getValueFromIdopont(float &ret, int o, int p, set<Arfolyam> &ertekek){
+    Idopont ido(o,p);
+    Arfolyam af(ido.ora,ido.perc);
+    set<Arfolyam>::iterator e = ertekek.find(af);
+    if (e!=ertekek.end()){
+        ret=e->open;
+        if (ret==-1 || !ret*2>ret)
+            return false;
+    } else {
+        return false;
+    }
+    return true;
+}
 
 void main2( SDL_Window &window, SDL_Renderer &renderer){
     srand(time(NULL));
@@ -121,6 +133,8 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     cout<<"a1: "<<(clock()-t)<<endl;
     t=clock();
 
+
+
     /*
     Stock stock11,stock22,stock33,stock44,stock55;
     thread th1(loadStock,"NVDA",ref(stock11));
@@ -131,6 +145,109 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     th1.join();th2.join();th3.join();th4.join();th5.join();
     */
     /// manuális teszt
+    vector<string> reszvenyekNeve = csoportReszvenyei("osszes"); //osszesReszveny();
+    reszvenyekNeve = osszesReszveny();
+    int thCnt = 16;
+    vector<thread> szalak; szalak.resize(thCnt);
+    vector<Stock> stocks; stocks.resize(thCnt);
+    long long osszesPelda = 0, joPelda = 0;
+    int z1 = 0, z2 = 0, z3 = 0, z4 = 0, z5 = 0, z6 = 0;
+    float f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0, f6 = 0;
+    bool m;
+    vector<ofstream> fajlok(thCnt);
+    ofstream fajl("fofajl.txt");
+    for (size_t i=0;i<0;i++){
+        string fajlnev = "alma" + i;
+        fajlnev = fajlnev + ".txt";
+        fajlok[i].open(fajlnev);
+    }
+    cout<<reszvenyekNeve.size()<<endl;
+    Datum utolsoNap(2024,1,29);
+    Datum elsoNap(2014,1,8);
+    for (size_t i=0; i<reszvenyekNeve.size();){
+        for (int j=0; j<thCnt; j++){
+
+            szalak[j] = thread(loadStock,reszvenyekNeve[i],ref(stocks[j]),ref(m));
+            i++;
+            cout<<i<<endl;
+            if (i>=reszvenyekNeve.size()) break;
+        }
+
+
+        for (int j=0; j<thCnt; j++){
+            if (szalak[j].joinable())
+                szalak[j].join();
+            Nap nap; Datum datum = elsoNap;
+            stocks[j].getNap(nap,datum);
+            while(nap.datum<utolsoNap){
+                Idopont ido = nap.idoNyitas;
+                set<Arfolyam> ertekek = nap.percek;
+                bool ok = true;
+                float adatok[30];
+                for (int k=0; k<30; k++){
+                    ok = ok && getValueFromIdopont(adatok[k],ido.ora,ido.perc,ertekek);
+                    ido.kovetkezoPerc();
+                }
+                float zar;
+                ok = ok && getValueFromIdopont(zar,nap.idoZaras.ora,nap.idoZaras.perc,ertekek);
+                /// ALAPADATOK
+
+                float erdekesPercek[5];
+                ok = ok && getValueFromIdopont(erdekesPercek[0],9,30,ertekek);
+                ok = ok && getValueFromIdopont(erdekesPercek[1],9,32,ertekek);
+                ok = ok && getValueFromIdopont(erdekesPercek[2],9,35,ertekek);
+                ok = ok && getValueFromIdopont(erdekesPercek[3],15,56,ertekek);
+                ok = ok && getValueFromIdopont(erdekesPercek[4],15,59,ertekek);
+
+                bool felmegy = erdekesPercek[0]<erdekesPercek[4];
+                float maxiPerMini = 999999;
+                if (felmegy) maxiPerMini = 0;
+                Idopont vege = nap.idoZaras; vege.kovetkezoPerc();
+                Idopont keresettIdo;
+                ido = nap.idoNyitas;
+                for (int k=0; ido<vege; k++){
+                    float ret  = 0;
+                    ok = ok && getValueFromIdopont(ret,ido.ora,ido.perc,ertekek);
+                    if (!ok) break;
+                    if (felmegy) {
+                        if (ret>maxiPerMini){
+                            maxiPerMini=ret;
+                            keresettIdo=ido;
+                        }
+                    } else {
+                        if (ret<maxiPerMini){
+                            maxiPerMini=ret;
+                            keresettIdo=ido;
+                        }
+                    }
+                    ido.kovetkezoPerc();
+                }
+
+                if (ok){
+
+                    for (int k=0; k<30; k++){
+                        fajl<<adatok[k]<<" ";
+                    }
+                    fajl<<zar<<" ";
+                    fajl<<stocks[j].name<<" ";
+                    fajl<<nap.datum.toString()[0]<<" "<<nap.datum.toString()[1]<<" "<<nap.datum.toString()[2]<<" ";
+                    for (int k=0; k<5; k++){
+                        fajl<<erdekesPercek[k]<<" ";
+                    }
+                    fajl<<maxiPerMini<<" "<<keresettIdo.ora<<" "<<keresettIdo.perc<<endl;
+                }
+                ///cout<<nap.datum.year<<" "<<nap.datum.month<<" "<<nap.datum.day<<endl;
+                //cout<<nap.kovetkezoNap.toString()[0]<<" "<<nap.kovetkezoNap.toString()[1]<<" "<<nap.kovetkezoNap.toString()[2]<<endl;
+                if (nap.kovetkezoNap.year==-1) break;
+                stocks[j].getNap(nap,nap.kovetkezoNap);
+
+            }
+        }
+    }
+    fajl.close();
+    for (size_t i=0;i<0;i++){
+        fajlok[i].close();
+    }
     /**
     vector<string> reszvenyekNeve = csoportReszvenyei("estere"); //osszesReszveny();
     reszvenyekNeve = osszesReszveny();
