@@ -145,6 +145,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     th1.join();th2.join();th3.join();th4.join();th5.join();
     */
     /// manuális teszt
+    if (true){
     vector<string> reszvenyekNeve = csoportReszvenyei("osszes"); //osszesReszveny();
     reszvenyekNeve = osszesReszveny();
     int thCnt = 16;
@@ -164,7 +165,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     cout<<reszvenyekNeve.size()<<endl;
     Datum utolsoNap(2024,1,29);
     Datum elsoNap(2014,1,8);
-    for (size_t i=0; i<reszvenyekNeve.size();){
+    for (size_t i=1000; i<reszvenyekNeve.size();){
         for (int j=0; j<thCnt; j++){
 
             szalak[j] = thread(loadStock,reszvenyekNeve[i],ref(stocks[j]),ref(m));
@@ -193,9 +194,9 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                 /// ALAPADATOK
 
                 float erdekesPercek[5];
-                ok = ok && getValueFromIdopont(erdekesPercek[0],9,30,ertekek);
-                ok = ok && getValueFromIdopont(erdekesPercek[1],9,32,ertekek);
-                ok = ok && getValueFromIdopont(erdekesPercek[2],9,35,ertekek);
+                ok = ok && getValueFromIdopont(erdekesPercek[0],10,0,ertekek);
+                ok = ok && getValueFromIdopont(erdekesPercek[1],10,2,ertekek);
+                ok = ok && getValueFromIdopont(erdekesPercek[2],10,5,ertekek);
                 ok = ok && getValueFromIdopont(erdekesPercek[3],15,56,ertekek);
                 ok = ok && getValueFromIdopont(erdekesPercek[4],15,59,ertekek);
 
@@ -248,29 +249,52 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     for (size_t i=0;i<0;i++){
         fajlok[i].close();
     }
-    /**
+    }
+
+    /// Egy speciális eset
+    if (true){
     vector<string> reszvenyekNeve = csoportReszvenyei("estere"); //osszesReszveny();
     reszvenyekNeve = osszesReszveny();
-    int thCnt = 10;
+    int thCnt = 20;
     vector<thread> szalak; szalak.resize(thCnt);
     vector<Stock> stocks; stocks.resize(thCnt);
+    bool m;
     long long osszesPelda = 0, joPelda = 0;
     int z1 = 0, z2 = 0, z3 = 0, z4 = 0, z5 = 0, z6 = 0;
     float f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0, f6 = 0;
-    for (size_t i=1000; i<reszvenyekNeve.size(); i++){
+    array<array<array<array<float,2>,870>,870>,870> kombinaciokProfitja;
+    if (true){
+        array<float,2> basic = {1,1};
+        array<array<float,2>,870> vec3; for (int ic=0; ic<870; ic++) vec3[ic]=basic;
+        array<array<array<float,2>,870>,870> vec4; for (int ic=0; ic<870; ic++) vec4[ic]=vec3;
+        for (int ic=0; ic<870; ic++) {cout<<ic<<endl;kombinaciokProfitja[ic]=vec4;}
+    }
+    array<array<array<bool,870>,870>,870> kombinaciok;
+    if (true){
+        bool basic = false;
+        array<bool,870> vec3; for (int ic=0; ic<870; ic++) vec3[ic]=basic;
+        array<array<bool,870>,870> vec4; for (int ic=0; ic<870; ic++) vec4[ic]=vec3;
+        for (int ic=0; ic<870; ic++) {cout<<ic<<endl;kombinaciok[ic]=vec4;}
+    }
+
+
+    float zL = 0, zIL = 0, oE = 0, fJ = 0, pF = 1.0f;
+    float zL2 = 0, zIL2 = 0, oE2 = 0, fJ2 = 0, pF2 = 1.0f;
+    for (size_t i=0; i<reszvenyekNeve.size(); i++){
         for (int j=0; j<thCnt; j++){
-            szalak[j] = thread(loadStock,reszvenyekNeve[i],ref(stocks[j]));
+            szalak[j] = thread(loadStock,reszvenyekNeve[i],ref(stocks[j]),ref(m));
             i++;
             //cout<<i<<endl;
             if (i>=reszvenyekNeve.size()) break;
         }
-
 
         for (int j=0; j<thCnt; j++){
             if (szalak[j].joinable())
                 szalak[j].join();
 
             if (stocks[j].negyedevek.size()<3) continue;
+            Nap kezdonap(2015,1,5);
+            //Nap kezdonap(2023,1,9);
             Nap ntemp(2023,10,18);
             if (stocks[j].mindenNap.find(ntemp) == stocks[j].mindenNap.end()) {
                 Nap n2temp = *(stocks[j].mindenNap.rbegin());
@@ -279,11 +303,91 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                 cout<<stocks[j].name<<" "<<n2temp.datum.year<<" "<<n2temp.datum.month<<" "<<n2temp.datum.day<<endl;
 
             }
-            set<Negyed>::iterator n0, n1;
-            n0 = stocks[j].negyedevek.begin();
-            n1=++n0;
-            n0--;
+            set<Nap>::iterator reszvenyNapjai = stocks[j].mindenNap.find(kezdonap);
+            if (reszvenyNapjai==stocks[j].mindenNap.end()) continue;
 
+            float felfeleJobban = 0, osszesEset = 0, zarasLejebb = 0, zarasIsLejebb = 0;
+            float profit = 1.0f, minNagyafter = 0 ,minNK = 0, startKisebb = 0;
+
+            for (;reszvenyNapjai!=stocks[j].mindenNap.end();){
+                Arfolyam perc(9,30);
+                Arfolyam percZ(15,58);
+                float startMin = 100000.f, startMax = 0.0f, start = 0.0;
+                set<Arfolyam>::iterator kperc =  reszvenyNapjai->percek.find(perc);
+                set<Arfolyam>::iterator kpercZ =  reszvenyNapjai->percek.find(percZ);
+                if (reszvenyNapjai->percek.end()==kperc || reszvenyNapjai->percek.end()==kpercZ) continue;
+                start = kperc->open;
+                startMin = start; startMax = start;
+                float p30;
+                for (int cntPerc = 0;reszvenyNapjai->percek.end()!=kperc && cntPerc<30; cntPerc++){
+                    startMin=min(startMin,kperc->minimum);
+                    startMax=max(startMax,kperc->maximum);
+                    p30=kperc->close;
+                    kperc++;
+                }
+                Arfolyam percK(10,0);
+                set<Arfolyam>::iterator kpercK =  reszvenyNapjai->percek.find(percK);
+                if (reszvenyNapjai->percek.end()==kpercK) continue;
+                float afterMin = p30, afterMax = p30;
+                for (int cntPerc = 0;reszvenyNapjai->percek.end()!=kpercK && cntPerc<355; cntPerc++){
+                    afterMin=min(afterMin,kpercK->minimum);
+                    afterMax=max(afterMax,kpercK->maximum);
+                    //p30=kpercK->close;
+                    kpercK++;
+                }
+                float endVal = kpercZ->close;
+                if ((startMax-start)>(start-startMin)) {
+                    felfeleJobban++;
+                    if (p30<start){
+                        zarasLejebb++;
+                        if (p30>endVal){
+                            zarasIsLejebb++;
+                            ///profit *= p30/endVal*0.995;
+                        } else {
+                        }
+                        //profit *= endVal/p30*0.995;
+                        //profit *= p30/endVal*0.995;
+                        if (afterMin/p30<=0.985){
+                            profit*=1.01f;
+                        } else {
+                            profit *= max(p30/endVal*0.995f,0.99f);
+                        }
+                        //profit *= p30/afterMin*0.995;
+                    }
+                    if (afterMin/p30<=0.985){
+                        //minNagyafter++;
+                    }
+                    if (afterMax/p30>=1.015){
+                        minNagyafter++;
+                    }
+                }
+                if (p30<start){
+                    startKisebb++;
+                    if (afterMin/p30<=0.985){
+                        //minNK++;
+                    }
+                    if (afterMax/p30>=1.015){
+                        minNK++;
+                    }
+                }
+                osszesEset++;
+                reszvenyNapjai++;
+            }
+            cout<<stocks[j].name<<" "<<felfeleJobban/osszesEset*100.f<<" "<<zarasLejebb/felfeleJobban*100.f<<" "<<zarasIsLejebb/zarasLejebb*100.f<<" "<<zarasIsLejebb<<" / "<<zarasLejebb<<" / "<<felfeleJobban<<" / "<<osszesEset<<endl;
+            cout<<stocks[j].name<<", profit: "<<profit<<", "<<minNagyafter/felfeleJobban<<" "<<minNK/startKisebb<<endl;
+            if (osszesEset==2315){
+                fJ+=felfeleJobban; oE+=osszesEset; zL+=zarasLejebb; zIL+=zarasIsLejebb; pF+=profit;
+                f1+=minNagyafter; f2+=minNK; f3+=startKisebb;
+                z1++;
+            }
+            fJ2+=felfeleJobban; oE2+=osszesEset; zL2+=zarasLejebb; zIL2+=zarasIsLejebb; pF2+=profit;
+            f4+=minNagyafter; f5+=minNK; f6+=startKisebb;
+            z2++;
+            ///set<Negyed>::iterator n0, n1;
+            ///n0 = stocks[j].negyedevek.begin();
+            ///n1=++n0;
+            //n0--;
+            /*
             for (;n1!=stocks[j].negyedevek.end();++n0,++n1){
 
                 Nap dv((*n0).negyedevVege);
@@ -376,14 +480,20 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                 //cout<<"osszes, jo: "<<osszesPelda<<" "<<joPelda<<" "<<(float)joPelda/osszesPelda<<endl;
 
             }
-            cout<<i+j<<endl;
+            */
+            //cout<<i+j<<endl;
         }
+        cout<<"stabil: "<<fJ/oE*100.f<<" "<<zL/fJ*100.f<<" "<<zIL/zL*100.f<<" "<<zIL<<" / "<<zL<<" / "<<fJ<<" / "<<oE<<endl;
+        cout<<"minden: "<<fJ2/oE2*100.f<<" "<<zL2/fJ2*100.f<<" "<<zIL2/zL2*100.f<<" "<<zIL2<<" / "<<zL2<<" / "<<fJ2<<" / "<<oE2<<endl;
+        cout<<"stabil: "<<pF/z1<<", "<<f1/fJ<<" "<<f2/f3<<endl;
+        cout<<"minden: "<<pF2/z2<<", "<<f4/fJ2<<" "<<f5/f6<<endl;
 
     }
     cout<<z1<<" "<<z2<<" "<<z3<<" "<<z4<<" "<<z5<<" "<<z6<<endl;
     if (osszesPelda>0)cout<<z1*100/osszesPelda<<" "<<z2*100/osszesPelda<<" "<<z3*100/osszesPelda<<" "<<z4*100/osszesPelda<<" "<<z5*100/osszesPelda<<" "<<z6*100/osszesPelda<<endl;
     cout<<"osszes, jo: "<<osszesPelda<<" "<<joPelda<<" "<<(float)joPelda/osszesPelda<<endl;
-    */
+    }
+    //*/
 
 
 
