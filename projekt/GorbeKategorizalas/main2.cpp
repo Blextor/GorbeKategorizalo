@@ -106,6 +106,38 @@ bool getValueFromIdopont(float &ret, int o, int p, set<Arfolyam> &ertekek){
     return true;
 }
 
+void iterFV(int iC,vector<array<array<bool,870>,870>>& kombinaciok ,vector<vector<array<array<float,10>,870>>>& kombinaciokProfitja ,vector<bool>& kombok, float startV, float endV, int thCnt, int nap){
+    int ic1=iC;
+    nap-=1; nap*=2;
+    for (int ic1 = iC;ic1<iC+thCnt && ic1<435;ic1++){
+    ///cout<<ic1<<endl;
+    for (int k1=0; k1<2; k1++){
+        for (int k2=0;k2<2; k2++){
+            for (int k3=0;k3<2;k3++){
+//    ths[ic1] = thread(iterFV,ic1,ref(kombinaciok),ref(kombinaciokProfitja),ref(kombok),startV,endV);
+    for (int ic2=ic1+1; ic2<435; ic2++){
+        for (int ic3=ic2+1; ic3<435; ic3++){
+                        int c1=ic1, c2=ic2 ,c3=ic3;
+                        if (k1==1) c1+=435;
+                        if (k2==1) c2+=435;
+                        if (k3==1) c3+=435;
+                        kombinaciok[c1][c2][c3]=kombok[c1]&&kombok[c2]&&kombok[c3];
+
+                        if (kombinaciok[c1][c2][c3]){
+                            kombinaciokProfitja[c1][c2][c3][nap+0] *= startV/endV*0.995f;
+                        } else {
+                            kombinaciokProfitja[c1][c2][c3][nap+1] *= endV/startV*0.995f;
+                        }
+                        //cout<<"a"<<endl;
+                    }
+                }
+            }
+        }
+    }
+    }
+    return;
+}
+
 void main2( SDL_Window &window, SDL_Renderer &renderer){
     srand(time(NULL));
     SDL_Event ev;
@@ -133,6 +165,9 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     cout<<"a1: "<<(clock()-t)<<endl;
     t=clock();
 
+    SDL_Pack sdlp(&window,&renderer,&ev);
+    Menu *actualMenu;
+    MenuK menuk(sdlp,&actualMenu);
 
 
     /*
@@ -253,45 +288,56 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
     /// Egy speciális eset
     if (true){
-    vector<string> reszvenyekNeve = csoportReszvenyei("estere"); //osszesReszveny();
-    reszvenyekNeve = osszesReszveny();
-    int thCnt = 20;
+    vector<string> reszvenyekNeve = csoportReszvenyei("osszes"); //osszesReszveny();
+    cout<<reszvenyekNeve.size()<<endl;
+    //reszvenyekNeve = osszesReszveny();
+    reszvenyekNeve.clear(); reszvenyekNeve.push_back("NVDA");
+    int thCnt = 1;
     vector<thread> szalak; szalak.resize(thCnt);
     vector<Stock> stocks; stocks.resize(thCnt);
     bool m;
     long long osszesPelda = 0, joPelda = 0;
     int z1 = 0, z2 = 0, z3 = 0, z4 = 0, z5 = 0, z6 = 0;
     float f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0, f6 = 0;
-    array<array<array<array<float,2>,870>,870>,870> kombinaciokProfitja;
+
+
+    cout<<"alma"<<endl;
+    vector<vector<array<array<float,10>,870>>> kombinaciokProfitja;
+    cout<<"alma"<<endl;
     if (true){
-        array<float,2> basic = {1,1};
-        array<array<float,2>,870> vec3; for (int ic=0; ic<870; ic++) vec3[ic]=basic;
-        array<array<array<float,2>,870>,870> vec4; for (int ic=0; ic<870; ic++) vec4[ic]=vec3;
-        for (int ic=0; ic<870; ic++) {cout<<ic<<endl;kombinaciokProfitja[ic]=vec4;}
+        array<float,10> basic = {1,1,1,1,1,1,1,1,1,1};
+        array<array<float,10>,870> vec3; for (int ic=0; ic<870; ic++) vec3[ic]=basic;
+        vector<array<array<float,10>,870>> vec4; for (int ic=0; ic<870; ic++) vec4.push_back(vec3);
+        for (int ic=0; ic<870; ic++) kombinaciokProfitja.push_back(vec4);
     }
-    array<array<array<bool,870>,870>,870> kombinaciok;
+
+    vector<array<array<bool,870>,870>> kombinaciok;
     if (true){
         bool basic = false;
         array<bool,870> vec3; for (int ic=0; ic<870; ic++) vec3[ic]=basic;
         array<array<bool,870>,870> vec4; for (int ic=0; ic<870; ic++) vec4[ic]=vec3;
-        for (int ic=0; ic<870; ic++) {cout<<ic<<endl;kombinaciok[ic]=vec4;}
+        for (int ic=0; ic<870; ic++) kombinaciok.push_back(vec4);
     }
+    cout<<"alma"<<endl;
 
 
     float zL = 0, zIL = 0, oE = 0, fJ = 0, pF = 1.0f;
     float zL2 = 0, zIL2 = 0, oE2 = 0, fJ2 = 0, pF2 = 1.0f;
-    for (size_t i=0; i<reszvenyekNeve.size(); i++){
+    for (size_t i=0; i<reszvenyekNeve.size() && i<1; i++){
+        int savedI = i;
         for (int j=0; j<thCnt; j++){
             szalak[j] = thread(loadStock,reszvenyekNeve[i],ref(stocks[j]),ref(m));
             i++;
             //cout<<i<<endl;
             if (i>=reszvenyekNeve.size()) break;
+            cout<<i<<endl;
         }
 
         for (int j=0; j<thCnt; j++){
+            if (savedI+j>=reszvenyekNeve.size()) continue;
+            clock_t t1 = clock();
             if (szalak[j].joinable())
                 szalak[j].join();
-
             if (stocks[j].negyedevek.size()<3) continue;
             Nap kezdonap(2015,1,5);
             //Nap kezdonap(2023,1,9);
@@ -308,84 +354,84 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
             float felfeleJobban = 0, osszesEset = 0, zarasLejebb = 0, zarasIsLejebb = 0;
             float profit = 1.0f, minNagyafter = 0 ,minNK = 0, startKisebb = 0;
-
+            int nCnt = 0;
             for (;reszvenyNapjai!=stocks[j].mindenNap.end();){
+                ///cout<<j<<" "<<nCnt<<endl;
+                nCnt++;
+                //cout<<reszvenyNapjai->datum.day<<endl;;
                 Arfolyam perc(9,30);
                 Arfolyam percZ(15,58);
-                float startMin = 100000.f, startMax = 0.0f, start = 0.0;
                 set<Arfolyam>::iterator kperc =  reszvenyNapjai->percek.find(perc);
                 set<Arfolyam>::iterator kpercZ =  reszvenyNapjai->percek.find(percZ);
                 if (reszvenyNapjai->percek.end()==kperc || reszvenyNapjai->percek.end()==kpercZ) continue;
-                start = kperc->open;
-                startMin = start; startMax = start;
-                float p30;
+                float ertekek[30], startV;
                 for (int cntPerc = 0;reszvenyNapjai->percek.end()!=kperc && cntPerc<30; cntPerc++){
-                    startMin=min(startMin,kperc->minimum);
-                    startMax=max(startMax,kperc->maximum);
-                    p30=kperc->close;
+                    ertekek[cntPerc]=kperc->open;
+                    startV=kperc->close;
                     kperc++;
                 }
                 Arfolyam percK(10,0);
+                float endV = 0.0f;
                 set<Arfolyam>::iterator kpercK =  reszvenyNapjai->percek.find(percK);
                 if (reszvenyNapjai->percek.end()==kpercK) continue;
-                float afterMin = p30, afterMax = p30;
-                for (int cntPerc = 0;reszvenyNapjai->percek.end()!=kpercK && cntPerc<355; cntPerc++){
-                    afterMin=min(afterMin,kpercK->minimum);
-                    afterMax=max(afterMax,kpercK->maximum);
-                    //p30=kpercK->close;
+                for (int cntPerc = 0;reszvenyNapjai->percek.end()!=kpercK && cntPerc<358; cntPerc++){
+                    endV = kpercK->close;
                     kpercK++;
                 }
-                float endVal = kpercZ->close;
-                if ((startMax-start)>(start-startMin)) {
-                    felfeleJobban++;
-                    if (p30<start){
-                        zarasLejebb++;
-                        if (p30>endVal){
-                            zarasIsLejebb++;
-                            ///profit *= p30/endVal*0.995;
-                        } else {
-                        }
-                        //profit *= endVal/p30*0.995;
-                        //profit *= p30/endVal*0.995;
-                        if (afterMin/p30<=0.985){
-                            profit*=1.01f;
-                        } else {
-                            profit *= max(p30/endVal*0.995f,0.99f);
-                        }
-                        //profit *= p30/afterMin*0.995;
-                    }
-                    if (afterMin/p30<=0.985){
-                        //minNagyafter++;
-                    }
-                    if (afterMax/p30>=1.015){
-                        minNagyafter++;
+
+
+                vector<bool> kombok(870);
+                int icC = 0;
+                for (int ic1=0; ic1<30; ic1++){
+                    for (int ic2=ic1+1; ic2<30; ic2++){
+                        if (ertekek[ic1]<ertekek[ic2]) {kombok[icC]=true; kombok[icC+435]=false; }
+                        else {kombok[icC]=false; kombok[icC+435]=true; }
+                        icC++;
                     }
                 }
-                if (p30<start){
-                    startKisebb++;
-                    if (afterMin/p30<=0.985){
-                        //minNK++;
+                //cout<<icC<<endl;
+
+                vector<thread> ths(435);
+                for (int ic1=0; ic1<435; ic1+=thCnt){
+                    //cout<<ic1<<endl;
+                    ths[ic1] = thread(iterFV,ic1,ref(kombinaciok),ref(kombinaciokProfitja),ref(kombok),startV,endV,thCnt,reszvenyNapjai->hetMelyikNapja);
+
+                    actualMenu->inputHandle();
+                ///sleep(1);
+                    //cout<<ic1<<endl;
+                    /**
+                    for (int k1=0; k1<2; k1++){
+                        for (int k2=0;k2<2; k2++){
+                            for (int k3=0;k3<2;k3++){
+                    for (int ic2=ic1+1; ic2<435; ic2++){
+                        for (int ic3=ic2+1; ic3<435; ic3++){
+                                        int c1=ic1, c2=ic2 ,c3=ic3;
+                                        if (k1==1) c1+=435;
+                                        if (k2==1) c2+=435;
+                                        if (k3==1) c3+=435;
+                                        kombinaciok[c1][c2][c3]=kombok[c1]&&kombok[c2]&&kombok[c3];
+                                        if (kombinaciok[c1][c2][c3]){
+                                            kombinaciokProfitja[c1][c2][c3][0] *= startV/endV*0.995f;
+                                        } else {
+                                            kombinaciokProfitja[c1][c2][c3][1] *= endV/startV*0.995f;
+                                        }
+                                        //cout<<"a"<<endl;
+                                    }
+                                }
+                            }
+                        }
                     }
-                    if (afterMax/p30>=1.015){
-                        minNK++;
-                    }
+                    //*/
                 }
-                osszesEset++;
+                for (int ic1=0; ic1<435; ic1+=thCnt){
+                    ths[ic1].join();
+                }
+
+
                 reszvenyNapjai++;
+
             }
-            cout<<stocks[j].name<<" "<<felfeleJobban/osszesEset*100.f<<" "<<zarasLejebb/felfeleJobban*100.f<<" "<<zarasIsLejebb/zarasLejebb*100.f<<" "<<zarasIsLejebb<<" / "<<zarasLejebb<<" / "<<felfeleJobban<<" / "<<osszesEset<<endl;
-            cout<<stocks[j].name<<", profit: "<<profit<<", "<<minNagyafter/felfeleJobban<<" "<<minNK/startKisebb<<endl;
-            if (osszesEset==2315){
-                fJ+=felfeleJobban; oE+=osszesEset; zL+=zarasLejebb; zIL+=zarasIsLejebb; pF+=profit;
-                f1+=minNagyafter; f2+=minNK; f3+=startKisebb;
-                z1++;
-            }
-            fJ2+=felfeleJobban; oE2+=osszesEset; zL2+=zarasLejebb; zIL2+=zarasIsLejebb; pF2+=profit;
-            f4+=minNagyafter; f5+=minNK; f6+=startKisebb;
-            z2++;
-            ///set<Negyed>::iterator n0, n1;
-            ///n0 = stocks[j].negyedevek.begin();
-            ///n1=++n0;
+            //*/
             //n0--;
             /*
             for (;n1!=stocks[j].negyedevek.end();++n0,++n1){
@@ -482,13 +528,36 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
             }
             */
             //cout<<i+j<<endl;
+            cout<<j<<", T: "<<clock()-t1<<endl;
         }
+
+        sleep(1);
+        //**
         cout<<"stabil: "<<fJ/oE*100.f<<" "<<zL/fJ*100.f<<" "<<zIL/zL*100.f<<" "<<zIL<<" / "<<zL<<" / "<<fJ<<" / "<<oE<<endl;
         cout<<"minden: "<<fJ2/oE2*100.f<<" "<<zL2/fJ2*100.f<<" "<<zIL2/zL2*100.f<<" "<<zIL2<<" / "<<zL2<<" / "<<fJ2<<" / "<<oE2<<endl;
         cout<<"stabil: "<<pF/z1<<", "<<f1/fJ<<" "<<f2/f3<<endl;
         cout<<"minden: "<<pF2/z2<<", "<<f4/fJ2<<" "<<f5/f6<<endl;
 
     }
+
+    ofstream of("kimenet.txt");
+
+        for(int k1=0;k1<870;k1++){
+            cout<<"k1: "<<k1<<endl;
+            for(int k2=0;k2<870;k2++){
+                for(int k3=0;k3<870;k3++){
+                    for(int k4=0;k4<10;k4++){
+                    of<<kombinaciokProfitja[k1][k2][k3][k4]<<" ";
+                }
+            }
+            of<<endl;
+        }
+        of<<endl<<endl;
+    }
+
+        cout<<"almak"<<endl;
+    of.close();
+
     cout<<z1<<" "<<z2<<" "<<z3<<" "<<z4<<" "<<z5<<" "<<z6<<endl;
     if (osszesPelda>0)cout<<z1*100/osszesPelda<<" "<<z2*100/osszesPelda<<" "<<z3*100/osszesPelda<<" "<<z4*100/osszesPelda<<" "<<z5*100/osszesPelda<<" "<<z6*100/osszesPelda<<endl;
     cout<<"osszes, jo: "<<osszesPelda<<" "<<joPelda<<" "<<(float)joPelda/osszesPelda<<endl;
@@ -562,9 +631,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     //cout<<m.type<<c.type<<endl;
 
 
-    SDL_Pack sdlp(&window,&renderer,&ev);
-    Menu *actualMenu;
-    MenuK menuk(sdlp,&actualMenu);
+
     //cout<<actualMenu<< " "<<&actualMenu <<endl;
 
     /// megjelenítés még kicsit hibás, nem tudom külön szálon futtatni
