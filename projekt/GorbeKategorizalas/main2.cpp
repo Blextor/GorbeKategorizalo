@@ -125,7 +125,7 @@ void iterFV(int iC,vector<array<array<bool,870>,870>>& kombinaciok ,vector<vecto
 
                         if (kombinaciok[c1][c2][c3]){
                             kombinaciokProfitja[c1][c2][c3][nap+0] *= startV/endV*0.995f;
-                        } else {
+                        } else if (!kombok[c1] && !kombok[c2] && !kombok[c3]) {
                             kombinaciokProfitja[c1][c2][c3][nap+1] *= endV/startV*0.995f;
                         }
                         //cout<<"a"<<endl;
@@ -291,7 +291,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     vector<string> reszvenyekNeve = csoportReszvenyei("osszes"); //osszesReszveny();
     cout<<reszvenyekNeve.size()<<endl;
     //reszvenyekNeve = osszesReszveny();
-    reszvenyekNeve.clear(); reszvenyekNeve.push_back("NVDA");
+    reszvenyekNeve.clear(); reszvenyekNeve.push_back("NFLX"); reszvenyekNeve.push_back("ADBE"); reszvenyekNeve.push_back("NVDA");
     int thCnt = 1;
     vector<thread> szalak; szalak.resize(thCnt);
     vector<Stock> stocks; stocks.resize(thCnt);
@@ -323,7 +323,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
     float zL = 0, zIL = 0, oE = 0, fJ = 0, pF = 1.0f;
     float zL2 = 0, zIL2 = 0, oE2 = 0, fJ2 = 0, pF2 = 1.0f;
-    for (size_t i=0; i<reszvenyekNeve.size() && i<1; i++){
+    for (size_t i=0; i<reszvenyekNeve.size();){
         int savedI = i;
         for (int j=0; j<thCnt; j++){
             szalak[j] = thread(loadStock,reszvenyekNeve[i],ref(stocks[j]),ref(m));
@@ -339,8 +339,8 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
             if (szalak[j].joinable())
                 szalak[j].join();
             if (stocks[j].negyedevek.size()<3) continue;
-            Nap kezdonap(2015,1,5);
-            //Nap kezdonap(2023,1,9);
+            //Nap kezdonap(2015,1,5);
+            Nap kezdonap(2023,1,9);
             Nap ntemp(2023,10,18);
             if (stocks[j].mindenNap.find(ntemp) == stocks[j].mindenNap.end()) {
                 Nap n2temp = *(stocks[j].mindenNap.rbegin());
