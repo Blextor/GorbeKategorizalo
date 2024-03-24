@@ -106,9 +106,9 @@ bool getValueFromIdopont(float &ret, int o, int p, set<Arfolyam> &ertekek){
     return true;
 }
 
-void iterFV(int iC,vector<array<array<bool,435>,435>>& kombinaciok ,vector<vector<array<array<float,10>,435>>>& kombinaciokProfitja ,vector<bool>& kombok, float startV, float endV, int thCnt, int nap){
+void iterFV(int iC,vector<array<array<bool,435>,435>>& kombinaciok ,vector<vector<array<array<float,80>,435>>>& kombinaciokProfitja ,vector<bool>& kombok, float startV, float endV, int thCnt, int nap){
     int ic1=iC;
-    nap-=1; nap*=2;
+    nap-=1; nap*=16;
     for (int ic1 = iC;ic1<iC+thCnt && ic1<435;ic1++){
     //cout<<ic1<<endl;
     //for (int k1=0; k1<2; k1++){
@@ -121,12 +121,33 @@ void iterFV(int iC,vector<array<array<bool,435>,435>>& kombinaciok ,vector<vecto
                             //if (k1==1) c1+=435;
                             //if (k2==1) c2+=435;
                             //if (k3==1) c3+=435;
-                            kombinaciok[c1][c2][c3]=kombok[c1]&&kombok[c2]&&kombok[c3];
-
-                            if (kombinaciok[c1][c2][c3]){
+                            if (kombok[c1]&&kombok[c2]&&kombok[c3]){
                                 kombinaciokProfitja[c1][c2][c3][nap+0] *= startV/endV*0.995f;
-                            } else if (!kombok[c1] && !kombok[c2] && !kombok[c3]) {
                                 kombinaciokProfitja[c1][c2][c3][nap+1] *= endV/startV*0.995f;
+                            } else {
+                                kombinaciokProfitja[c1][c2][c3][nap+2] *= startV/endV*0.995f;
+                                kombinaciokProfitja[c1][c2][c3][nap+3] *= endV/startV*0.995f;
+                            }
+                            if (!kombok[c1]&&kombok[c2]&&kombok[c3]){
+                                kombinaciokProfitja[c1][c2][c3][nap+4] *= startV/endV*0.995f;
+                                kombinaciokProfitja[c1][c2][c3][nap+5] *= endV/startV*0.995f;
+                            } else {
+                                kombinaciokProfitja[c1][c2][c3][nap+6] *= startV/endV*0.995f;
+                                kombinaciokProfitja[c1][c2][c3][nap+7] *= endV/startV*0.995f;
+                            }
+                            if (kombok[c1]&&!kombok[c2]&&kombok[c3]){
+                                kombinaciokProfitja[c1][c2][c3][nap+8] *= startV/endV*0.995f;
+                                kombinaciokProfitja[c1][c2][c3][nap+9] *= endV/startV*0.995f;
+                            } else {
+                                kombinaciokProfitja[c1][c2][c3][nap+10] *= startV/endV*0.995f;
+                                kombinaciokProfitja[c1][c2][c3][nap+11] *= endV/startV*0.995f;
+                            }
+                            if (kombok[c1]&&kombok[c2]&&!kombok[c3]){
+                                kombinaciokProfitja[c1][c2][c3][nap+12] *= startV/endV*0.995f;
+                                kombinaciokProfitja[c1][c2][c3][nap+13] *= endV/startV*0.995f;
+                            } else {
+                                kombinaciokProfitja[c1][c2][c3][nap+14] *= startV/endV*0.995f;
+                                kombinaciokProfitja[c1][c2][c3][nap+15] *= endV/startV*0.995f;
                             }
                             //cout<<"a"<<endl;
                         }
@@ -289,9 +310,9 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     /// Egy speciális eset
     if (true){
     vector<string> reszvenyekNeve = csoportReszvenyei("osszes"); //osszesReszveny();
+    reszvenyekNeve = osszesReszveny();
+    //reszvenyekNeve.clear(); reszvenyekNeve.push_back("NFLX"); reszvenyekNeve.push_back("ADBE"); reszvenyekNeve.push_back("NVDA");
     cout<<reszvenyekNeve.size()<<endl;
-    //reszvenyekNeve = osszesReszveny();
-    reszvenyekNeve.clear(); reszvenyekNeve.push_back("NFLX"); reszvenyekNeve.push_back("ADBE"); reszvenyekNeve.push_back("NVDA");
     int thCnt = 32;
     vector<thread> szalak; szalak.resize(thCnt);
     vector<Stock> stocks; stocks.resize(thCnt);
@@ -302,12 +323,12 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
 
     cout<<"alma"<<endl;
-    vector<vector<array<array<float,10>,435>>> kombinaciokProfitja;
+    vector<vector<array<array<float,80>,435>>> kombinaciokProfitja;
     cout<<"alma"<<endl;
     if (true){
-        array<float,10> basic = {1,1,1,1,1,1,1,1,1,1};
-        array<array<float,10>,435> vec3; for (int ic=0; ic<435; ic++) vec3[ic]=basic;
-        vector<array<array<float,10>,435>> vec4; for (int ic=0; ic<435; ic++) vec4.push_back(vec3);
+        array<float,80> basic = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+        array<array<float,80>,435> vec3; for (int ic=0; ic<435; ic++) vec3[ic]=basic;
+        vector<array<array<float,80>,435>> vec4; for (int ic=0; ic<435; ic++) vec4.push_back(vec3);
         for (int ic=0; ic<435; ic++) kombinaciokProfitja.push_back(vec4);
     }
 
@@ -341,6 +362,8 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
             if (stocks[j].negyedevek.size()<3) continue;
             //Nap kezdonap(2015,1,5);
             Nap kezdonap(2023,1,9);
+            //Nap kezdonap(2024,1,2);
+            Datum vegNap(2024,1,1);
             Nap ntemp(2023,10,18);
             if (stocks[j].mindenNap.find(ntemp) == stocks[j].mindenNap.end()) {
                 Nap n2temp = *(stocks[j].mindenNap.rbegin());
@@ -355,7 +378,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
             float felfeleJobban = 0, osszesEset = 0, zarasLejebb = 0, zarasIsLejebb = 0;
             float profit = 1.0f, minNagyafter = 0 ,minNK = 0, startKisebb = 0;
             int nCnt = 0;
-            for (;reszvenyNapjai!=stocks[j].mindenNap.end();){
+            for (;reszvenyNapjai!=stocks[j].mindenNap.end() && reszvenyNapjai->datum<vegNap;){
                 ///cout<<j<<" "<<nCnt<<endl;
                 nCnt++;
                 //cout<<reszvenyNapjai->datum.day<<endl;;
@@ -549,7 +572,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
             cout<<"k1: "<<k1<<endl;
             for(int k2=0;k2<435;k2++){
                 for(int k3=0;k3<435;k3++){
-                    for(int k4=0;k4<10;k4+=2){
+                    for(int k4=0;k4<80;k4+=2){
                     of<<kombinaciokProfitja[k1][k2][k3][k4]<<" "<<kombinaciokProfitja[k1][k2][k3][k4+1]<<" ";
                 }
             }
