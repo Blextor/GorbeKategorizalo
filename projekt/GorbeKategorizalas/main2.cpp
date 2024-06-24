@@ -159,6 +159,49 @@ void iterFV(int iC,vector<array<array<bool,435>,435>>& kombinaciok ,vector<vecto
     return;
 }
 
+/*
+struct EarningsPlus{
+    string stockName = "";
+    Datum datumElso, datumUtolso;
+    bool post = true;
+    string hanyQ;
+    float eps, est_eps;
+};
+
+vector<string> loadEarnings(vector<EarningsPlus> &earningsV){
+    cout << "Hello world!" << endl;
+    ifstream inputFile("earnings_modified2.csv");
+    string line;
+    getline(inputFile,line);
+    cout<<line<<endl;
+    char delimiter = ',';
+    char delimiter2 = '/';
+    EarningsPlus before;
+    earningsV.clear();
+    vector<string> ret;
+    while (getline(inputFile,line)){
+        std::vector<std::string> result;// = splitString(line, delimiter);
+        EarningsPlus earnings;
+        earnings.stockName=result[0];
+        stringstream ss2(result[1]); /// év
+        stringstream ss3(result[2]); /// hónap
+        stringstream ss4(result[3]); /// nap
+        Datum datum; ss2>>datum.year; ss3>>datum.month; ss4>>datum.day;
+        earnings.datumUtolso=datum;
+        earnings.hanyQ = result[4];
+        stringstream ss5(result[5]); /// est_eps
+        stringstream ss6(result[6]); /// eps
+        ss5>>earnings.est_eps;
+        ss6>>earnings.eps;
+        earnings.post=(result[7]=="post");
+        if (before.stockName==earnings.stockName){
+            earnings.datumElso=
+        }
+        before=earnings;
+    }
+}
+*/
+
 void main2( SDL_Window &window, SDL_Renderer &renderer){
     srand(time(NULL));
     SDL_Event ev;
@@ -201,7 +244,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     th1.join();th2.join();th3.join();th4.join();th5.join();
     */
     /// manuális teszt
-    if (true){
+    if (false){
     vector<string> reszvenyekNeve = csoportReszvenyei("osszes"); //osszesReszveny();
     reszvenyekNeve = osszesReszveny();
     int thCnt = 16;
@@ -307,10 +350,155 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     }
     }
 
-    /// Egy speciális eset
+
+    /// Adat lekérdezés
     if (true){
-    vector<string> reszvenyekNeve = csoportReszvenyei("osszes"); //osszesReszveny();
-    reszvenyekNeve = osszesReszveny();
+        vector<string> reszvenyekNeve = {"TSLA"};//csoportReszvenyei("estere");//{"NVDA"};//csoportReszvenyei("estere");
+        reszvenyekNeve = csoportReszvenyei("osszesUj.txt");
+
+        for (int i=0; i<reszvenyekNeve.size();){
+            for (;i<reszvenyekNeve.size(); i++)
+                cout<<reszvenyekNeve[i]<<" ";
+            cout<<endl;
+        }
+        //reszvenyekNeve.clear(); reszvenyekNeve.push_back("NFLX"); reszvenyekNeve.push_back("ADBE"); reszvenyekNeve.push_back("NVDA");
+        cout<<reszvenyekNeve.size()<<endl;
+        int thCnt = 32;
+        vector<thread> szalak; szalak.resize(thCnt);
+        vector<Stock> stocks; stocks.resize(thCnt);
+        bool m;
+        long long osszesPelda = 0, joPelda = 0;
+        int z1 = 0, z2 = 0, z3 = 0, z4 = 0, z5 = 0, z6 = 0;
+        float f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0, f6 = 0;
+
+
+
+        for (size_t i=0; i<reszvenyekNeve.size();){
+            int savedI = i;
+            for (int j=0; j<thCnt; j++){
+                szalak[j] = thread(loadStock,reszvenyekNeve[i],ref(stocks[j]),ref(m));
+                i++;
+                //cout<<i<<endl;
+                if (i>=reszvenyekNeve.size()) break;
+                cout<<i<<endl;
+            }
+
+            for (int j=0; j<thCnt; j++){
+                if (savedI+j>=reszvenyekNeve.size()) continue;
+                clock_t t1 = clock();
+                if (szalak[j].joinable())
+                    szalak[j].join();
+                if (stocks[j].negyedevek.size()<3) continue;
+                continue;
+                //Negyed n; n.
+                //Nap kezdonap(2015,1,5);
+                Nap kezdonap(2014,1,2);
+                //Nap kezdonap(2023,1,9);
+                //Nap kezdonap(2024,1,2);
+                ///Datum vegNap(2024,1,1);
+                Datum vegNap(2025,1,1);
+                Nap ntemp(2023,10,18);
+                if (stocks[j].mindenNap.find(ntemp) == stocks[j].mindenNap.end()) {
+                    Nap n2temp = *(stocks[j].mindenNap.rbegin());
+                    if (n2temp.datum.year==2023 && n2temp.datum.month==10 && n2temp.datum.day==13){}
+                    else continue;
+                    cout<<stocks[j].name<<" "<<n2temp.datum.year<<" "<<n2temp.datum.month<<" "<<n2temp.datum.day<<endl;
+
+                }
+                set<Nap>::iterator reszvenyNapjai = stocks[j].mindenNap.find(kezdonap);
+                if (reszvenyNapjai==stocks[j].mindenNap.end()) continue;
+                ofstream tempF("./reszvenyFajlok/"+stocks[j].name+".csv");
+                //tempF<<"dátum,időpont,érték,második érték"<<endl;
+                //tempF<<"dátum,időpont,érték"<<endl;
+
+                float felfeleJobban = 0, osszesEset = 0, zarasLejebb = 0, zarasIsLejebb = 0;
+                float profit = 1.0f, minNagyafter = 0 ,minNK = 0, startKisebb = 0;
+                int nCnt = 0;
+                //ofstream file(stocks[j].name+".txt");
+                for (;reszvenyNapjai!=stocks[j].mindenNap.end() && reszvenyNapjai->datum<vegNap;){
+                    ///cout<<j<<" "<<nCnt<<endl;
+                    nCnt++;
+                    //cout<<reszvenyNapjai->datum.day<<endl;;
+                    Arfolyam perc(9,30);
+                    Arfolyam percZ(15,59);
+                    set<Arfolyam>::iterator kperc =  reszvenyNapjai->percek.find(perc);
+                    set<Arfolyam>::iterator kpercZ =  reszvenyNapjai->percek.find(percZ);
+                    if (reszvenyNapjai->percek.end()==kperc || reszvenyNapjai->percek.end()==kpercZ) continue;
+                    float hanyPerc = 390;
+                    vector<float> ertekek(hanyPerc+1); float startV;
+                    vector<float> ertekek2(hanyPerc);
+                    float szum = 0.0f;
+                    for (int cntPerc = 0;reszvenyNapjai->percek.end()!=kperc && cntPerc<hanyPerc; cntPerc++){
+                        ertekek[cntPerc]=kperc->open;
+                        ertekek2[cntPerc]=kperc->open;
+                        szum+=ertekek[cntPerc];
+                        startV=kperc->close;
+                        //tempF<<reszvenyNapjai->datum.year<<"-"<<reszvenyNapjai->datum.month<<"-"<<reszvenyNapjai->datum.day<<","<< kperc->idopont.ora<<":"<<kperc->idopont.perc<<","<<kperc->open<<" "<<endl;//<<" "<<kperc->close<<" "<<kperc->minimum<<" "<<kperc->maximum<<endl;
+                        kperc++;
+                    }
+                    ertekek[hanyPerc]=kpercZ->open;
+                    szum+=ertekek[hanyPerc];
+
+
+                    float min = *std::min_element(ertekek2.begin(), ertekek2.end());
+                    float max = *std::max_element(ertekek2.begin(), ertekek2.end());
+
+                    // Normalizálás
+                    std::vector<float> normalized_data;
+                    for(float value : ertekek) {
+                        float normalized_value = (value - min) / (max - min);
+                        normalized_data.push_back(normalized_value);
+                    }
+
+                    // Normalizált adatok kiírása
+                    //std::cout << "Normalizált adatok: ";
+                    kperc =  reszvenyNapjai->percek.find(perc);
+                    for (int zzz=0; zzz<hanyPerc;zzz++){
+                        //tempF<<reszvenyNapjai->datum.year<<"-"<<reszvenyNapjai->datum.month<<"-"<<reszvenyNapjai->datum.day<<","<< kperc->idopont.ora<<":"<<kperc->idopont.perc<<","<<normalized_data[zzz]<<","<<ertekek[zzz]<<endl;//<<" "<<kperc->close<<" "<<kperc->minimum<<" "<<kperc->maximum<<endl;
+                        //tempF<<reszvenyNapjai->datum.year<<"-"<<reszvenyNapjai->datum.month<<"-"<<reszvenyNapjai->datum.day<<","<< kperc->idopont.ora<<":"<<kperc->idopont.perc<<","<<kperc->open<<endl;//<<" "<<kperc->close<<" "<<kperc->minimum<<" "<<kperc->maximum<<endl;
+                        tempF<<kperc->open<<endl;//<<" "<<kperc->close<<" "<<kperc->minimum<<" "<<kperc->maximum<<endl;
+                        kperc++;
+                    }
+                    ///tempF<<reszvenyNapjai->datum.year<<"-"<<reszvenyNapjai->datum.month<<"-"<<reszvenyNapjai->datum.day<<","<< kpercZ->idopont.ora<<":"<<kpercZ->idopont.perc<<","<<normalized_data[30]<<","<<ertekek[30]<<endl;//<<" "<<kperc->close<<" "<<kperc->minimum<<" "<<kperc->maximum<<endl;
+
+                    ///cout<<reszvenyNapjai->datum.year<<" "<<reszvenyNapjai->datum.month<<endl;
+                    reszvenyNapjai++;
+                    continue;
+                    Arfolyam percK(10,0);
+                    float endV = 0.0f;
+                    set<Arfolyam>::iterator kpercK =  reszvenyNapjai->percek.find(percK);
+                    if (reszvenyNapjai->percek.end()==kpercK) continue;
+                    for (int cntPerc = 0;reszvenyNapjai->percek.end()!=kpercK && cntPerc<358; cntPerc++){
+                        endV = kpercK->close;
+                        kpercK++;
+                    }
+                    reszvenyNapjai++;
+
+                }
+                //file.close();
+                cout<<j<<", T: "<<clock()-t1<<endl;
+            }
+
+            sleep(1);
+            /**
+            cout<<"stabil: "<<fJ/oE*100.f<<" "<<zL/fJ*100.f<<" "<<zIL/zL*100.f<<" "<<zIL<<" / "<<zL<<" / "<<fJ<<" / "<<oE<<endl;
+            cout<<"minden: "<<fJ2/oE2*100.f<<" "<<zL2/fJ2*100.f<<" "<<zIL2/zL2*100.f<<" "<<zIL2<<" / "<<zL2<<" / "<<fJ2<<" / "<<oE2<<endl;
+            cout<<"stabil: "<<pF/z1<<", "<<f1/fJ<<" "<<f2/f3<<endl;
+            cout<<"minden: "<<pF2/z2<<", "<<f4/fJ2<<" "<<f5/f6<<endl;
+            */
+
+        }
+    }
+
+    /// Egy speciális eset
+    if (false){
+    vector<string> reszvenyekNeve = csoportReszvenyei("estere"); //osszesReszveny();{"NVDA","INTC","AAPL","TSLA","AMD"};
+    //reszvenyekNeve = osszesReszveny();
+    for (int i=0; i<reszvenyekNeve.size();){
+        for (;i<reszvenyekNeve.size(); i++)
+            cout<<reszvenyekNeve[i]<<" ";
+        cout<<endl;
+    }
     //reszvenyekNeve.clear(); reszvenyekNeve.push_back("NFLX"); reszvenyekNeve.push_back("ADBE"); reszvenyekNeve.push_back("NVDA");
     cout<<reszvenyekNeve.size()<<endl;
     int thCnt = 32;
@@ -361,7 +549,8 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                 szalak[j].join();
             if (stocks[j].negyedevek.size()<3) continue;
             //Nap kezdonap(2015,1,5);
-            Nap kezdonap(2023,1,9);
+            Nap kezdonap(2014,1,2);
+            //Nap kezdonap(2023,1,9);
             //Nap kezdonap(2024,1,2);
             Datum vegNap(2024,1,1);
             Nap ntemp(2023,10,18);
@@ -378,6 +567,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
             float felfeleJobban = 0, osszesEset = 0, zarasLejebb = 0, zarasIsLejebb = 0;
             float profit = 1.0f, minNagyafter = 0 ,minNK = 0, startKisebb = 0;
             int nCnt = 0;
+            ofstream file(stocks[j].name+".txt");
             for (;reszvenyNapjai!=stocks[j].mindenNap.end() && reszvenyNapjai->datum<vegNap;){
                 ///cout<<j<<" "<<nCnt<<endl;
                 nCnt++;
@@ -387,12 +577,16 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                 set<Arfolyam>::iterator kperc =  reszvenyNapjai->percek.find(perc);
                 set<Arfolyam>::iterator kpercZ =  reszvenyNapjai->percek.find(percZ);
                 if (reszvenyNapjai->percek.end()==kperc || reszvenyNapjai->percek.end()==kpercZ) continue;
-                float ertekek[30], startV;
-                for (int cntPerc = 0;reszvenyNapjai->percek.end()!=kperc && cntPerc<30; cntPerc++){
+                float ertekek[390], startV;
+                for (int cntPerc = 0;reszvenyNapjai->percek.end()!=kperc && cntPerc<390; cntPerc++){
                     ertekek[cntPerc]=kperc->open;
                     startV=kperc->close;
+                    file<<reszvenyNapjai->datum.year<<" "<<reszvenyNapjai->datum.month<<" "<<reszvenyNapjai->datum.day<<" "<< kperc->idopont.ora<<" "<<kperc->idopont.perc<<" "<<kperc->open<<" "<<kperc->close<<" "<<kperc->minimum<<" "<<kperc->maximum<<endl;
                     kperc++;
                 }
+                cout<<reszvenyNapjai->datum.year<<" "<<reszvenyNapjai->datum.month<<endl;
+                reszvenyNapjai++;
+                continue;
                 Arfolyam percK(10,0);
                 float endV = 0.0f;
                 set<Arfolyam>::iterator kpercK =  reszvenyNapjai->percek.find(percK);
@@ -456,6 +650,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                 reszvenyNapjai++;
 
             }
+            file.close();
             //*/
             //n0--;
             /*

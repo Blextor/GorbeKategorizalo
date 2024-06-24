@@ -186,6 +186,7 @@ bool jelentesBetoltes(string path, set<Negyed> &negyedevek, bool reset=true){
             else if (benneVanAzStr(line,"reportedDate")){
                 stringstream ss2; ss2<<line;
                 float repEPS, predEPS, sup, supP;
+                string reportTime;
                 ss2>>temp>>c>>year>>c>>month>>c>>day;
                 (*it).tenylegesJelentes=Datum(year,month,day);
 
@@ -204,6 +205,15 @@ bool jelentesBetoltes(string path, set<Negyed> &negyedevek, bool reset=true){
                 getline(file,line);
                 ss2.str(line);
                 ss2>>temp>>c>>supP;
+
+                getline(file,line);
+                //if (line == "\"reportTime\": \"post-market\"") cout<<"POST"<<endl;
+                stringstream ss3;
+                ss3.str(line);
+                ss3>>temp>>reportTime;
+                if (reportTime[2]=='o') (*it).postMarket = true;//cout<<"POST"<<endl;
+                else if (reportTime[2]=='r') (*it).postMarket = false; //cout<<"PRE"<<endl;
+                else {cout<<line<<endl<<reportTime<<" "<<path<<endl; (*it).postMarket = false;}
 
                 (*it).jelentettEPS=repEPS;
                 (*it).becsultEPS=predEPS;

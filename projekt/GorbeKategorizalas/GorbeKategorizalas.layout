@@ -2,22 +2,7 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Release" />
-	<File name="cimkeSrc\CmerreZart.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2356" topLine="67" />
-		</Cursor>
-	</File>
-	<File name="main.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="91" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="lekerdezes.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="407" topLine="38" />
-		</Cursor>
-	</File>
-	<File name="reszvenyMenu.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="reszvenyMenu.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="6718" topLine="166" />
 		</Cursor>
@@ -25,15 +10,138 @@
 			<Collapse line="88" />
 		</Folding>
 	</File>
-	<File name="cimkeSrc\OsszesCimke.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="config.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1828" topLine="18" />
+			<Cursor1 position="43" topLine="0" />
+		</Cursor>
+		<Folding>
+			<Collapse line="4" />
+			<Collapse line="20" />
+		</Folding>
+	</File>
+	<File name="stock.cpp" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="14750" topLine="198" />
+		</Cursor>
+		<Folding>
+			<Collapse line="35" />
+			<Collapse line="42" />
+			<Collapse line="50" />
+			<Collapse line="57" />
+			<Collapse line="136" />
+			<Collapse line="148" />
+			<Collapse line="222" />
+			<Collapse line="318" />
+			<Collapse line="331" />
+			<Collapse line="359" />
+			<Collapse line="411" />
+			<Collapse line="431" />
+			<Collapse line="433" />
+			<Collapse line="440" />
+			<Collapse line="509" />
+			<Collapse line="512" />
+			<Collapse line="578" />
+			<Collapse line="627" />
+			<Collapse line="635" />
+			<Collapse line="643" />
+			<Collapse line="659" />
+			<Collapse line="676" />
+			<Collapse line="685" />
+			<Collapse line="703" />
+			<Collapse line="712" />
+			<Collapse line="730" />
+			<Collapse line="739" />
+			<Collapse line="751" />
+			<Collapse line="760" />
+			<Collapse line="777" />
+			<Collapse line="797" />
+		</Folding>
+	</File>
+	<File name="lekerdezes.h" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="407" topLine="38" />
 		</Cursor>
 	</File>
-	<File name="naptar.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="MenuK.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="281" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="cimkeSrc\cimkeLokMinMax.cpp" open="1" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3006" topLine="83" />
+		</Cursor>
+	</File>
+	<File name="menu.cpp" open="1" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="286" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="frissitoMenu.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1183" topLine="5" />
+		</Cursor>
+		<Folding>
+			<Collapse line="155" />
+		</Folding>
+	</File>
+	<File name="naptar.cpp" open="1" top="0" tabpos="23" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="147" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="fomenu.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3219" topLine="24" />
+		</Cursor>
+		<Folding>
+			<Collapse line="2" />
+			<Collapse line="33" />
+			<Collapse line="98" />
+		</Folding>
+	</File>
+	<File name="cimke.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1524" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="cimkeSrc\CmerreNyitott.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="727" topLine="0" />
 		</Cursor>
+	</File>
+	<File name="cimkeSrc\CmerreNyitott.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2437" topLine="47" />
+		</Cursor>
+	</File>
+	<File name="adatLetoltes.cpp" open="1" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="254" topLine="9" />
+		</Cursor>
+		<Folding>
+			<Collapse line="35" />
+			<Collapse line="44" />
+			<Collapse line="51" />
+			<Collapse line="60" />
+			<Collapse line="70" />
+			<Collapse line="80" />
+			<Collapse line="92" />
+			<Collapse line="154" />
+			<Collapse line="163" />
+			<Collapse line="173" />
+			<Collapse line="181" />
+			<Collapse line="189" />
+			<Collapse line="197" />
+			<Collapse line="205" />
+			<Collapse line="214" />
+			<Collapse line="223" />
+			<Collapse line="232" />
+			<Collapse line="242" />
+			<Collapse line="315" />
+			<Collapse line="336" />
+			<Collapse line="451" />
+		</Folding>
 	</File>
 	<File name="csoportEditor.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
@@ -66,220 +174,9 @@
 			<Collapse line="342" />
 		</Folding>
 	</File>
-	<File name="config.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Menu.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="43" topLine="0" />
-		</Cursor>
-		<Folding>
-			<Collapse line="4" />
-			<Collapse line="20" />
-		</Folding>
-	</File>
-	<File name="cimkeSrc\cimkeLokMinMax.cpp" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3006" topLine="83" />
-		</Cursor>
-	</File>
-	<File name="adatBeolvas.cpp" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5714" topLine="133" />
-		</Cursor>
-		<Folding>
-			<Collapse line="124" />
-		</Folding>
-	</File>
-	<File name="adatLetoltes.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="240" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="MenuK.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="281" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="adatLetoltes.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="254" topLine="9" />
-		</Cursor>
-		<Folding>
-			<Collapse line="35" />
-			<Collapse line="44" />
-			<Collapse line="51" />
-			<Collapse line="60" />
-			<Collapse line="70" />
-			<Collapse line="80" />
-			<Collapse line="92" />
-			<Collapse line="154" />
-			<Collapse line="163" />
-			<Collapse line="173" />
-			<Collapse line="181" />
-			<Collapse line="189" />
-			<Collapse line="197" />
-			<Collapse line="205" />
-			<Collapse line="214" />
-			<Collapse line="223" />
-			<Collapse line="232" />
-			<Collapse line="242" />
-			<Collapse line="315" />
-			<Collapse line="336" />
-			<Collapse line="451" />
-		</Folding>
-	</File>
-	<File name="cimkeSrc\CmerreNyitott.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2437" topLine="47" />
-		</Cursor>
-	</File>
-	<File name="stock.cpp" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4842" topLine="4" />
-		</Cursor>
-		<Folding>
-			<Collapse line="8" />
-			<Collapse line="31" />
-			<Collapse line="35" />
-			<Collapse line="42" />
-			<Collapse line="50" />
-			<Collapse line="57" />
-			<Collapse line="121" />
-			<Collapse line="136" />
-			<Collapse line="148" />
-			<Collapse line="222" />
-			<Collapse line="266" />
-			<Collapse line="318" />
-			<Collapse line="331" />
-			<Collapse line="345" />
-			<Collapse line="359" />
-			<Collapse line="402" />
-			<Collapse line="408" />
-			<Collapse line="411" />
-			<Collapse line="431" />
-			<Collapse line="433" />
-			<Collapse line="440" />
-			<Collapse line="509" />
-			<Collapse line="512" />
-			<Collapse line="578" />
-			<Collapse line="627" />
-			<Collapse line="635" />
-			<Collapse line="643" />
-			<Collapse line="659" />
-			<Collapse line="676" />
-			<Collapse line="685" />
-			<Collapse line="703" />
-			<Collapse line="712" />
-			<Collapse line="730" />
-			<Collapse line="739" />
-			<Collapse line="751" />
-			<Collapse line="760" />
-			<Collapse line="777" />
-			<Collapse line="797" />
-		</Folding>
-	</File>
-	<File name="fomenu.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3219" topLine="24" />
-		</Cursor>
-		<Folding>
-			<Collapse line="2" />
-			<Collapse line="33" />
-			<Collapse line="98" />
-		</Folding>
-	</File>
-	<File name="main2.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3585" topLine="99" />
-		</Cursor>
-		<Folding>
-			<Collapse line="39" />
-			<Collapse line="53" />
-			<Collapse line="74" />
-		</Folding>
-	</File>
-	<File name="common.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="915" topLine="23" />
-		</Cursor>
-	</File>
-	<File name="button.h" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="32182" topLine="53" />
-		</Cursor>
-		<Folding>
-			<Collapse line="11" />
-			<Collapse line="32" />
-			<Collapse line="47" />
-			<Collapse line="65" />
-			<Collapse line="70" />
-			<Collapse line="219" />
-			<Collapse line="344" />
-			<Collapse line="1064" />
-		</Folding>
-	</File>
-	<File name="cimke.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1524" topLine="6" />
-		</Cursor>
-	</File>
-	<File name="naptar.h" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="607" topLine="5" />
-		</Cursor>
-		<Folding>
-			<Collapse line="5" />
-			<Collapse line="33" />
-			<Collapse line="49" />
-			<Collapse line="82" />
-		</Folding>
-	</File>
-	<File name="elemzesMenu.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5050" topLine="107" />
-		</Cursor>
-		<Folding>
-			<Collapse line="35" />
-			<Collapse line="414" />
-		</Folding>
-	</File>
-	<File name="config.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="432" topLine="12" />
-		</Cursor>
-	</File>
-	<File name="stock.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="851" topLine="6" />
-		</Cursor>
-		<Folding>
-			<Collapse line="41" />
-			<Collapse line="47" />
-			<Collapse line="53" />
-			<Collapse line="57" />
-		</Folding>
-	</File>
-	<File name="cimkeSrc\CmerreNyitott.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="727" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="adatBeolvas.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="759" topLine="1" />
-		</Cursor>
-	</File>
-	<File name="cimkeSrc\CmerreZart.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="636" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="cimkeSrc\CLokMinMax.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="880" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Menu.h" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="14643" topLine="230" />
+			<Cursor1 position="14643" topLine="92" />
 		</Cursor>
 		<Folding>
 			<Collapse line="15" />
@@ -292,17 +189,41 @@
 			<Collapse line="259" />
 		</Folding>
 	</File>
-	<File name="cimke.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="elemzesMenu.cpp" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1130" topLine="11" />
+			<Cursor1 position="5050" topLine="107" />
+		</Cursor>
+		<Folding>
+			<Collapse line="35" />
+			<Collapse line="414" />
+		</Folding>
+	</File>
+	<File name="cimkeSrc\CmerreZart.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="636" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="menu.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="main2.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="253" topLine="0" />
+			<Cursor1 position="10890" topLine="127" />
+		</Cursor>
+		<Folding>
+			<Collapse line="39" />
+			<Collapse line="53" />
+			<Collapse line="74" />
+			<Collapse line="174" />
+			<Collapse line="193" />
+			<Collapse line="203" />
+			<Collapse line="568" />
+			<Collapse line="610" />
+		</Folding>
+	</File>
+	<File name="common.h" open="1" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="917" topLine="23" />
 		</Cursor>
 	</File>
-	<File name="lekerdezes.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="lekerdezes.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="11617" topLine="186" />
 		</Cursor>
@@ -312,12 +233,88 @@
 			<Collapse line="125" />
 		</Folding>
 	</File>
-	<File name="frissitoMenu.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="naptar.h" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1183" topLine="5" />
+			<Cursor1 position="2215" topLine="7" />
 		</Cursor>
 		<Folding>
-			<Collapse line="155" />
+			<Collapse line="5" />
+			<Collapse line="33" />
+			<Collapse line="49" />
+			<Collapse line="82" />
+		</Folding>
+	</File>
+	<File name="cimkeSrc\OsszesCimke.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1828" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="main.cpp" open="1" top="0" tabpos="24" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="91" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="cimkeSrc\CmerreZart.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2356" topLine="67" />
+		</Cursor>
+	</File>
+	<File name="cimke.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="22" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="cimkeSrc\CLokMinMax.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="880" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="adatBeolvas.h" open="1" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="759" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="adatLetoltes.h" open="1" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="240" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="stock.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1044" topLine="36" />
+		</Cursor>
+		<Folding>
+			<Collapse line="41" />
+			<Collapse line="47" />
+			<Collapse line="53" />
+			<Collapse line="57" />
+		</Folding>
+	</File>
+	<File name="button.h" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="15005" topLine="89" />
+		</Cursor>
+		<Folding>
+			<Collapse line="11" />
+			<Collapse line="32" />
+			<Collapse line="47" />
+			<Collapse line="65" />
+			<Collapse line="70" />
+			<Collapse line="219" />
+			<Collapse line="1064" />
+		</Folding>
+	</File>
+	<File name="config.h" open="1" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="432" topLine="15" />
+		</Cursor>
+	</File>
+	<File name="adatBeolvas.cpp" open="1" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5714" topLine="0" />
+		</Cursor>
+		<Folding>
+			<Collapse line="124" />
 		</Folding>
 	</File>
 </CodeBlocks_layout_file>

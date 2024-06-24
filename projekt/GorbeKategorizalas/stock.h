@@ -74,6 +74,7 @@ struct Negyed{
     mutable long long earn=0, income=0;
 
     mutable bool nyitasElotti = true;
+    mutable bool postMarket = true;
 
     Negyed(int y=-1, int m=-1, int d=-1){idoszakVege=Datum(y,m,d);}
     Negyed(Datum d){idoszakVege=d;}
