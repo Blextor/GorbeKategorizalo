@@ -353,7 +353,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
     /// Adat lekérdezés
     if (true){
-        vector<string> reszvenyekNeve = {"TSLA"};//csoportReszvenyei("estere");//{"NVDA"};//csoportReszvenyei("estere");
+        vector<string> reszvenyekNeve = {"AA"};//csoportReszvenyei("estere");//{"NVDA"};//csoportReszvenyei("estere");
         reszvenyekNeve = csoportReszvenyei("osszesUj.txt");
 
         for (int i=0; i<reszvenyekNeve.size();){
@@ -372,7 +372,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
         float f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0, f6 = 0;
 
 
-
+        ofstream kimenetiFajl("negyedOssz.txt");
         for (size_t i=0; i<reszvenyekNeve.size();){
             int savedI = i;
             for (int j=0; j<thCnt; j++){
@@ -389,7 +389,36 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                 if (szalak[j].joinable())
                     szalak[j].join();
                 if (stocks[j].negyedevek.size()<3) continue;
+
+                Negyed elozo; elozo.income=-3;
+                for (const Negyed &negyed: stocks[j].negyedevek){
+                    Negyed mostani=negyed;
+                    if (elozo.income==-3){
+                        elozo=negyed;
+                        continue;
+                    }
+                    set<Nap>::iterator negyedElsoNapja = stocks[j].mindenNap.find(elozo.korrigaltTenylegesJelentes);
+                    set<Nap>::iterator negyedMegelozoNapja = negyedElsoNapja; negyedMegelozoNapja--;
+                    set<Nap>::iterator negyedUtolsoUtaniNapja = stocks[j].mindenNap.find(negyed.korrigaltTenylegesJelentes);
+                    set<Nap>::iterator negyedUtolsoNapja = negyedUtolsoUtaniNapja; negyedUtolsoNapja--;
+                    //Nap nap; nap.elozohozKiugras
+
+                    float negyedDiff = negyedUtolsoNapja->zaras/negyedElsoNapja->nyitas;
+                    float negyedDiff_ElsoNap=negyedUtolsoNapja->zaras/negyedElsoNapja->zaras;
+                    kimenetiFajl<<stocks[j].name<<" "<<negyed.idoszakVege.year<<" "<<negyed.idoszakVege.month<<" "<<negyedDiff<<" "<<negyedElsoNapja->nyitas<<" "<<negyedDiff_ElsoNap<<" "<<negyedElsoNapja->zaras<<" ";
+                    kimenetiFajl<<negyedElsoNapja->elozohozKiugras<<" "<<negyedElsoNapja->zaras/negyedElsoNapja->nyitas<<" ";
+                    float elsoNapIngadozasAlso = negyedElsoNapja->minimum/negyedElsoNapja->nyitas;
+                    float elsoNapIngadozasFelso = negyedElsoNapja->maximum/negyedElsoNapja->nyitas;
+                    float elsoNapIngadozas = negyedElsoNapja->maximum/negyedElsoNapja->minimum;
+                    kimenetiFajl<<elsoNapIngadozas<<" "<<elsoNapIngadozasFelso<<" "<<elsoNapIngadozasAlso<<" "<<endl;
+
+
+                    elozo=negyed;
+                }
                 continue;
+                //set<Nap>::iterator reszvenyNapjai = stocks[j].mindenNap.find(kezdonap);
+
+                //continue;
                 //Negyed n; n.
                 //Nap kezdonap(2015,1,5);
                 Nap kezdonap(2014,1,2);

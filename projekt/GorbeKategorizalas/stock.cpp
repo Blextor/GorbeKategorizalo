@@ -155,6 +155,10 @@ bool jelentesBetoltes(string path, set<Negyed> &negyedevek, bool reset=true){
     if (reset)
         negyedevek.clear();
     //set<Negyed> negyedevek;
+    while(getline(file,line)){
+        if (line=="    \"quarterlyEarnings\": [") break;
+    }
+
     while (getline(file,line)){
         if (benneVanAzStr(line,"fiscalDateEnding")){
             /// megtudja, melyik idõszakról van szó
@@ -189,31 +193,45 @@ bool jelentesBetoltes(string path, set<Negyed> &negyedevek, bool reset=true){
                 string reportTime;
                 ss2>>temp>>c>>year>>c>>month>>c>>day;
                 (*it).tenylegesJelentes=Datum(year,month,day);
+                //cout<<year<<" "<<month<<" "<<day<<endl;
 
                 getline(file,line);
                 ss2.str(line);
                 ss2>>temp>>c>>repEPS;
 
                 getline(file,line);
-                ss2.str(line);
-                ss2>>temp>>c>>predEPS;
+                if(!benneVanAzStr(line,"None")){
+                    ss2.str(line);
+                    ss2>>temp>>c>>predEPS;
+                }
+                else predEPS=0;
 
                 getline(file,line);
-                ss2.str(line);
-                ss2>>temp>>c>>sup;
+                if(!benneVanAzStr(line,"None")){
+                    ss2.str(line);
+                    ss2>>temp>>c>>sup;
+                }
+                else sup=0;
 
                 getline(file,line);
-                ss2.str(line);
-                ss2>>temp>>c>>supP;
+                if(!benneVanAzStr(line,"None")){
+                    ss2.str(line);
+                    ss2>>temp>>c>>supP;
+                }
+                else supP=0;
 
                 getline(file,line);
                 //if (line == "\"reportTime\": \"post-market\"") cout<<"POST"<<endl;
                 stringstream ss3;
                 ss3.str(line);
                 ss3>>temp>>reportTime;
+                (*it).havePostPre=true;
                 if (reportTime[2]=='o') (*it).postMarket = true;//cout<<"POST"<<endl;
                 else if (reportTime[2]=='r') (*it).postMarket = false; //cout<<"PRE"<<endl;
-                else {cout<<line<<endl<<reportTime<<" "<<path<<endl; (*it).postMarket = false;}
+                else {
+                        //cout<<line<<endl<<reportTime<<" "<<path<<endl;
+                        (*it).havePostPre=false;
+                }
 
                 (*it).jelentettEPS=repEPS;
                 (*it).becsultEPS=predEPS;
@@ -247,6 +265,7 @@ bool bevetelBetoltes(string path, set<Negyed> &negyedevek, bool reset=true){
             Negyed negyed(year,month,day);
             set<Negyed>::iterator it = negyedevek.find(negyed);
             if (it == negyedevek.end()) {
+                continue;
                 negyedevek.insert(negyed);
                 it = negyedevek.find(negyed);
             }
@@ -429,7 +448,7 @@ void Stock::adatokFeldolgozasa(){
         nap.idoZaras=Idopont(15,59);
         nap.valid=true;
 
-        /// és lekérdezem, hogy a héz melyik napja
+        /// és lekérdezem, hogy a hét melyik napja
         nap.hetMelyikNapja=hetNapja(nap.datum);
 
         const Arfolyam *legutobbiPerc = &itm;
@@ -548,6 +567,7 @@ void Stock::adatokFeldolgozasa(){
     for (const Negyed& negyed: negyedevek){
         /// ha nincs valahol tényleges jelentési dátum
         if (negyed.tenylegesJelentes.year==-1){
+                cout<<name<<" BAJJJJJ "<<negyed.idoszakVege.year<<endl;
             /// akkor az egy magányos bevételi adatos rekord
             /// kell találni hozzá egy párt
             for (const Negyed& keresettNegyed: negyedevek){
@@ -598,19 +618,24 @@ void Stock::negyedevekKorrigalasa(){
         } else { /// különben foglalkozom tovább a dologgal
             /// megkeresem az azt követő napot
             set<Nap>::iterator after = mindenNap.find(Nap((*it).kovetkezoNap));
-            if (after!=mindenNap.end()){ /// ha létezik (ami szokott azért), akkor foglalkozom tovább a dologgal
-                long long V1 = (*it).volumen, V2 = (*after).volumen;
-                if (V1>V2){ /// aznap volt nagyobb mozgás => aznap volt a jelentés
-                    negyed.korrigaltTenylegesJelentes=(*it).datum;
-                    negyed.nyitasElotti=true;
-                } else { /// másnap volt a jelentés
-                    negyed.korrigaltTenylegesJelentes=(*after).datum;
-                    negyed.nyitasElotti=false;
+            if (negyed.havePostPre){ /// ha volt társítva hozzá pontos kijövetel
+                if (negyed.postMarket) negyed.korrigaltTenylegesJelentes=after->datum; /// akkor ha post, akkor kell a következő nap
+                else negyed.korrigaltTenylegesJelentes=negyed.korrigaltTenylegesJelentes; /// különben marad az eredeti nap
+            } else { /// különben a volumen alapján döntök
+                if (after!=mindenNap.end()){ /// ha létezik (ami szokott azért), akkor foglalkozom tovább a dologgal
+                    long long V1 = (*it).volumen, V2 = (*after).volumen;
+                    if (V1>V2){ /// aznap volt nagyobb mozgás => aznap volt a jelentés
+                        negyed.korrigaltTenylegesJelentes=(*it).datum;
+                        negyed.nyitasElotti=true;
+                    } else { /// másnap volt a jelentés
+                        negyed.korrigaltTenylegesJelentes=(*after).datum;
+                        negyed.nyitasElotti=false;
+                    }
                 }
-            }
-            else { /// különben baj van (az utolsó eltárolt nap egy pénzügyi jelentés napja is pl)
-                cout<<"Hibas negyed 2 "<<(*it).kovetkezoNap.year<<" "<<(*it).kovetkezoNap.month<<" "<<(*it).kovetkezoNap.day<<endl;
-                hibasNegyedek.push_back(negyed);
+                else { /// különben baj van (az utolsó eltárolt nap egy pénzügyi jelentés napja is pl)
+                    cout<<"Hibas negyed 2 "<<(*it).kovetkezoNap.year<<" "<<(*it).kovetkezoNap.month<<" "<<(*it).kovetkezoNap.day<<endl;
+                    hibasNegyedek.push_back(negyed);
+                }
             }
         }
     }

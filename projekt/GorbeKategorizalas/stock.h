@@ -62,7 +62,7 @@ struct Nap{
 
 struct Negyed{
     Datum idoszakVege;
-    /// közöklt dátum
+    /// közölt dátum
     mutable Datum tenylegesJelentes;
     /// amelyik nap nyitása elõtt jött ki
     mutable Datum korrigaltTenylegesJelentes;
@@ -75,6 +75,7 @@ struct Negyed{
 
     mutable bool nyitasElotti = true;
     mutable bool postMarket = true;
+    mutable bool havePostPre = false;
 
     Negyed(int y=-1, int m=-1, int d=-1){idoszakVege=Datum(y,m,d);}
     Negyed(Datum d){idoszakVege=d;}
