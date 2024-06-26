@@ -354,7 +354,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     /// Adat lekérdezés
     if (true){
         vector<string> reszvenyekNeve = {"AA"};//csoportReszvenyei("estere");//{"NVDA"};//csoportReszvenyei("estere");
-        reszvenyekNeve = csoportReszvenyei("osszesUj.txt");
+        //reszvenyekNeve = csoportReszvenyei("osszesUj.txt");
 
         for (int i=0; i<reszvenyekNeve.size();){
             for (;i<reszvenyekNeve.size(); i++)
@@ -398,6 +398,8 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                         continue;
                     }
                     set<Nap>::iterator negyedElsoNapja = stocks[j].mindenNap.find(elozo.korrigaltTenylegesJelentes);
+                    if (negyedElsoNapja==stocks[j].mindenNap.end())
+                        cout<<elozo.korrigaltTenylegesJelentes.year<<" "<<elozo.korrigaltTenylegesJelentes.month<<" "<<elozo.korrigaltTenylegesJelentes.day<< " END"<<endl;
                     set<Nap>::iterator negyedMegelozoNapja = negyedElsoNapja; negyedMegelozoNapja--;
                     set<Nap>::iterator negyedUtolsoUtaniNapja = stocks[j].mindenNap.find(negyed.korrigaltTenylegesJelentes);
                     set<Nap>::iterator negyedUtolsoNapja = negyedUtolsoUtaniNapja; negyedUtolsoNapja--;

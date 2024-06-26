@@ -620,7 +620,7 @@ void Stock::negyedevekKorrigalasa(){
             set<Nap>::iterator after = mindenNap.find(Nap((*it).kovetkezoNap));
             if (negyed.havePostPre){ /// ha volt társítva hozzá pontos kijövetel
                 if (negyed.postMarket) negyed.korrigaltTenylegesJelentes=after->datum; /// akkor ha post, akkor kell a következő nap
-                else negyed.korrigaltTenylegesJelentes=negyed.korrigaltTenylegesJelentes; /// különben marad az eredeti nap
+                else negyed.korrigaltTenylegesJelentes=negyed.tenylegesJelentes; /// különben marad az eredeti nap
             } else { /// különben a volumen alapján döntök
                 if (after!=mindenNap.end()){ /// ha létezik (ami szokott azért), akkor foglalkozom tovább a dologgal
                     long long V1 = (*it).volumen, V2 = (*after).volumen;
