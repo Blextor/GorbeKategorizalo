@@ -352,9 +352,9 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
 
     /// Adat lekérdezés
-    if (true){
+    if (false){
         vector<string> reszvenyekNeve = {"AA"};//csoportReszvenyei("estere");//{"NVDA"};//csoportReszvenyei("estere");
-        //reszvenyekNeve = csoportReszvenyei("osszesUj.txt");
+        reszvenyekNeve = csoportReszvenyei("osszesUj.txt");
 
         for (int i=0; i<reszvenyekNeve.size();){
             for (;i<reszvenyekNeve.size(); i++)
@@ -372,7 +372,14 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
         float f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0, f6 = 0;
 
 
-        ofstream kimenetiFajl("negyedOssz.txt");
+        ofstream kimenetiFajl("negyedOssz2.txt");
+        kimenetiFajl<<"name year month day elozoZaras elsoNyitasErtek elsoZarasErtek utolsoNyitasErtek utolsoZarasErtek ";
+        kimenetiFajl<<"kiugras napVegiKiugras elsoNapDiff elsoNapIngadozas elsoNapAlsoIngadozas elsoNapFelsoIngadozas ";
+        kimenetiFajl<<"negyedDiff negyedDiffElsoNap negyedIngadozas negyedAlsoIngadozas negyedFelsoIngadozas ";
+        kimenetiFajl<<"napCnt ";
+        kimenetiFajl<<"negyedGlobMinHely negyedGlobMaxHely negyedGlobMinErtek negyedGlobMaxErtek ";
+        kimenetiFajl<<"negyedLokMinCnt15 negyedLokMaxCnt15";
+        kimenetiFajl<<endl;
         for (size_t i=0; i<reszvenyekNeve.size();){
             int savedI = i;
             for (int j=0; j<thCnt; j++){
@@ -389,6 +396,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                 if (szalak[j].joinable())
                     szalak[j].join();
                 if (stocks[j].negyedevek.size()<3) continue;
+                cout<<stocks[j].name<<endl;
 
                 Negyed elozo; elozo.income=-3;
                 for (const Negyed &negyed: stocks[j].negyedevek){
@@ -398,23 +406,98 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                         continue;
                     }
                     set<Nap>::iterator negyedElsoNapja = stocks[j].mindenNap.find(elozo.korrigaltTenylegesJelentes);
-                    if (negyedElsoNapja==stocks[j].mindenNap.end())
-                        cout<<elozo.korrigaltTenylegesJelentes.year<<" "<<elozo.korrigaltTenylegesJelentes.month<<" "<<elozo.korrigaltTenylegesJelentes.day<< " END"<<endl;
+                    //if (negyedElsoNapja==stocks[j].mindenNap.end())
+                      //  cout<<elozo.korrigaltTenylegesJelentes.year<<" "<<elozo.korrigaltTenylegesJelentes.month<<" "<<elozo.korrigaltTenylegesJelentes.day<< " END"<<endl;
                     set<Nap>::iterator negyedMegelozoNapja = negyedElsoNapja; negyedMegelozoNapja--;
                     set<Nap>::iterator negyedUtolsoUtaniNapja = stocks[j].mindenNap.find(negyed.korrigaltTenylegesJelentes);
                     set<Nap>::iterator negyedUtolsoNapja = negyedUtolsoUtaniNapja; negyedUtolsoNapja--;
                     //Nap nap; nap.elozohozKiugras
 
+                    /// name year month day
+                    kimenetiFajl<<stocks[j].name<<" "<<negyed.idoszakVege.year<<" "<<negyed.idoszakVege.month<<" "<<negyed.idoszakVege.day<<" ";
+
+                    /// elozoZaras elsoNyitasErtek elsoZarasErtek utolsoNyitasErtek utolsoZarasErtek
+                    kimenetiFajl<<negyedMegelozoNapja->zaras<<" "<<negyedElsoNapja->nyitas<<" "<<negyedElsoNapja->zaras<<" ";
+                    kimenetiFajl<<negyedUtolsoNapja->nyitas<<" "<<negyedUtolsoNapja->zaras<<" ";
+
+                    /// kiugras napVegiKiugras elsoNapDiff elsoNapIngadozas elsoNapAlsoIngadozas elsoNapFelsoIngadozas
+                    float elsoNapLegkisebbNyitoVagyZaro = min(negyedElsoNapja->nyitas,negyedElsoNapja->zaras);
+                    float elsoNapLegnagyobbNyitoVagyZaro = max(negyedElsoNapja->nyitas,negyedElsoNapja->zaras);
+                    float elsoNapIngadozasAlso = elsoNapLegkisebbNyitoVagyZaro/negyedElsoNapja->minimum;
+                    float elsoNapIngadozasFelso = negyedElsoNapja->maximum/elsoNapLegnagyobbNyitoVagyZaro;
+                    float elsoNapIngadozas = negyedElsoNapja->maximum/negyedElsoNapja->minimum;
+                    kimenetiFajl<<negyedElsoNapja->nyitas/negyedMegelozoNapja->zaras<<" "<<negyedElsoNapja->zaras/negyedMegelozoNapja->zaras<<" "; /// kiugras napVegiKiugras
+                    kimenetiFajl<<negyedElsoNapja->zaras/negyedElsoNapja->nyitas<<" "<<elsoNapIngadozas<<" "<<elsoNapIngadozasAlso<<" "<<elsoNapIngadozasFelso<<" "; /// elsoNapDiff elsoNapIngadozas elsoNapAlsoIngadozas elsoNapFelsoIngadozas
+
+                    /// negyedDiff negyedDiff_ElsoNap negyedIngadozas negyedAlsoIngadozas negyedFelsoIngadozas
                     float negyedDiff = negyedUtolsoNapja->zaras/negyedElsoNapja->nyitas;
                     float negyedDiff_ElsoNap=negyedUtolsoNapja->zaras/negyedElsoNapja->zaras;
-                    kimenetiFajl<<stocks[j].name<<" "<<negyed.idoszakVege.year<<" "<<negyed.idoszakVege.month<<" "<<negyedDiff<<" "<<negyedElsoNapja->nyitas<<" "<<negyedDiff_ElsoNap<<" "<<negyedElsoNapja->zaras<<" ";
-                    kimenetiFajl<<negyedElsoNapja->elozohozKiugras<<" "<<negyedElsoNapja->zaras/negyedElsoNapja->nyitas<<" ";
-                    float elsoNapIngadozasAlso = negyedElsoNapja->minimum/negyedElsoNapja->nyitas;
-                    float elsoNapIngadozasFelso = negyedElsoNapja->maximum/negyedElsoNapja->nyitas;
-                    float elsoNapIngadozas = negyedElsoNapja->maximum/negyedElsoNapja->minimum;
-                    kimenetiFajl<<elsoNapIngadozas<<" "<<elsoNapIngadozasFelso<<" "<<elsoNapIngadozasAlso<<" "<<endl;
+                    kimenetiFajl<<negyedDiff<<" "<<negyedDiff_ElsoNap<<" "; /// negyedDiff negyedDiff_ElsoNap
 
 
+                    set<Nap>::iterator iterNap = negyedElsoNapja; // negyedIngadozas
+                    float negyedMin = 1000000, negyedMax = 0;
+                    float napCnt = 0, globMaxNapIndex = 0, globMinNapIndex = 0, globMaxNapErtek = 0, globMinNapErtek = 0;
+                    float lokMaxCnt = 0, lastMaxErtek = iterNap->maximum, lastMaxIdx = 0, lastMinErtek = iterNap->maximum, lastMinIdx = 0;
+                    vector<float> maximumok, minimumok;
+                    cout<<"nap: ";
+                    while (iterNap!=negyedUtolsoUtaniNapja){
+                        if (iterNap->maximum>negyedMax){negyedMax=iterNap->maximum; globMaxNapIndex=napCnt;}
+                        if (iterNap->minimum<negyedMin){negyedMin=iterNap->minimum; globMinNapIndex=napCnt;}
+                        maximumok.push_back(iterNap->maximum);
+                        minimumok.push_back(iterNap->minimum);
+                        ++napCnt; ++iterNap;
+                        if (napCnt>200) break;
+                    }
+                    cout<<napCnt<<endl;
+                    //napCnt--;
+                    float negyedAlso = min(negyedUtolsoNapja->zaras,negyedElsoNapja->nyitas);
+                    float negyedFelso = max(negyedUtolsoNapja->zaras,negyedElsoNapja->nyitas);
+                    kimenetiFajl<<negyedMax/negyedMin<<" "<<negyedAlso/negyedMin<<" "<<negyedMax/negyedFelso<<" "; /// negyedIngadozas negyedAlsoIngadozas negyedFelsoIngadozas
+
+                    /// napCnt
+                    kimenetiFajl<<napCnt<<" ";
+
+                    /// negyedGlobMinHely negyedGlobMaxHely negyedGlobMinErtek negyedGlobMaxErtek
+                    kimenetiFajl<<globMinNapIndex/napCnt<<" "<<globMaxNapIndex/napCnt<<" "<<napCnt<<" "<<negyedMin<<" "<<negyedMax<<" ";
+
+
+                    /// negyedLokMinCnt15 negyedLokMaxCnt15
+
+                    float negyedLokMinCnt = 0, negyedLokMaxCnt = 0;
+                    for (float zzz=0; zzz<minimumok.size(); zzz++){
+                        int start_i = max(0.0f,zzz-7), end_i = min(napCnt-1,zzz+7);
+                        float lokMinPos = 0, lokMinErtek = 100000, lokMaxPos = 0, lokMaxErtek = 0;
+                        for (int ki = start_i; ki<=end_i; ki++){
+                            if (maximumok[ki]>lokMaxErtek){lokMaxErtek=maximumok[ki]; lokMaxPos=ki;}
+                            if (minimumok[ki]<lokMinErtek){lokMinErtek=minimumok[ki]; lokMinPos=ki;}
+                        }
+                        if (lokMinPos==zzz){negyedLokMinCnt++;
+                        //kimenetiFajl<<zzz<<"_n ";
+                        }
+                        if (lokMaxPos==zzz){negyedLokMaxCnt++;
+                        //kimenetiFajl<<zzz<<"_x ";
+                        }
+                    }
+                    kimenetiFajl<<negyedLokMinCnt<<" "<<negyedLokMaxCnt<<" ";
+
+                    /*
+                    iterNap = negyedElsoNapja;
+                    while (iterNap!=negyedUtolsoUtaniNapja){
+                        set<Nap>::iterator iterNapInNegyed = iterNap;
+                        float lokMinPos = 0, lokMinErtek = 100000, lokMaxPos = 0, lokMaxErtek = 0;
+                        int zzz=0;
+                        for (; zzz<15 && iterNapInNegyed!=negyedUtolsoUtaniNapja; zzz++){
+                            if (iterNapInNegyed->maximum>lokMaxErtek){lokMaxErtek=iterNapInNegyed->maximum; lokMaxPos=zzz;}
+                            if (iterNapInNegyed->minimum<lokMinErtek){lokMinErtek=iterNapInNegyed->minimum; lokMinPos=zzz;}
+                            ++iterNapInNegyed;
+                        }
+                        //if ()
+                        ++iterNap;
+                    }
+                    */
+
+                    kimenetiFajl<<endl;
                     elozo=negyed;
                 }
                 continue;
@@ -520,6 +603,227 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
         }
     }
+
+    /// Adat lekérdezés 2
+    if (false){
+        vector<string> reszvenyekNeve = {"AVGO"};//csoportReszvenyei("estere");//{"NVDA"};//csoportReszvenyei("estere");
+        reszvenyekNeve = csoportReszvenyei("osszes");
+
+        for (int i=0; i<reszvenyekNeve.size();){
+            for (;i<reszvenyekNeve.size(); i++)
+                cout<<reszvenyekNeve[i]<<" ";
+            cout<<endl;
+        }
+        //reszvenyekNeve.clear(); reszvenyekNeve.push_back("NFLX"); reszvenyekNeve.push_back("ADBE"); reszvenyekNeve.push_back("NVDA");
+        cout<<reszvenyekNeve.size()<<endl;
+        int thCnt = 32;
+        vector<thread> szalak; szalak.resize(thCnt);
+        vector<Stock> stocks; stocks.resize(thCnt);
+        bool m;
+        long long osszesPelda = 0, joPelda = 0;
+        int z1 = 0, z2 = 0, z3 = 0, z4 = 0, z5 = 0, z6 = 0;
+        float f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0, f6 = 0;
+
+
+        ofstream kimenetiFajl("EgyNegyedEvKomplex.txt");
+        for (size_t i=0; i<reszvenyekNeve.size();){
+            int savedI = i;
+            for (int j=0; j<thCnt; j++){
+                szalak[j] = thread(loadStock,reszvenyekNeve[i],ref(stocks[j]),ref(m));
+                i++;
+                //cout<<i<<endl;
+                if (i>=reszvenyekNeve.size()) break;
+                cout<<i<<endl;
+            }
+
+            for (int j=0; j<thCnt; j++){
+                if (savedI+j>=reszvenyekNeve.size()) continue;
+                clock_t t1 = clock();
+                if (szalak[j].joinable())
+                    szalak[j].join();
+                if (stocks[j].negyedevek.size()<3) continue;
+                cout<<stocks[j].name<<endl;
+
+                Negyed elozo; elozo.income=-3;
+                Negyed mostani; mostani.income=-3;
+                for (const Negyed &negyed: stocks[j].negyedevek){
+                    Negyed mostani=negyed;
+                    if (elozo.income==-3){
+                        elozo=mostani;
+                        mostani=negyed;
+                        continue;
+                    }
+
+                    /// ha kevés nap van a negyedév előtt TODO
+                    stringstream egyRekord;
+
+                    /// Vizsgált időszak:
+                    if (!(Datum(2000,1,1) < negyed.korrigaltTenylegesJelentes)) continue;
+                    if (!(negyed.korrigaltTenylegesJelentes < Datum(2010,1,1))) continue;
+
+                    /// ellenőrző összeg: ha minden perc és minden nap megvan
+                    int checkSum = 0;
+                    bool baj = false;
+
+                    /// Legyen 4 nap az utolsó negyedévben
+                    if (!(negyed.korrigaltTenylegesJelentes < Datum(2024,9,4))) continue;
+
+                    /// A két negyed nyitó napjai és a részvény neve
+                    egyRekord<<stocks[j].name<<" ";
+                    set<Nap>::iterator mostaniNegyedElsoNapja = stocks[j].mindenNap.find(elozo.korrigaltTenylegesJelentes);
+                    set<Nap>::iterator kovetkezoNegyedElsoNapja = stocks[j].mindenNap.find(negyed.korrigaltTenylegesJelentes);
+                    egyRekord<<mostaniNegyedElsoNapja->datum.year<<" "<<mostaniNegyedElsoNapja->datum.month<<" "<<mostaniNegyedElsoNapja->datum.day<<" ";
+                    egyRekord<<kovetkezoNegyedElsoNapja->datum.year<<" "<<kovetkezoNegyedElsoNapja->datum.month<<" "<<kovetkezoNegyedElsoNapja->datum.day<<endl;
+
+                    /// Az előző negyed utolsó 4 és a mostani negyed első 4 napja percbontásban (nyitas, min, max, zárás * 390)
+                    set<Nap>::iterator mostaniNegyedMegelozoNapjai = mostaniNegyedElsoNapja;
+                    for (int vissza=0; vissza<4; vissza++) {mostaniNegyedMegelozoNapjai--;}
+                    for (int elore=0; elore<8; elore++){
+                        for (set<Arfolyam>::iterator perc = mostaniNegyedMegelozoNapjai->percek.begin(); perc != mostaniNegyedMegelozoNapjai->percek.end(); ++perc){
+                            if (perc->idopont.ora<9 || (perc->idopont.ora==9 && perc->idopont.perc<30)) continue;
+                            if (perc->idopont.ora>15 || (perc->idopont.ora==9 && perc->idopont.perc<30)) continue;
+                            egyRekord<<perc->open<<" "<<perc->minimum<<" "<<perc->maximum<<" "<<perc->close<<" ";
+                            checkSum++;
+                        }
+                        egyRekord<<endl;
+                        mostaniNegyedMegelozoNapjai++;
+                    }
+                    int chksum2 = checkSum;
+
+                    /// A mostani negyedév minden napjának a 4 értéke (nyitas, min, max, zárás)
+                    for (set<Nap>::iterator mostaniNegyedElsoNapjaCiklus = mostaniNegyedElsoNapja;
+                        mostaniNegyedElsoNapjaCiklus != kovetkezoNegyedElsoNapja; mostaniNegyedElsoNapjaCiklus++){
+                        egyRekord<<mostaniNegyedElsoNapjaCiklus->nyitas<<" "<<mostaniNegyedElsoNapjaCiklus->minimum<<" ";
+                        egyRekord<<mostaniNegyedElsoNapjaCiklus->maximum<<" "<<mostaniNegyedElsoNapjaCiklus->zaras<<" ";
+                    }
+                    egyRekord<<endl;
+
+                    /// Az mostani negyed utolsó 4 és a következő negyed első 4 napja percbontásban (nyitas, min, max, zárás * 390)
+                    set<Nap>::iterator mostaniNegyedUtolsoNapjai = kovetkezoNegyedElsoNapja;
+                    for (int vissza=0; vissza<4; vissza++) {mostaniNegyedUtolsoNapjai--;}
+                    for (int elore=0; elore<8; elore++){
+                        for (set<Arfolyam>::iterator perc = mostaniNegyedUtolsoNapjai->percek.begin(); perc != mostaniNegyedUtolsoNapjai->percek.end(); ++perc){
+                            if (perc->idopont.ora<9 || (perc->idopont.ora==9 && perc->idopont.perc<30)) continue;
+                            if (perc->idopont.ora>15 || (perc->idopont.ora==9 && perc->idopont.perc<30)) continue;
+                            egyRekord<<perc->open<<" "<<perc->minimum<<" "<<perc->maximum<<" "<<perc->close<<" ";
+                            checkSum++;
+                        }
+                        egyRekord<<endl;
+                        mostaniNegyedUtolsoNapjai++;
+                    }
+
+                    egyRekord<<endl;
+                    if (chksum2!=3120 || checkSum!=6240) {
+                        cout<<stocks[j].name<<endl;
+                        cout<<negyed.negyedevVege.year<<" "<<negyed.negyedevVege.month<<" "<<negyed.negyedevVege.day<<" "<<endl;
+                        cout<<checkSum<<endl;
+                    } else {
+
+                        kimenetiFajl<<egyRekord.str();
+                    }
+                    elozo=mostani;
+                    mostani=negyed;
+                }
+                continue;
+                //set<Nap>::iterator reszvenyNapjai = stocks[j].mindenNap.find(kezdonap);
+
+                //continue;
+                //Negyed n; n.
+                //Nap kezdonap(2015,1,5);
+                Nap kezdonap(2014,1,2);
+                //Nap kezdonap(2023,1,9);
+                //Nap kezdonap(2024,1,2);
+                ///Datum vegNap(2024,1,1);
+                Datum vegNap(2025,1,1);
+                Nap ntemp(2023,10,18);
+                if (stocks[j].mindenNap.find(ntemp) == stocks[j].mindenNap.end()) {
+                    Nap n2temp = *(stocks[j].mindenNap.rbegin());
+                    if (n2temp.datum.year==2023 && n2temp.datum.month==10 && n2temp.datum.day==13){}
+                    else continue;
+                    cout<<stocks[j].name<<" "<<n2temp.datum.year<<" "<<n2temp.datum.month<<" "<<n2temp.datum.day<<endl;
+
+                }
+                set<Nap>::iterator reszvenyNapjai = stocks[j].mindenNap.find(kezdonap);
+                if (reszvenyNapjai==stocks[j].mindenNap.end()) continue;
+                ofstream tempF("./reszvenyFajlok/"+stocks[j].name+".csv");
+                //tempF<<"dátum,időpont,érték,második érték"<<endl;
+                //tempF<<"dátum,időpont,érték"<<endl;
+
+                float felfeleJobban = 0, osszesEset = 0, zarasLejebb = 0, zarasIsLejebb = 0;
+                float profit = 1.0f, minNagyafter = 0 ,minNK = 0, startKisebb = 0;
+                int nCnt = 0;
+                //ofstream file(stocks[j].name+".txt");
+                for (;reszvenyNapjai!=stocks[j].mindenNap.end() && reszvenyNapjai->datum<vegNap;){
+                    ///cout<<j<<" "<<nCnt<<endl;
+                    nCnt++;
+                    //cout<<reszvenyNapjai->datum.day<<endl;;
+                    Arfolyam perc(9,30);
+                    Arfolyam percZ(15,59);
+                    set<Arfolyam>::iterator kperc =  reszvenyNapjai->percek.find(perc);
+                    set<Arfolyam>::iterator kpercZ =  reszvenyNapjai->percek.find(percZ);
+                    if (reszvenyNapjai->percek.end()==kperc || reszvenyNapjai->percek.end()==kpercZ) continue;
+                    float hanyPerc = 390;
+                    vector<float> ertekek(hanyPerc+1); float startV;
+                    vector<float> ertekek2(hanyPerc);
+                    float szum = 0.0f;
+                    for (int cntPerc = 0;reszvenyNapjai->percek.end()!=kperc && cntPerc<hanyPerc; cntPerc++){
+                        ertekek[cntPerc]=kperc->open;
+                        ertekek2[cntPerc]=kperc->open;
+                        szum+=ertekek[cntPerc];
+                        startV=kperc->close;
+                        //tempF<<reszvenyNapjai->datum.year<<"-"<<reszvenyNapjai->datum.month<<"-"<<reszvenyNapjai->datum.day<<","<< kperc->idopont.ora<<":"<<kperc->idopont.perc<<","<<kperc->open<<" "<<endl;//<<" "<<kperc->close<<" "<<kperc->minimum<<" "<<kperc->maximum<<endl;
+                        kperc++;
+                    }
+                    ertekek[hanyPerc]=kpercZ->open;
+                    szum+=ertekek[hanyPerc];
+
+
+                    float min = *std::min_element(ertekek2.begin(), ertekek2.end());
+                    float max = *std::max_element(ertekek2.begin(), ertekek2.end());
+
+                    // Normalizálás
+                    std::vector<float> normalized_data;
+                    for(float value : ertekek) {
+                        float normalized_value = (value - min) / (max - min);
+                        normalized_data.push_back(normalized_value);
+                    }
+
+                    // Normalizált adatok kiírása
+                    //std::cout << "Normalizált adatok: ";
+                    kperc =  reszvenyNapjai->percek.find(perc);
+                    for (int zzz=0; zzz<hanyPerc;zzz++){
+                        //tempF<<reszvenyNapjai->datum.year<<"-"<<reszvenyNapjai->datum.month<<"-"<<reszvenyNapjai->datum.day<<","<< kperc->idopont.ora<<":"<<kperc->idopont.perc<<","<<normalized_data[zzz]<<","<<ertekek[zzz]<<endl;//<<" "<<kperc->close<<" "<<kperc->minimum<<" "<<kperc->maximum<<endl;
+                        //tempF<<reszvenyNapjai->datum.year<<"-"<<reszvenyNapjai->datum.month<<"-"<<reszvenyNapjai->datum.day<<","<< kperc->idopont.ora<<":"<<kperc->idopont.perc<<","<<kperc->open<<endl;//<<" "<<kperc->close<<" "<<kperc->minimum<<" "<<kperc->maximum<<endl;
+                        tempF<<kperc->open<<endl;//<<" "<<kperc->close<<" "<<kperc->minimum<<" "<<kperc->maximum<<endl;
+                        kperc++;
+                    }
+                    ///tempF<<reszvenyNapjai->datum.year<<"-"<<reszvenyNapjai->datum.month<<"-"<<reszvenyNapjai->datum.day<<","<< kpercZ->idopont.ora<<":"<<kpercZ->idopont.perc<<","<<normalized_data[30]<<","<<ertekek[30]<<endl;//<<" "<<kperc->close<<" "<<kperc->minimum<<" "<<kperc->maximum<<endl;
+
+                    ///cout<<reszvenyNapjai->datum.year<<" "<<reszvenyNapjai->datum.month<<endl;
+                    reszvenyNapjai++;
+                    continue;
+                    Arfolyam percK(10,0);
+                    float endV = 0.0f;
+                    set<Arfolyam>::iterator kpercK =  reszvenyNapjai->percek.find(percK);
+                    if (reszvenyNapjai->percek.end()==kpercK) continue;
+                    for (int cntPerc = 0;reszvenyNapjai->percek.end()!=kpercK && cntPerc<358; cntPerc++){
+                        endV = kpercK->close;
+                        kpercK++;
+                    }
+                    reszvenyNapjai++;
+
+                }
+                //file.close();
+                cout<<j<<", T: "<<clock()-t1<<endl;
+            }
+
+            sleep(1);
+
+        }
+
+        kimenetiFajl.close();
+    }
+
 
     /// Egy speciális eset
     if (false){

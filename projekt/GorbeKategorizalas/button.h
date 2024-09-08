@@ -228,14 +228,17 @@ struct ProgressBar{
     bool cancelled = true;
 
     int eta_hour=0, eta_min=0, eta_sec=0;
-    int feldolgozottElemek=0, osszesElem=0;
+    int feldolgozottElemek=0, osszesElem=0, eredetiOsszesElem=0;
     float keszsegSzazalek=0;
 
     string holAllEpp;
 
-    clock_t startTime = 1;
+    clock_t startTime = 1; /// mikor kezdődött a folyamat
     clock_t forDeltaTime = 1;
-    clock_t timePassed = 1;
+    clock_t timePassed = 1;  /// mellyi idő telt el
+
+    clock_t pausedTime = 0; /// mennyit szünetelt
+    clock_t pauseStartTime = 0; /// mikor volt az utolsó szünet kezdete
 
     //mutex rajzolasi;
 
@@ -266,6 +269,7 @@ struct ProgressBar{
     void prepare(int oE){
         cancelled=true;
         osszesElem=oE;
+        eredetiOsszesElem=oE;
     }
 
     void start(){
@@ -275,10 +279,12 @@ struct ProgressBar{
         stopped=false;
         startTime=clock();
         forDeltaTime=clock();
+        timePassed=0;
     }
 
     void stop(){
         stopped=true;
+        pauseStartTime = clock();
     }
 
     void cancel(){
@@ -291,12 +297,18 @@ struct ProgressBar{
     }
 
     void draw (SDL_Renderer *renderer, int wa, int wb){
+
         if (!stopped && !cancelled){
             clock_t t = clock();
             timePassed+=(t-forDeltaTime);
             forDeltaTime=t;
             if (t-forDeltaTime>5000) timePassed-=(t-forDeltaTime);
+
+            timePassed = clock()-startTime-pausedTime;
         }
+
+        timePassed = clock()-startTime-pausedTime;
+
         long unsigned int i = timePassed/1000;
 
         if (wx) X = wa - x;
@@ -327,6 +339,9 @@ struct ProgressBar{
         ss1<<eta_sec/10<<eta_sec%10;
 
         stringRGBA(renderer,X+5,Y+h+7,ss1.str().c_str(),0,0,0,255);
+
+        stringstream ss3; ss3<<timePassed<<" "<<clock()<<" "<<startTime<<" "<<i;
+        stringRGBA(renderer,X+5,Y+h+37,ss3.str().c_str(),0,0,0,255);
 
         stringstream ss2;
         if (cancelled)
