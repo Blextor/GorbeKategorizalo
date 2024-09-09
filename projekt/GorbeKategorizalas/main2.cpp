@@ -605,9 +605,9 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     }
 
     /// Adat lekérdezés 2
-    if (false){
-        vector<string> reszvenyekNeve = {"AVGO"};//csoportReszvenyei("estere");//{"NVDA"};//csoportReszvenyei("estere");
-        reszvenyekNeve = csoportReszvenyei("osszes");
+    if (true){
+        vector<string> reszvenyekNeve = {"ULTA"};//csoportReszvenyei("estere");//{"NVDA"};//csoportReszvenyei("estere");
+        reszvenyekNeve = csoportReszvenyei("ossz24_09.txt");
 
         for (int i=0; i<reszvenyekNeve.size();){
             for (;i<reszvenyekNeve.size(); i++)
@@ -636,6 +636,8 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                 cout<<i<<endl;
             }
 
+            bool debugFor = false;
+
             for (int j=0; j<thCnt; j++){
                 if (savedI+j>=reszvenyekNeve.size()) continue;
                 clock_t t1 = clock();
@@ -647,37 +649,55 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                 Negyed elozo; elozo.income=-3;
                 Negyed mostani; mostani.income=-3;
                 for (const Negyed &negyed: stocks[j].negyedevek){
-                    Negyed mostani=negyed;
+                    //cout<<negyed.idoszakVege.year<<endl;
+
+                    /// ha kevés nap van a negyedév előtt TODO
+                    stringstream egyRekord;
+
+                    /// Vizsgált időszak:
+                    if (!(Datum(2024,1,1) < negyed.korrigaltTenylegesJelentes)) continue;
+                    if (!(negyed.korrigaltTenylegesJelentes < Datum(2025,1,1))) continue;
+
+                    /// ellenőrző összeg: ha minden perc és minden nap megvan
+                    int checkSum = 0;
+                    if(debugFor)cout<<"A";
+                    /// Legyen 4 nap az utolsó negyedévben
+                    if (!(mostani.korrigaltTenylegesJelentes < Datum(2024,9,4))) continue;
+
+
+                    //Negyed mostani=negyed;
                     if (elozo.income==-3){
                         elozo=mostani;
                         mostani=negyed;
                         continue;
                     }
 
-                    /// ha kevés nap van a negyedév előtt TODO
-                    stringstream egyRekord;
-
-                    /// Vizsgált időszak:
-                    if (!(Datum(2000,1,1) < negyed.korrigaltTenylegesJelentes)) continue;
-                    if (!(negyed.korrigaltTenylegesJelentes < Datum(2010,1,1))) continue;
-
-                    /// ellenőrző összeg: ha minden perc és minden nap megvan
-                    int checkSum = 0;
-                    bool baj = false;
-
-                    /// Legyen 4 nap az utolsó negyedévben
-                    if (!(negyed.korrigaltTenylegesJelentes < Datum(2024,9,4))) continue;
 
                     /// A két negyed nyitó napjai és a részvény neve
                     egyRekord<<stocks[j].name<<" ";
                     set<Nap>::iterator mostaniNegyedElsoNapja = stocks[j].mindenNap.find(elozo.korrigaltTenylegesJelentes);
-                    set<Nap>::iterator kovetkezoNegyedElsoNapja = stocks[j].mindenNap.find(negyed.korrigaltTenylegesJelentes);
+                    set<Nap>::iterator kovetkezoNegyedElsoNapja = stocks[j].mindenNap.find(mostani.korrigaltTenylegesJelentes);
                     egyRekord<<mostaniNegyedElsoNapja->datum.year<<" "<<mostaniNegyedElsoNapja->datum.month<<" "<<mostaniNegyedElsoNapja->datum.day<<" ";
                     egyRekord<<kovetkezoNegyedElsoNapja->datum.year<<" "<<kovetkezoNegyedElsoNapja->datum.month<<" "<<kovetkezoNegyedElsoNapja->datum.day<<endl;
 
+                    if(debugFor)cout<<"B";
                     /// Az előző negyed utolsó 4 és a mostani negyed első 4 napja percbontásban (nyitas, min, max, zárás * 390)
                     set<Nap>::iterator mostaniNegyedMegelozoNapjai = mostaniNegyedElsoNapja;
-                    for (int vissza=0; vissza<4; vissza++) {mostaniNegyedMegelozoNapjai--;}
+                    bool baj = false;
+                    for (int vissza=0; vissza<4; vissza++) {
+                        if (mostaniNegyedMegelozoNapjai!=stocks[j].mindenNap.begin())
+                            mostaniNegyedMegelozoNapjai--;
+                        else{
+                            cout<<"Nincs korabban nap"<<endl;
+                            baj=true;
+                            break;
+                        }
+                    }
+                    if (baj) {
+                        elozo=mostani;
+                        mostani=negyed;
+                        continue;
+                    }
                     for (int elore=0; elore<8; elore++){
                         for (set<Arfolyam>::iterator perc = mostaniNegyedMegelozoNapjai->percek.begin(); perc != mostaniNegyedMegelozoNapjai->percek.end(); ++perc){
                             if (perc->idopont.ora<9 || (perc->idopont.ora==9 && perc->idopont.perc<30)) continue;
@@ -690,13 +710,38 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                     }
                     int chksum2 = checkSum;
 
+                    if(debugFor)cout<<"C";
                     /// A mostani negyedév minden napjának a 4 értéke (nyitas, min, max, zárás)
+                    int failsafeCnt = 0;
                     for (set<Nap>::iterator mostaniNegyedElsoNapjaCiklus = mostaniNegyedElsoNapja;
-                        mostaniNegyedElsoNapjaCiklus != kovetkezoNegyedElsoNapja; mostaniNegyedElsoNapjaCiklus++){
+                        mostaniNegyedElsoNapjaCiklus->datum < kovetkezoNegyedElsoNapja->datum; mostaniNegyedElsoNapjaCiklus++){
+                        //cout<<mostaniNegyedElsoNapjaCiklus->datum.year<<" "<<kovetkezoNegyedElsoNapja->datum.year<<endl;
                         egyRekord<<mostaniNegyedElsoNapjaCiklus->nyitas<<" "<<mostaniNegyedElsoNapjaCiklus->minimum<<" ";
                         egyRekord<<mostaniNegyedElsoNapjaCiklus->maximum<<" "<<mostaniNegyedElsoNapjaCiklus->zaras<<" ";
+                        failsafeCnt++;
+                        if(failsafeCnt>100) {
+                            if (!baj){
+                                cout<<"FAIL: Minden nap 100+"<<endl; //elozo.korrigaltTenylegesJelentes
+                                cout<<kovetkezoNegyedElsoNapja->datum.year<<" "<<kovetkezoNegyedElsoNapja->datum.month<<" "<<kovetkezoNegyedElsoNapja->datum.day<<endl;
+                                cout<<elozo.korrigaltTenylegesJelentes.year<<" "<<elozo.korrigaltTenylegesJelentes.month<<" "<<elozo.korrigaltTenylegesJelentes.day<<endl;
+                                cout<<mostaniNegyedElsoNapjaCiklus->datum.year<<" "<<mostaniNegyedElsoNapjaCiklus->datum.month<<" "<<mostaniNegyedElsoNapjaCiklus->datum.day<<endl;
+                            }
+                            baj = true;
+                            //break;
+                        }
                     }
+                    if (baj) {
+                        cout<<failsafeCnt<<endl;
+                        elozo=mostani;
+                        mostani=negyed;
+                        continue;
+                    }
+                    //cout<<failsafeCnt<<endl;
                     egyRekord<<endl;
+
+                    if(debugFor)cout<<"D";
+                    //set<Nap>::iterator tempIt = stocks[j].mindenNap.end(); tempIt--;
+                    //cout<<tempIt->datum.year<<" "<<tempIt->datum.month<<" "<<tempIt->datum.day<<endl;
 
                     /// Az mostani negyed utolsó 4 és a következő negyed első 4 napja percbontásban (nyitas, min, max, zárás * 390)
                     set<Nap>::iterator mostaniNegyedUtolsoNapjai = kovetkezoNegyedElsoNapja;
@@ -710,8 +755,10 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
                         }
                         egyRekord<<endl;
                         mostaniNegyedUtolsoNapjai++;
+                        if (mostaniNegyedUtolsoNapjai == stocks[j].mindenNap.end()) break;
                     }
 
+                    if(debugFor)cout<<"E";
                     egyRekord<<endl;
                     if (chksum2!=3120 || checkSum!=6240) {
                         cout<<stocks[j].name<<endl;
