@@ -607,7 +607,7 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
     /// Adat lekérdezés 2
     if (true){
         vector<string> reszvenyekNeve = {"ULTA"};//csoportReszvenyei("estere");//{"NVDA"};//csoportReszvenyei("estere");
-        reszvenyekNeve = csoportReszvenyei("ossz24_09.txt");
+        reszvenyekNeve = csoportReszvenyei("osszes");
 
         for (int i=0; i<reszvenyekNeve.size();){
             for (;i<reszvenyekNeve.size(); i++)
@@ -648,29 +648,35 @@ void main2( SDL_Window &window, SDL_Renderer &renderer){
 
                 Negyed elozo; elozo.income=-3;
                 Negyed mostani; mostani.income=-3;
+                //cout<<(--stocks[j].negyedevek.end())->idoszakVege.year<<endl;
+                //cout<<(--stocks[j].negyedevek.end())->idoszakVege.month<<endl;
+                //cout<<(--stocks[j].negyedevek.end())->idoszakVege.day<<endl;
                 for (const Negyed &negyed: stocks[j].negyedevek){
-                    //cout<<negyed.idoszakVege.year<<endl;
+                    //cout<<negyed.korrigaltTenylegesJelentes.year<<" "<<negyed.korrigaltTenylegesJelentes.month<<" "<<negyed.korrigaltTenylegesJelentes.day<<endl;
+                    //cout<<negyed.idoszakVege.year<<" "<<negyed.idoszakVege.month<<" "<<negyed.idoszakVege.day<<endl;
+                    ///cout<<stocks[j].negyedevek[-1].idoszakVege.year<<" "<<stocks[j].negyedevek[-1].idoszakVege.month<<" "<<stocks[j].negyedevek[-1].idoszakVege.day<<endl;
 
                     /// ha kevés nap van a negyedév előtt TODO
                     stringstream egyRekord;
 
-                    /// Vizsgált időszak:
-                    if (!(Datum(2024,1,1) < negyed.korrigaltTenylegesJelentes)) continue;
-                    if (!(negyed.korrigaltTenylegesJelentes < Datum(2025,1,1))) continue;
-
-                    /// ellenőrző összeg: ha minden perc és minden nap megvan
-                    int checkSum = 0;
-                    if(debugFor)cout<<"A";
-                    /// Legyen 4 nap az utolsó negyedévben
-                    if (!(mostani.korrigaltTenylegesJelentes < Datum(2024,9,4))) continue;
-
-
+                    if (true) mostani=negyed;
                     //Negyed mostani=negyed;
                     if (elozo.income==-3){
                         elozo=mostani;
                         mostani=negyed;
                         continue;
                     }
+
+                    /// Vizsgált időszak:
+                    if (!(Datum(2010,1,1) < mostani.korrigaltTenylegesJelentes)) {elozo=mostani; mostani=negyed; continue;}
+                    if (!(mostani.korrigaltTenylegesJelentes < Datum(2020,1,1))) {elozo=mostani; mostani=negyed; continue;}
+
+                    /// ellenőrző összeg: ha minden perc és minden nap megvan
+                    int checkSum = 0;
+                    if(debugFor)cout<<"A";
+                    /// Legyen 4 nap az utolsó negyedévben
+                    if (!(mostani.korrigaltTenylegesJelentes < Datum(2024,9,4))) {elozo=mostani; mostani=negyed; continue;}
+
 
 
                     /// A két negyed nyitó napjai és a részvény neve
